@@ -1,0 +1,23 @@
+{
+  "77002": {"lat": 29.7555, "lng": -95.3635, "label": "Downtown"},
+  "77003": {"lat": 29.7470, "lng": -95.3530, "label": "EaDo / Fourth Ward"},
+  "77004": {"lat": 29.7300, "lng": -95.3670, "label": "Third Ward / Midtown"},
+  "77006": {"lat": 29.7420, "lng": -95.3880, "label": "Montrose"},
+  "77007": {"lat": 29.7715, "lng": -95.3870, "label": "Washington Ave / Near Northwest"},
+  "77008": {"lat": 29.8010, "lng": -95.4040, "label": "Near Northwest / Heights"},
+  "77019": {"lat": 29.7460, "lng": -95.4290, "label": "River Oaks"},
+  "77020": {"lat": 29.7570, "lng": -95.3160, "label": "Fifth Ward"},
+  "77021": {"lat": 29.6980, "lng": -95.3600, "label": "Sunnyside / South Park"},
+  "77023": {"lat": 29.7140, "lng": -95.3050, "label": "East End / Lawndale"},
+  "77025": {"lat": 29.6880, "lng": -95.4330, "label": "Braeswood / Meyerland"},
+  "77030": {"lat": 29.7070, "lng": -95.4000, "label": "Texas Medical Center"},
+  "77033": {"lat": 29.6700, "lng": -95.3300, "label": "Sunnyside / Southeast"},
+  "77036": {"lat": 29.6850, "lng": -95.4990, "label": "Gulfton / Westbury"},
+  "77051": {"lat": 29.6850, "lng": -95.3270, "label": "Southeast Houston"},
+  "77054": {"lat": 29.6880, "lng": -95.4120, "label": "Reliant / South Loop"},
+  "77074": {"lat": 29.6870, "lng": -95.5300, "label": "Sharpstown / Southwest"},
+  "77081": {"lat": 29.7000, "lng": -95.5450, "label": "Westwood / Southwest"},
+  "77087": {"lat": 29.6930, "lng": -95.3190, "label": "Gulfgate / Pleasantville"},
+  "77098": {"lat": 29.7340, "lng": -95.4190, "label": "Upper Kirby / Greenway"},
+  "77204": {"lat": 29.7210, "lng": -95.3440, "label": "UH / Third Ward"}
+}
