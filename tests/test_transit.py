@@ -194,13 +194,51 @@ def test_earliest_arrival_wins_even_when_it_leaves_later():
 
 
 def test_cannot_catch_a_bus_that_leaves_before_the_walk_is_done():
+    # Today's 16:00 bus is gone before the walk ends, so the first usable ride is tomorrow's 16:00 run.
     source = FakeSource([make_trip("54-1600", "54", [("A", "16:00", "16:00"), ("B", "16:12", "16:12")])])
-    assert ask(at(2026, 10, 12, 16, 0), source) is None
+    d = ask(at(2026, 10, 12, 16, 0), source)
+    assert d["later"] is True
+    assert d["legs"][0]["departs"] == "16:00"
+    assert d["arrive_by"] == "16:13"
 
 
-def test_no_ride_inside_the_wait_limit_gives_none():
+def test_no_ride_inside_the_wait_limit_gives_the_first_ride_later():
     source = FakeSource([make_trip("late", "54", [("A", "19:00", "19:00"), ("B", "19:12", "19:12")])])
+    d = ask(at(2026, 10, 12, 16, 0), source)
+    assert d["later"] is True
+    assert d["legs"][0]["departs"] == "19:00"
+
+
+def test_ride_within_the_wait_limit_is_not_marked_later():
+    source = FakeSource([make_trip("54-1612", "54", [("A", "16:12", "16:12"), ("B", "16:31", "16:31")])])
+    d = ask(at(2026, 10, 12, 16, 0), source)
+    assert "later" not in d
+
+
+def test_nothing_in_24_hours_gives_none_even_with_a_later_search():
+    source = FakeSource([make_trip("54-AM", "54", [("A", "16:12", "16:12"), ("M", "16:20", "16:20")])])
     assert ask(at(2026, 10, 12, 16, 0), source) is None
+
+
+def test_later_search_stops_at_24_hours():
+    # Tuesday 16:30 is just outside the 24 hours from Monday 16:00 (the window ends Tuesday 16:01).
+    source = FakeSource([make_trip("54-1630", "54", [("A", "16:30", "16:30"), ("B", "16:42", "16:42")])],
+                        services=lambda day: {"WKD"} if day == MONDAY else set())
+    assert ask(at(2026, 10, 12, 16, 0), source) is not None  # Monday 16:30 is inside 90 minutes
+    source = FakeSource([make_trip("tue", "54", [("A", "16:30", "16:30"), ("B", "16:42", "16:42")], service="TUE")],
+                        services=lambda day: {"TUE"} if day == date(2026, 10, 13) else set())
+    assert ask(at(2026, 10, 12, 16, 0), source) is None
+
+
+def test_later_ride_is_described_as_later_in_every_language():
+    d = dict(one_leg_result(), later=True)
+    for language in ["en", "es", "vi", "zh", "ar"]:
+        for channel in ["sms", "kiosk"]:
+            text = transit.summary(d, language, channel)
+            assert text.startswith(transit._LATER[language]), (language, channel)
+            assert transit.summary(one_leg_result(), language, channel) in text
+    text = transit.summary(d, "en", "sms")
+    assert text == "No buses are running now. The first one: Bus 54 from Scott@Holman 4:12PM, 6 stops to Main@Gray, walk 2 min."
 
 
 def test_no_route_at_all_gives_none():
@@ -641,3 +679,82 @@ def test_service_origin_is_noon_minus_twelve_hours():
     # Clocks go back on 2026-11-01: noon CST minus 12 hours is 01:00 CDT, not midnight.
     assert transit._service_origin(date(2026, 11, 1)) == datetime(2026, 11, 1, 6, 0, tzinfo=timezone.utc)
 
+
+
+# ---------------------------------------------------------------- nearest stops when no ride is found
+
+def test_closest_stops_name_the_nearest_stop_to_each_point():
+    source = FakeSource([])
+    start, end = transit.closest_stops(ORIGIN[0], ORIGIN[1], DEST[0], DEST[1], "en", "kiosk", source=source)
+    assert start == "Scott at Holman"  # A is next to the origin
+    assert end == "Main at Gray"  # B is next to the destination
+    assert source.closed == 1
+
+
+def test_closest_stops_sms_keeps_the_at_sign_and_other_languages_format():
+    source = FakeSource([])
+    assert transit.closest_stops(ORIGIN[0], ORIGIN[1], DEST[0], DEST[1], "en", "sms", source=source) == (
+        "Scott@Holman", "Main@Gray")
+    zh = transit.closest_stops(ORIGIN[0], ORIGIN[1], DEST[0], DEST[1], "zh", "kiosk", source=FakeSource([]))
+    assert zh == ("Scott与Holman交叉口", "Main与Gray交叉口")
+
+
+def test_closest_stops_none_without_a_schedule_or_nearby_stop(monkeypatch, tmp_path):
+    monkeypatch.setattr(transit, "LOCAL_PATH", tmp_path / "no_such_file.json")  # no local schedule either
+    assert transit.closest_stops(ORIGIN[0], ORIGIN[1], DEST[0], DEST[1], "en", "sms", source=None) is None
+    assert transit.closest_stops(29.9, -95.9, DEST[0], DEST[1], "en", "sms", source=FakeSource([])) is None
+
+
+def test_closest_stops_never_raises_on_a_broken_source():
+    class NoStops(FakeSource):
+        def stops_near(self, lat, lng, miles):
+            raise RuntimeError("boom")
+
+    assert transit.closest_stops(ORIGIN[0], ORIGIN[1], DEST[0], DEST[1], "en", "sms",
+                                 source=NoStops([])) is None
+
+
+# ---------------------------------------------------------------- 24-hour search pages past busy stops
+
+def test_later_search_pages_past_trips_that_do_not_reach_the_destination():
+    # 45 route-99 trips leave A from 16:00 Monday and never reach B, so the first 40 fill the cap.
+    # The route-54 trip to B is Tuesday 08:00: only a later batch can find it.
+    trips = [make_trip(f"99-{i}", "99", [("A", f"16:{i:02d}", f"16:{i:02d}"), ("M", f"16:{i + 5:02d}", f"16:{i + 5:02d}")])
+             for i in range(45)]
+    trips.append(make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE"))
+    source = FakeSource(trips, services=lambda day: {"TUE"} if day == date(2026, 10, 13) else weekday_services(day))
+    d = ask(at(2026, 10, 12, 16, 0), source)
+    assert d["later"] is True
+    assert d["legs"][0]["route"] == "54"
+    assert d["legs"][0]["departs"] == "08:00"
+    assert d["buses_running"] is True  # the 99 buses run, they just do not go there
+
+
+def test_later_search_gives_up_after_its_batch_limit(monkeypatch):
+    monkeypatch.setattr(transit, "LATER_BATCHES", 1)
+    trips = [make_trip(f"99-{i}", "99", [("A", f"16:{i:02d}", f"16:{i:02d}"), ("M", f"16:{i + 5:02d}", f"16:{i + 5:02d}")])
+             for i in range(45)]
+    trips.append(make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE"))
+    source = FakeSource(trips, services=lambda day: {"TUE"} if day == date(2026, 10, 13) else weekday_services(day))
+    assert ask(at(2026, 10, 12, 16, 0), source) is None
+
+
+def test_wording_no_buses_running_when_nothing_leaves_the_stops_in_90_minutes():
+    source = FakeSource([make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE")],
+                        services=lambda day: {"TUE"} if day == date(2026, 10, 13) else set())
+    d = ask(at(2026, 10, 12, 16, 0), source)
+    assert d["buses_running"] is False
+    assert transit.summary(d, "en", "kiosk").startswith("No buses are running now. The first one:")
+    assert transit.summary(d, "en", "sms").startswith("No buses are running now. The first one: Bus 54")
+
+
+def test_wording_next_bus_when_buses_run_but_none_goes_there():
+    trips = [make_trip("99-1610", "99", [("A", "16:10", "16:10"), ("M", "16:20", "16:20")])]
+    trips.append(make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE"))
+    source = FakeSource(trips, services=lambda day: {"TUE"} if day == date(2026, 10, 13) else weekday_services(day))
+    d = ask(at(2026, 10, 12, 16, 0), source)
+    assert d["later"] is True and d["buses_running"] is True
+    assert transit.summary(d, "en", "sms").startswith("The next bus that goes there: Bus 54")
+    for language in ["es", "vi", "zh", "ar"]:
+        assert transit.summary(d, language, "kiosk").startswith(transit._NEXT_BUS[language])
+        assert transit._NEXT_BUS[language] != transit._LATER[language]

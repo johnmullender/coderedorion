@@ -3,6 +3,8 @@ replaced with None, so no network or API key is needed."""
 
 import os
 import sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -328,3 +330,165 @@ def test_directions_is_in_intents_list():
 
 def test_plain_followup_still_followup(fallback_only):
     assert brain.understand("is it far?", [])["intent"] == "followup"
+
+
+# ---------------------------------------------------------------- offers: labels, line, Gemini facts
+
+LANGS = ["en", "es", "vi", "zh", "ar"]
+
+
+def place_with_offers(*keys):
+    """A place whose offers are the given keys (quotes and urls are placeholders)."""
+    return {"name": "Test Place", "offers": [
+        {"key": key, "quote": "a quote", "url": "https://example.org/offers"} for key in keys]}
+
+
+def test_every_offer_key_has_a_label_in_every_language():
+    for language in LANGS:
+        labels = brain.OFFER_LABELS[language]
+        assert set(labels) == set(brain.OFFER_KEYS), language
+        assert all(label.strip() for label in labels.values()), language
+    assert len(brain.OFFER_KEYS) == len(set(brain.OFFER_KEYS)) == 24
+
+
+def test_every_language_has_an_offers_lead_word():
+    for language in LANGS:
+        assert "{items}" in brain.TEMPLATES[language]["offers"], language
+        assert brain.TEMPLATES[language]["offers_sep"].strip(), language
+
+
+def test_offers_line_examples():
+    place = place_with_offers("showers", "wifi", "food_pantry")
+    assert brain.offers_line(place, "en") == "Offers: showers, Wi-Fi, food pantry."
+    assert brain.offers_line(place, "es") == "Ofrece: duchas, Wi-Fi, despensa de comida."
+    assert brain.offers_line(place, "zh") == "提供：洗澡、无线网络、食品库。"
+    assert brain.offers_line(place, "ar").startswith("تقدم: ")
+
+
+def test_offers_line_keeps_four_in_data_order_and_skips_bad_entries():
+    place = place_with_offers("laundry", "bogus", "mail", "showers", "wifi", "restrooms")
+    place["offers"].append("not an object")
+    assert brain.offers_line(place, "en") == "Offers: laundry, mail, showers, Wi-Fi."
+
+
+def test_offers_line_is_none_without_offers():
+    assert brain.offers_line({"name": "x"}, "en") is None
+    assert brain.offers_line({"offers": []}, "en") is None
+    assert brain.offers_line(place_with_offers("bogus"), "en") is None
+
+
+def test_split_hint_takes_off_the_reply_sentence():
+    assert brain.split_hint("Pantry is open. Reply 2 or 3 for other options.") == (
+        "Pantry is open.", "Reply 2 or 3 for other options.")
+    assert brain.split_hint("Pantry is open.") == ("Pantry is open.", "")
+
+
+def test_facts_send_offer_labels_but_not_notes_or_links():
+    match = dict(place_with_offers("showers", "wifi"), name="Test Place", notes="Internal remark",
+                 address="1 Main", distance_mi=0.2, open_now=True, phone="713-555-0100")
+    facts = brain._facts_for(match, 1, "es")
+    assert facts["offers"] == ["duchas", "Wi-Fi"]
+    assert "notes" not in facts
+    assert "Internal remark" not in str(facts)
+    assert "example.org" not in str(facts) and "a quote" not in str(facts)
+
+
+def test_notes_are_not_a_fact_and_prompt_forbids_unlisted_services():
+    assert "notes" not in brain.FACT_FIELDS
+    assert "offers" in brain.FACT_FIELDS
+    prompt = " ".join(brain.ANSWER_PROMPT.split())  # the rule is wrapped over two lines in the source
+    assert 'Describe a place only with the offers listed in its "offers" field.' in prompt
+    assert "Never suggest a service (beds, meals, etc.) that is not listed" in prompt
+
+
+class FakeGemini:
+    """Stands in for the Gemini client: records the prompt and returns a fixed reply."""
+
+    def __init__(self, reply="Pantry is open now."):
+        self.prompts = []
+        self.reply = reply
+        self.models = self
+
+    def generate_content(self, model, contents, config):
+        self.prompts.append(contents)
+
+        class Reply:
+            text = self.reply
+        return Reply()
+
+
+def test_gemini_prompt_gets_offer_labels_and_no_notes():
+    client = FakeGemini()
+    match = dict(place_with_offers("hot_meals", "shelter_beds"), name="Test Place", notes="Call to see if you can get a bed",
+                 address="1 Main", distance_mi=0.2, open_now=True, phone="713-555-0100")
+    reply = brain._answer_with_gemini(client, "I need food", "en", "food", [match], "kiosk", None, [])
+    assert reply == "Pantry is open now."
+    prompt = client.prompts[0]
+    assert '"free meals"' in prompt and '"shelter beds"' in prompt
+    assert "Call to see if you can get a bed" not in prompt
+    assert "example.org" not in prompt
+
+
+def test_gemini_answer_prompt_carries_the_offers_rule(monkeypatch):
+    client = FakeGemini(reply="Test Place is open now, 0.2 miles away.")
+    monkeypatch.setattr(brain, "_get_client", lambda: client)
+    text = brain.answer("I need food", "en", "food", [{"name": "Test Place", "distance_mi": 0.2,
+                                                       "open_now": True, "closes_at": None}], "kiosk")
+    assert text == "Test Place is open now, 0.2 miles away."
+    assert "Describe a place only with the offers listed" in " ".join(client.prompts[0].split())
+
+
+# ---------------------------------------------------------------- opening times: day names, today, tomorrow
+
+def houston(year, month, day, hour, minute):
+    return datetime(year, month, day, hour, minute, tzinfo=ZoneInfo("America/Chicago"))
+
+
+MONDAY_10AM = houston(2026, 10, 12, 10, 0)  # 2026-10-12 is a Monday
+
+
+def test_opening_day_names_are_translated():
+    assert brain._opens_text("Wed 09:00", "es", now=MONDAY_10AM) == "Mié 9 AM"
+    assert brain._opens_text("Fri 13:00", "vi", now=MONDAY_10AM) == "T6 1 PM"
+    assert brain._opens_text("Sun 09:00", "zh", now=MONDAY_10AM) == "周日 9 AM"
+    assert brain._opens_text("Sat 09:00", "ar", now=MONDAY_10AM) == "السبت 9 AM"
+    assert brain._opens_text("Wed 09:00", "en", now=MONDAY_10AM) == "Wed 9 AM"
+
+
+def test_today_and_tomorrow_are_said_in_the_language():
+    assert brain._opens_text("Mon 14:00", "en", now=MONDAY_10AM) == "today 2 PM"  # later today
+    assert brain._opens_text("Tue 09:00", "en", now=MONDAY_10AM) == "tomorrow 9 AM"
+    assert brain._opens_text("Mon 14:00", "es", now=MONDAY_10AM) == "hoy 2 PM"
+    assert brain._opens_text("Tue 09:00", "es", now=MONDAY_10AM) == "mañana 9 AM"
+    assert brain._opens_text("Tue 09:00", "vi", now=MONDAY_10AM) == "ngày mai 9 AM"
+    assert brain._opens_text("Mon 14:00", "zh", now=MONDAY_10AM) == "今天 2 PM"
+    assert brain._opens_text("Tue 09:00", "ar", now=MONDAY_10AM) == "غدا 9 AM"
+
+
+def test_monday_morning_already_passed_is_not_today():
+    # Monday 09:00 when it is already 10 AM on Monday: the next one is a week away, so use the day name.
+    assert brain._opens_text("Mon 09:00", "en", now=MONDAY_10AM) == "Mon 9 AM"
+    assert brain._opens_text("Mon 09:00", "es", now=MONDAY_10AM) == "Lun 9 AM"
+
+
+def test_opening_text_uses_houston_time_when_no_time_is_given():
+    text = brain._opens_text("Mon 09:00", "en")
+    assert text.endswith(" 9 AM") and text.split(" ")[0] in ("today", "tomorrow", "Mon", "Tue", "Wed", "Thu",
+                                                             "Fri", "Sat", "Sun")
+
+
+def test_next_open_text_is_translated_and_says_tomorrow():
+    place = {"name": "Later Place", "address": "2 Main St", "opens_at": "Tue 09:00", "phone": "713-555-0100"}
+    text = brain._next_open_text("es", place, "food")
+    assert "Tue" not in text  # translated: hoy, mañana, or Mar
+    assert "abre" in text
+
+
+def test_next_open_place_is_never_described_as_open_now():
+    place = {"name": "Later Place", "address": "2 Main St", "distance_mi": 0.7, "open_now": False,
+             "closes_at": None, "opens_at": "Tue 09:00", "phone": "713-555-0100"}
+    sms = brain.answer("food", "en", "food", [place], "sms")
+    kiosk = brain.answer("food", "en", "food", [place], "kiosk")
+    for text in (sms, kiosk):
+        assert "The next one to open is Later Place" in text
+        assert "open now" not in text.lower()

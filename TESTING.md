@@ -54,7 +54,7 @@ If you already cloned the repo before, run `git pull` inside `coderedorion` to g
 ```bash
 python -m pytest -q
 ```
-**Expect:** `137 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
+**Expect:** `540 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
 
 ## 2. Start the server
 
@@ -110,7 +110,7 @@ curl -s -X POST localhost:8000/sms -d From=+15550003 --data-urlencode "Body=2"
 ```bash
 curl -s -X POST localhost:8000/sms -d From=+15550004 --data-urlencode "Body=I need a lawyer near 77004"
 ```
-**Expect:** "nothing open now", plus when and where the next legal place opens. This shows up as a red **unmet** pin in step 4.
+**Expect:** "Nothing nearby is open right now." then "The next one to open is …", with its opening time and address. That place is option 1 (its distance, offers and bus line follow). Then "Reply 2 for a nearby place with no listed hours." (kiosk: "Turn the knob to option 2 …"); option 2 is described as "hours not listed, call first" (never "open") when chosen. This shows up as a red **unmet** pin in step 4.
 
 **3h. Other languages.** Without Gemini, Vietnamese, Chinese and Arabic messages are understood, but the replies come back in English. Step 6 fixes that.
 ```bash
@@ -337,7 +337,12 @@ The app only asks about rules that the place's own page states. A place with no 
 
 1. Load METRO's schedule into Tiger Data once (needs `DATABASE_URL`): `python scripts/load_gtfs.py`. Without a database you can save the stops near the station instead: `python scripts/load_gtfs.py --local 29.7199 -95.3422`.
 2. Ask for a place, then `how do I get there?` (or `bus`, `¿cómo llego?`).
-3. **Expect:** "Take bus 54 from … at 4:12 PM, ride 6 stops …" in the person's language, and `"transit"` filled in the JSON. The kiosk LCD alternates `Option 1/3 0.9mi` and `Bus 54 4:12PM`. With no bus found: "no direct bus right now" plus the distance.
+3. **Expect:** "To Sample Pantry: Bus 54 from … 4:12PM, 6 stops …" in the person's language, and `"transit"` filled in the JSON. The kiosk LCD alternates `Option 1/3 0.9mi` and `Bus 54 4:12PM`.
+4. **Late at night:** with no bus in the next 90 minutes, the reply says "No buses are running now. The first one: Bus 54 … 5:12AM …" (the first ride in the next 24 hours), and `"transit"` has `"later": true`.
+5. **No route at all:** the reply names the place, the stop nearest you and the stop nearest the place, for example "No direct bus or transfer found to Sample Pantry (0.9 miles away). Nearest stop to you: … Nearest stop to Sample Pantry: …". On SMS it ends with a Google Maps transit link (`https://www.google.com/maps/dir/?api=1&origin=…&destination=…&travelmode=transit`). The kiosk gets no link.
+6. **No bus data loaded:** "Bus times aren't available right now. Sample Pantry is 0.9 miles away." (SMS also gets the Maps link.)
+
+**Offers.** A place with an `offers` list gets an "Offers: food pantry, showers, Wi-Fi." line after its main line (up to four, in the data's order). On SMS the line is dropped only after the eligibility notes have been dropped.
 
 ---
 
