@@ -399,7 +399,7 @@ def test_empty_text_is_unclear():
 # notes_for
 
 def test_notes_returns_note_rule_texts():
-    assert eligibility.notes_for(place("a", NOTE)) == ["Appointment needed"]
+    assert eligibility.notes_for(place("a", NOTE)) == ["Appointment needed."]
 
 
 def test_notes_empty_when_no_rules():
@@ -416,7 +416,7 @@ def test_notes_no_reminder_when_answered_yes():
 
 
 def test_notes_no_reminder_without_answers():
-    assert eligibility.notes_for(place("a", ID, NOTE)) == ["Appointment needed"]
+    assert eligibility.notes_for(place("a", ID, NOTE)) == ["Appointment needed."]
 
 
 def test_notes_reminder_in_spanish():
@@ -432,4 +432,4 @@ def test_notes_reminders_are_not_repeated():
 
 def test_notes_skipped_zip_or_note_gives_no_reminder():
     p = place("a", ZIP_77004, NOTE)
-    assert eligibility.notes_for(p, {}) == ["Appointment needed"]
+    assert eligibility.notes_for(p, {}, zip_code="77004") == ["Appointment needed."]

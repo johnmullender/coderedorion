@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 
 import brain
 import db
+import eligibility
 import location
 import main
 import matching
@@ -38,6 +39,7 @@ def make_place(pid, step=0, rules=None, need="food", **extra):
         "eligibility": list(rules or []), "services": "", "languages": ["en", "es"],
         "phone": "713-555-0100", "notes": "", "source_url": "https://example.org/page",
         "last_verified": "2026-10-01", "needs_review": False,
+        "hours_quote": "Open every day.",
     }
     place.update(extra)
     return place
@@ -219,7 +221,7 @@ def test_zip_in_rule_filters_by_zip_silently(client, world):
 
 
 def test_confirm_hours_line_for_unverified_place(client, world):
-    world["resources"] = [make_place("a", 0, needs_review=True, last_verified=None)]
+    world["resources"] = [make_place("a", 0, needs_review=True, last_verified=None, hours_quote=None)]
     data = ask(client, "necesito comida", channel="kiosk", lang="es")
     assert "Llame para confirmar el horario: 713-555-0100." in data["reply"]
 
@@ -293,7 +295,8 @@ def test_directions_intent_uses_selected_option(client, world):
     assert world["bus_calls"][-1][2] == pytest.approx(29.73)
 
 
-def test_directions_without_bus_says_so_with_miles(client, world):
+def test_directions_without_bus_says_so_with_miles(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: True)
     world["resources"] = [make_place("a", 0)]
     world["bus"] = None
     ask(client, "I need food")
@@ -405,3 +408,185 @@ def test_find_matches_keeps_nearest_eight():
     found = matching.find_matches("food", 29.72, -95.34, when=now, resources=resources, limit=8)
     assert len(found["options"]) == 8
     assert found["options"][0]["id"] == "p0"
+
+
+# ---------------------------------------------------------------------------
+# Review fixes: answer detection, no-hours fallback, wording, zip, notes, hints, no-bus text
+# ---------------------------------------------------------------------------
+
+def test_no_with_new_need_starts_new_search(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "I need food")
+    data = ask(client, "no I need food near 77004", channel="sms")
+    assert data["intent"] == "find"
+    # The "no" was not an answer: the search started again and asks the same question.
+    assert data["asking"] == "id"
+    assert main.SESSIONS["s1"]["answers"] == {}
+
+
+def test_long_message_without_need_is_not_an_answer(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "I need food")
+    data = ask(client, "I have no idea what to say to you right now")
+    assert data["intent"] == "other"
+    assert main.SESSIONS["s1"]["awaiting_answer"] is None
+    assert main.SESSIONS["s1"]["answers"] == {}
+
+
+def test_short_no_is_still_an_answer(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "I need food")
+    data = ask(client, "no")
+    assert ids(data) == ["b"]
+
+
+def test_no_hours_places_fill_short_options(client, world):
+    world["resources"] = [make_place("a", 0),
+                          make_place("u1", 1, hours={d: [] for d in DAYS}),
+                          make_place("u2", 2, hours={d: [] for d in DAYS})]
+    data = ask(client, "I need food")
+    assert ids(data) == ["a", "u1", "u2"]
+    assert "hours_unknown" not in data["options"][0]
+    fallback = data["options"][1]
+    assert fallback["open_now"] is False
+    assert data["options"][1]["id"] == "u1"
+    assert data["unmet"] is False
+
+
+def test_only_no_hours_places_never_say_open(client, world):
+    world["resources"] = [make_place("u1", 0, hours={d: [] for d in DAYS}, phone="713-555-0111")]
+    for channel in ("kiosk", "sms"):
+        text = "I need food" if channel == "kiosk" else "I need food 77004"
+        data = ask(client, text, session_id="u-" + channel, channel=channel)
+        assert data["options"][0]["hours_unknown"] is True
+        assert data["options"][0]["open_now"] is False
+        assert data["unmet"] is True
+        assert "hours not listed" in data["reply"]
+        assert "call 713-555-0111 first" in data["reply"]
+        assert "open now" not in data["reply"].lower()
+        assert "Call to confirm hours" not in data["reply"]
+
+
+def test_unknown_hours_wording_in_every_language(monkeypatch):
+    monkeypatch.setattr(brain, "_client", None)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    place = dict(make_place("u", 0, hours={d: [] for d in DAYS}), hours_unknown=True,
+                 open_now=False, distance_mi=0.8, closes_at=None, opens_at=None)
+    expected = {"en": "hours not listed", "es": "horario no publicado", "vi": "chưa có giờ mở cửa",
+                "zh": "未列出营业时间", "ar": "ساعات العمل غير مدرجة"}
+    banned = {"en": "open now", "es": "abierto ahora", "vi": "đang mở cửa", "zh": "现在开放",
+              "ar": "مفتوح الآن"}
+    for language in expected:
+        for channel in ("kiosk", "sms"):
+            reply = brain.answer("food", language, "food", [place], channel)
+            assert expected[language] in reply, (language, channel)
+            assert banned[language] not in reply, (language, channel)
+
+
+def test_gemini_prompt_knows_about_unknown_hours():
+    assert "hours_unknown" in brain.FACT_FIELDS
+    assert "hours_unknown" in brain.ANSWER_PROMPT and "Never say it is open" in brain.ANSWER_PROMPT
+
+
+def test_confirm_line_only_for_empty_hours_or_missing_quote(client, world):
+    world["resources"] = [make_place("a", 0, needs_review=True, hours_quote="Open every day.")]
+    data = ask(client, "I need food", session_id="q1")
+    assert "Call to confirm hours" not in data["reply"]
+    world["resources"] = [make_place("b", 0, needs_review=True, hours_quote=None)]
+    data = ask(client, "I need food", session_id="q2")
+    assert "Call to confirm hours: 713-555-0100." in data["reply"]
+
+
+def test_zip_note_when_zip_is_unknown(client, world):
+    rule = {"type": "zip_in", "zips": ["77004", "77021"], "source_quote": "x"}
+    world["resources"] = [make_place("a", 0, [rule])]
+    data = ask(client, "I need food")  # kiosk: no zip anywhere
+    assert "Serves zip codes: 77004, 77021." in data["reply"]
+
+
+def test_zip_note_in_every_language():
+    place = {"eligibility": [{"type": "zip_in", "zips": ["77004", "77021"], "source_quote": "x"}]}
+    for language in eligibility.LANGUAGES:
+        notes = eligibility.notes_for(place, {}, language)
+        assert len(notes) == 1 and "77004, 77021" in notes[0], language
+    assert eligibility.notes_for(place, {}, "en", zip_code="77004") == []
+
+
+def test_zip_comes_from_resolved_location(client, world):
+    table = location.load_zip_table()
+    zip_code = "77021"
+    assert main.zip_for_coords(table[zip_code]["lat"], table[zip_code]["lng"]) == zip_code
+    rule = {"type": "zip_in", "zips": ["77004"], "source_quote": "x"}
+    world["resources"] = [make_place("a", 0, [rule]), make_place("b", 1)]
+    data = ask(client, "I need food", lat=table[zip_code]["lat"], lng=table[zip_code]["lng"])
+    assert ids(data) == ["b"]
+    assert data["asking"] is None
+
+
+def test_notes_get_full_stops_and_spaces(client, world):
+    notes = [{"type": "note", "text": "Bring a bag", "source_quote": "x"},
+             {"type": "note", "text": "Ask at the desk", "source_quote": "x"}]
+    world["resources"] = [make_place("a", 0, notes)]
+    data = ask(client, "I need food")
+    assert "Bring a bag. Ask at the desk." in data["reply"]
+
+
+def test_reply_hint_matches_option_count_in_every_language(monkeypatch):
+    monkeypatch.setattr(brain, "_client", None)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    two = [dict(make_place("x", 0), distance_mi=0.2, open_now=True, closes_at=None, opens_at=None),
+           dict(make_place("y", 1), distance_mi=0.4, open_now=True, closes_at=None, opens_at=None)]
+    for language in ("en", "es", "vi", "zh", "ar"):
+        reply = brain.answer("food", language, "food", two, "sms")
+        assert brain.reply_hint(language, 2) in reply
+        assert brain.reply_hint(language, 3) not in reply
+    assert brain.reply_hint("en", 2) == "Reply 2 for another option."
+    assert brain.reply_hint("en", 3) == "Reply 2 or 3 for other options."
+
+
+def test_sms_hint_for_two_options_end_to_end(client, world):
+    world["resources"] = [make_place("a", 0), make_place("b", 1)]
+    data = ask(client, "I need food 77004", channel="sms")
+    assert "Reply 2 for another option." in data["reply"]
+    assert "2 or 3" not in data["reply"]
+
+
+def test_distance_phrase_singular_and_plural():
+    assert main.distance_phrase("en", 1.0) == "1 mile away"
+    assert main.distance_phrase("en", 0.8) == "0.8 miles away"
+    assert main.distance_phrase("es", 1.0) == "a 1 milla"
+    assert main.distance_phrase("es", 0.8) == "a 0.8 millas"
+
+
+def test_bus_times_unavailable_when_no_bus_data(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: False)
+    world["resources"] = [make_place("a", 0)]
+    world["bus"] = None
+    ask(client, "I need food")
+    data = ask(client, "how do I get there?")
+    assert "Bus times aren't available right now" in data["reply"]
+    assert "no direct bus" not in data["reply"].lower()
+
+
+def test_all_ruled_out_then_next_place_to_open(client, world):
+    tomorrow = DAYS[(datetime.now(ZoneInfo("America/Chicago")).weekday() + 1) % 7]
+    later_hours = {day: [] for day in DAYS}
+    later_hours[tomorrow] = ["00:00-24:00"]
+    world["resources"] = [make_place("a", 0, [ID_RULE]),
+                          make_place("later", 1, hours=later_hours, name="Later Place")]
+    ask(client, "I need food")
+    data = ask(client, "no")
+    assert data["unmet"] is True and data["options"] == []
+    assert data["reply"].startswith("None of the open places fit your answers.")
+    assert "The next one to open is Later Place" in data["reply"]
+    assert "Nothing for" not in data["reply"]
+    assert "211" not in data["reply"]
+
+
+def test_all_ruled_out_without_next_place_points_to_211(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE])]
+    ask(client, "I need food")
+    data = ask(client, "no")
+    assert data["reply"].startswith("None of the open places fit your answers.")
+    assert "211" in data["reply"]
+    assert "could not find" not in data["reply"]

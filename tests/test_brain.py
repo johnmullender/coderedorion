@@ -174,7 +174,7 @@ def test_sms_spanish_template():
     reply = brain.answer("tengo hambre", "es", "food",
                          [make_match("Despensa"), make_match("Otra")], "sms")
     assert "Despensa" in reply
-    assert "Responda 2 o 3" in reply
+    assert "Responda 2 para otra opción." in reply
     assert len(reply) <= 300
 
 
@@ -278,7 +278,7 @@ def test_templates_without_gemini_use_the_persons_language(language, word, monke
     kiosk = brain.answer("food", language, "food", matches, "kiosk")
     sms = brain.answer("food", language, "food", matches, "sms")
     assert word in kiosk and "Sample Pantry" in kiosk
-    assert word in sms and brain.REPLY_HINTS[language] in sms
+    assert word in sms and brain.reply_hint(language, 2) in sms
     nothing = brain.answer("food", language, "food", [], "kiosk")
     assert "211" in nothing and "Please call" not in nothing
 

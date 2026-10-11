@@ -907,7 +907,7 @@ function showAnswer(data) {
 
   // Yes/no question from the server ("asking" = the question key, or null).
   const asking = typeof data.asking === "string" && data.asking ? data.asking : null;
-  if (asking) lastAskingKey = asking;
+  lastAskingKey = asking || "";   // cleared on any reply that is not a question
 
   // Transit directions (null when none): the bus line alternates with the option line on LCD1.
   const transit = data.transit && Array.isArray(data.transit.legs) && data.transit.legs.length ? data.transit : null;

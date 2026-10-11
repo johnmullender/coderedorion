@@ -306,19 +306,45 @@ def parse_yes_no(text):
     return "unclear" if best is None else best[2]
 
 
-def notes_for(place, answers=None, language="en"):
+# Shown when the zip is unknown and the place only serves some zip codes.
+ZIP_NOTE = {
+    "en": "Serves zip codes: {zips}.",
+    "es": "Atiende los códigos postales: {zips}.",
+    "vi": "Phục vụ các mã bưu điện: {zips}.",
+    "zh": "服务的邮编：{zips}。",
+    "ar": "يخدم الرموز البريدية: {zips}.",
+}
+
+TERMINAL_MARKS = (".", "!", "?", "。", "！", "？", "؟", "…")
+
+
+def _sentence(text):
+    """The text with a full stop added when it has no end punctuation (CJK gets a 。)."""
+    text = text.strip()
+    if not text or text.endswith(TERMINAL_MARKS):
+        return text
+    return text + ("。" if _has_cjk(text) else ".")
+
+
+def notes_for(place, answers=None, language="en", zip_code=None):
     """Notes to read out for a place: its "note" rules, plus a reminder for each rule the person skipped.
 
-    Reminders need `answers`; without it only the note rules are returned.
+    Reminders need `answers`; without it only the note rules are returned. Every note ends with
+    punctuation. When `zip_code` is None (the zip is unknown) a place with a zip_in rule also gets
+    "Serves zip codes: ...".
     """
     lang = _lang(language)
     notes = []
     for rule in place.get("eligibility", []):
         kind = rule.get("type")
         if kind == "note":
-            text = rule.get("text", "")
+            text = _sentence(rule.get("text", ""))
             if text:
                 notes.append(text)
+        elif kind == "zip_in" and zip_code is None and rule.get("zips"):
+            zip_note = ZIP_NOTE[lang].format(zips=", ".join(str(z) for z in rule["zips"]))
+            if zip_note not in notes:
+                notes.append(zip_note)
         elif answers is not None and kind in REMINDERS:
             key = question_key(rule)
             if key is not None and key in answers and answers[key] is None:
