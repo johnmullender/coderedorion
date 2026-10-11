@@ -44,3 +44,12 @@ Times are Houston time, Sat Oct 10. Entries before 6:52 PM were backfilled from 
 | 6:46 PM | db.py | Sonnet R7 | Re-review | |
 | 6:47 PM | db.py | Sonnet R7 | **APPROVED** | All 3 fixes verified, tests pass with and without the DB |
 | 6:52 PM | — | Opus | Log | This file created |
+| 6:36 PM | main.py, kiosk.html, dashboard fix, station + brain reviews | Haiku #5, #6, #7, Sonnet R4, R5 | **Died** | All 5 were stopped at 6:36:18 PM by the interrupt from the "wait, plan changes" message. Their files weren't touched after that. Not noticed until John reported the stall |
+| 7:00 PM | (same 5) | Opus | Restarted | Each one resumed with its own context. main.py and kiosk.html also got the Tiger Data / ElevenLabs changes |
+| 7:01 PM | station.ino | Sonnet R4 | **CHANGES REQUIRED** | 2 fixes: `LINE_MAX` collides with a system macro (could break the compile); buzzer timer overflow after 24 days |
+| 7:01 PM | station.ino | Haiku #4 | Fix round 1 | Started |
+| 7:01 PM | dashboard.html | Haiku #6 | Fix round 1 done | Pin offset + unmet on top; `node --check` passes |
+| 7:01 PM | dashboard.html | Sonnet R3 | Re-review | Started |
+| 7:02 PM | brain.py | Sonnet R5 | **CHANGES REQUIRED** | 6 fixes: Vietnamese "ăn" matched inside "khăn" (towel) → wrong need; time words parsed as places ("en la noche"); emoji/long kiosk replies not rejected; unmet SMS could pass 300 chars; "2" after Spanish switched to English; missing bath/shower words |
+| 7:02 PM | brain.py | Haiku #3 | Fix round 1 | Started |
+| 7:02 PM | dashboard.html | Sonnet R3 | **APPROVED** | Offset verified (40–170 m, stable per id), unmet on top, `node --check` passes |

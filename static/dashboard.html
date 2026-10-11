@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HelpLine Houston - live</title>
+
+  <!-- Leaflet CSS (map library styles) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <style>
+    /* ---------- Colors and sizes in one place ---------- */
+    :root {
+      --bg: #f4f6f8;          /* page background (light) */
+      --panel: #ffffff;       /* side panel background */
+      --ink: #14181f;         /* main text (dark) */
+      --ink-soft: #4a5563;    /* secondary text */
+      --line: #d9dee5;        /* thin dividers */
+      --alert: #d62828;       /* red for UNMET */
+      --bar-bg: #e6eaf0;      /* empty part of the bars */
+    }
+
+    /* Make the whole page fill the screen and use border-box sizing */
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);       /* explicit background */
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 18px;             /* big text for a projector */
+    }
+
+    /* Two columns: map on the left (70%), panel on the right */
+    .app {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+    #map {
+      flex: 0 0 70%;               /* 70% of the width */
+      height: 100%;
+      min-width: 0;
+    }
+    .panel {
+      flex: 1 1 30%;
+      height: 100%;
+      overflow-y: auto;            /* panel scrolls if it is too tall */
+      background: var(--panel);
+      border-left: 2px solid var(--line);
+      padding: 20px 22px 28px;
+    }
+
+    /* Panel header: title and the reconnecting badge */
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .head h1 {
+      font-size: 30px;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .badge-offline {
+      display: none;               /* shown by JS when the fetch fails */
+      background: #fff3cd;
+      color: #7a5600;
+      border: 2px solid #e0a800;
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .badge-offline.show { display: inline-block; }
+
+    /* Big number tiles: total requests and total unmet */
+    .stats {
+      display: flex;
+      gap: 14px;
+      margin: 18px 0 8px;
+    }
+    .stat {
+      flex: 1 1 0;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+    .stat .num {
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .stat .lbl {
+      font-size: 17px;
+      color: var(--ink-soft);
+    }
+    .stat.unmet .num { color: var(--alert); }
+
+    h2 {
+      font-size: 22px;
+      margin: 22px 0 10px;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 4px;
+    }
+
+    /* "By need" rows: name, bar, count, unmet count */
+    .need-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 46px;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+    .need-name {
+      font-size: 20px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .bar-track {
+      background: var(--bar-bg);
+      border-radius: 6px;
+      height: 22px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 6px;
+      transition: width 0.4s ease;   /* bars grow smoothly */
+    }
+    .need-count {
+      font-size: 22px;
+      font-weight: 800;
+      text-align: right;
+    }
+    .unmet-note {
+      grid-column: 2 / 4;
+      font-size: 16px;
+      color: var(--alert);
+      font-weight: 700;
+      margin-top: -4px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      font-size: 17px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 2px solid transparent;
+    }
+    .swatch.unmet {
+      border: 4px solid var(--alert);   /* thick red ring = UNMET */
+      background: #ffffff;
+    }
+
+    /* Latest requests list */
+    .recent {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .recent li {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 2px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+    .recent .top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      align-items: center;
+    }
+    .time { font-weight: 700; color: var(--ink-soft); font-size: 17px; }
+    .chan {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #e8edf3;
+      color: var(--ink);
+    }
+    .need-tag {
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+    .lang { color: var(--ink-soft); font-size: 17px; }
+    .place { font-size: 18px; }
+    .place.unmet {
+      color: var(--alert);
+      font-weight: 800;
+    }
+    .empty {
+      color: var(--ink-soft);
+      font-size: 18px;
+      padding: 10px 0;
+    }
+
+    /* Popup inside the map (text sizes) */
+    .pop { font-size: 17px; line-height: 1.4; min-width: 220px; }
+    .pop b { font-size: 19px; text-transform: capitalize; }
+    .pop .req-text {
+      margin-top: 6px;
+      padding: 6px 8px;
+      background: #f1f4f8;
+      border-radius: 6px;
+      word-wrap: break-word;
+    }
+    .pop .unmet-line { color: var(--alert); font-weight: 800; }
+
+    /* Narrow screens (phones or narrow windows): stack the map above the panel */
+    @media (max-width: 760px) {
+      .app {
+        display: block;
+        height: auto;
+      }
+      #map {
+        flex: none;
+        width: 100%;
+        height: 60vh;
+      }
+      .panel {
+        height: auto;
+        overflow: visible;
+        border-left: none;
+        border-top: 2px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <!-- Left: the map. Leaflet draws into the element with id="map" -->
+    <div id="map"></div>
+
+    <!-- Right: the side panel. All text is filled in by the script below -->
+    <aside class="panel">
+      <div class="head">
+        <h1>HelpLine Houston - live</h1>
+        <span id="offline" class="badge-offline">reconnecting...</span>
+      </div>
+
+      <!-- Two big number tiles -->
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="total">0</div>
+          <div class="lbl">total requests</div>
+        </div>
+        <div class="stat unmet">
+          <div class="num" id="total-unmet">0</div>
+          <div class="lbl">unmet</div>
+        </div>
+      </div>
+
+      <h2>By need</h2>
+      <div id="needs"></div>
+
+      <h2>Legend</h2>
+      <div class="legend" id="legend"></div>
+
+      <h2>Latest 15</h2>
+      <ul class="recent" id="recent"></ul>
+    </aside>
+  </div>
+
+  <!-- Leaflet JavaScript (the map library) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    /* =====================================================================
+       HelpLine Houston city dashboard
+       ---------------------------------------------------------------------
+       What this page does, in order:
+         1. Draws a map centered on UH.
+         2. Every 2 seconds, asks the server for the list of requests.
+         3. Draws one dot on the map for each new request (once only).
+         4. Updates the side panel: totals, bars, and the latest 15.
+       ===================================================================== */
+
+    // ---------- Settings ----------
+    var UH_CENTER = [29.7199, -95.3422];   // latitude, longitude of UH
+    var START_ZOOM = 13;
+    var POLL_MS = 2000;                    // ask the server every 2 seconds
+
+    // One fixed color for each kind of need
+    var NEED_COLORS = {
+      food:    "#e67e22",   // orange
+      shelter: "#8e44ad",   // purple
+      hygiene: "#1abc9c",   // teal
+      clinic:  "#2e86de",   // blue
+      library: "#d4a017",   // gold
+      cooling: "#0aa5c0",   // cyan
+      legal:   "#5d6d7e"    // slate gray
+    };
+    var NEEDS = Object.keys(NEED_COLORS);   // the list of needs, in order
+    var ALERT_RED = "#d62828";              // unmet requests get a thick red border
+    var RECENT_COUNT = 15;
+
+    // Channel names shown to people
+    var CHANNEL_LABELS = { sms: "Text", kiosk: "Station" };
+
+    // ---------- Helper functions ----------
+
+    // Turn a need into its color, with a gray fallback for unknown needs
+    function colorFor(need) {
+      return NEED_COLORS[need] || "#888888";
+    }
+
+    // Short time, like "7:05 PM", in the viewer's local time.
+    // If the time is missing or broken, show a dash instead of crashing.
+    function shortTime(iso) {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return "-";
+      return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    // Make a new element with optional class and text.
+    // Using textContent (not innerHTML) means text can never run as HTML.
+    function el(tag, className, text) {
+      var node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined && text !== null) node.textContent = String(text);
+      return node;
+    }
+
+    // Does this request have a usable position?
+    function hasLocation(req) {
+      return typeof req.lat === "number" && typeof req.lng === "number"
+          && isFinite(req.lat) && isFinite(req.lng);
+    }
+
+    // ---------- The map ----------
+
+    var map = L.map("map").setView(UH_CENTER, START_ZOOM);
+
+    // OpenStreetMap tiles. The attribution is required by OpenStreetMap.
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Ids of requests that already have a dot on the map.
+    // This stops us from drawing the same request twice.
+    var drawnIds = new Set();
+
+    // Has the first load finished? The first load draws all old requests
+    // without the "arriving" pulse. Later requests pulse so people see them come in.
+    var firstLoadDone = false;
+
+    // ---------- Pins on the map ----------
+
+    // Make a "pulse" ring around a point: it grows and fades, then disappears.
+    // This is how the demo shows a brand-new request arriving.
+    function pulseAt(latlng, color) {
+      var ring = L.circleMarker(latlng, {
+        radius: 10,
+        color: color,
+        weight: 3,
+        fillOpacity: 0,
+        opacity: 1,
+        interactive: false     // clicks go through to the real pin
+      }).addTo(map);
+
+      var start = performance.now();
+      var duration = 1400;     // milliseconds
+
+      // requestAnimationFrame calls this about 60 times a second
+      function step(now) {
+        var t = Math.min(1, (now - start) / duration);   // 0 at start, 1 at end
+        ring.setRadius(10 + t * 22);                      // grows from 10 to 32 pixels
+        ring.setStyle({ opacity: 1 - t });                // fades out
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          map.removeLayer(ring);                          // clean up when done
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    // Build the popup content for one request.
+    // Returns an element (not a string), so every value is set with textContent.
+    function popupFor(req) {
+      var box = el("div", "pop");
+      box.appendChild(el("b", null, req.need || "request"));
+
+      var rows = [
+        ["Language", req.language || "-"],
+        ["Channel", CHANNEL_LABELS[req.channel] || req.channel || "-"],
+        ["Time", shortTime(req.time)],
+        ["Place", req.matched && req.place ? req.place : "Nothing open"]
+      ];
+      rows.forEach(function (pair) {
+        var line = el("div", null, pair[0] + ": " + pair[1]);
+        box.appendChild(line);
+      });
+
+      if (!req.matched) {
+        box.appendChild(el("div", "unmet-line", "UNMET"));
+      }
+
+      // The request text itself is untrusted, so it is only ever set as text
+      box.appendChild(el("div", "req-text", req.text || ""));
+      return box;
+    }
+
+    // Draw one request on the map
+    function addPin(req, animate) {
+      var color = colorFor(req.need);
+      var unmet = !req.matched;
+
+      // Many requests share the same spot (every kiosk request uses the
+      // station's position, and texts from the same zip share a center).
+      // So we nudge each pin a tiny, fixed amount based on its id.
+      // The same id always gets the same nudge, so pins never jump around.
+      var a = (Number(req.id) || 0) * 2.399963;   // angle (the "golden angle" spreads pins evenly)
+      var r = 0.0004 + 0.0012 * (((Number(req.id) || 0) * 37) % 10) / 10;   // distance in degrees (about 40-170 m)
+      var ll = [req.lat + r * Math.sin(a), req.lng + r * Math.cos(a)];
+
+      var pin = L.circleMarker(ll, {
+        radius: 9,
+        fillColor: color,
+        fillOpacity: 0.9,
+        color: unmet ? ALERT_RED : "#ffffff",   // border color: red when unmet
+        weight: unmet ? 4 : 2,                  // unmet pins have a thicker border
+        opacity: 1
+      }).addTo(map);
+
+      // Keep unmet (red-ringed) pins on top so other pins never hide them
+      if (unmet) pin.bringToFront();
+
+      pin.bindPopup(popupFor(req));
+
+      if (animate) {
+        pulseAt(ll, color);
+      }
+    }
+
+    // ---------- The side panel ----------
+
+    // Fill the "By need" bars and unmet notes from the counts.
+    // counts:       {food: 3, ...}   all requests per need
+    // unmet_counts: {shelter: 1, ...} unmet requests per need
+    function renderNeeds(counts, unmetCounts) {
+      var box = document.getElementById("needs");
+      box.textContent = "";                       // clear the old rows
+
+      // The biggest count sets 100% width; at least 1 so we never divide by zero
+      var max = 1;
+      NEEDS.forEach(function (need) {
+        max = Math.max(max, counts[need] || 0);
+      });
+
+      NEEDS.forEach(function (need) {
+        var count = counts[need] || 0;
+        var unmet = unmetCounts[need] || 0;
+
+        // One row: name | bar | number
+        var row = el("div", "need-row");
+        row.appendChild(el("div", "need-name", need));
+
+        var track = el("div", "bar-track");
+        var fill = el("div", "bar-fill");
+        fill.style.background = colorFor(need);
+        fill.style.width = (count / max * 100) + "%";
+        track.appendChild(fill);
+        row.appendChild(track);
+
+        row.appendChild(el("div", "need-count", count));
+        box.appendChild(row);
+
+        // If some are unmet, show a red note under the bar
+        if (unmet > 0) {
+          box.appendChild(el("div", "unmet-note", unmet + " unmet"));
+        }
+      });
+    }
+
+    // Build the color legend once (it never changes)
+    function renderLegend() {
+      var box = document.getElementById("legend");
+      NEEDS.forEach(function (need) {
+        var item = el("div", "legend-item");
+        var dot = el("span", "swatch");
+        dot.style.background = colorFor(need);
+        item.appendChild(dot);
+        item.appendChild(el("span", null, need));
+        box.appendChild(item);
+      });
+
+      // The red ring explains the UNMET marking
+      var unmetItem = el("div", "legend-item");
+      unmetItem.appendChild(el("span", "swatch unmet"));
+      unmetItem.appendChild(el("span", null, "red ring = UNMET"));
+      box.appendChild(unmetItem);
+    }
+
+    // Show the latest 15 requests, newest first.
+    // The server sends requests oldest first, so we reverse the copy.
+    function renderRecent(requests) {
+      var list = document.getElementById("recent");
+      list.textContent = "";
+
+      if (requests.length === 0) {
+        list.appendChild(el("li", "empty", "No requests yet."));
+        return;
+      }
+
+      var newestFirst = requests.slice().reverse().slice(0, RECENT_COUNT);
+      newestFirst.forEach(function (req) {
+        var li = el("li");
+
+        // Top line: time, channel, need, language
+        var top = el("div", "top");
+        top.appendChild(el("span", "time", shortTime(req.time)));
+        top.appendChild(el("span", "chan", CHANNEL_LABELS[req.channel] || req.channel || "-"));
+
+        var needTag = el("span", "need-tag", req.need || "-");
+        needTag.style.color = colorFor(req.need);
+        top.appendChild(needTag);
+
+        top.appendChild(el("span", "lang", req.language || "-"));
+        li.appendChild(top);
+
+        // Second line: where it was matched, or UNMET
+        if (req.matched && req.place) {
+          li.appendChild(el("div", "place", req.place));
+        } else {
+          li.appendChild(el("div", "place unmet", "UNMET"));
+        }
+        list.appendChild(li);
+      });
+    }
+
+    // Update the two big totals
+    function renderTotals(counts, unmetCounts) {
+      var total = 0;
+      var totalUnmet = 0;
+      Object.keys(counts).forEach(function (k) { total += counts[k] || 0; });
+      Object.keys(unmetCounts).forEach(function (k) { totalUnmet += unmetCounts[k] || 0; });
+      document.getElementById("total").textContent = total;
+      document.getElementById("total-unmet").textContent = totalUnmet;
+    }
+
+    // ---------- Polling the server ----------
+
+    // Show or hide the "reconnecting..." badge
+    function setOffline(isOffline) {
+      document.getElementById("offline").classList.toggle("show", isOffline);
+    }
+
+    // Handle one answer from GET /api/requests
+    function handleData(data) {
+      var requests = Array.isArray(data.requests) ? data.requests : [];
+      var counts = data.counts || {};
+      var unmetCounts = data.unmet_counts || {};
+
+      // 1. Draw any new pins on the map (only those not drawn yet)
+      requests.forEach(function (req) {
+        if (drawnIds.has(req.id)) return;   // already on the map
+        if (!hasLocation(req)) return;      // no position, so nothing to draw
+        drawnIds.add(req.id);
+        addPin(req, firstLoadDone);         // pulse only after the first load
+      });
+      firstLoadDone = true;
+
+      // 2. Update the side panel
+      renderTotals(counts, unmetCounts);
+      renderNeeds(counts, unmetCounts);
+      renderRecent(requests);
+    }
+
+    // Ask the server once. If it fails, show the badge and try again next time.
+    var busy = false;   // true while a request is still on its way
+    function poll() {
+      if (busy) return;             // skip this round if the last one is still running
+      busy = true;
+
+      fetch("/api/requests", { cache: "no-store" })
+        .then(function (res) {
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          setOffline(false);
+          handleData(data);
+        })
+        .catch(function () {
+          setOffline(true);         // keep polling; the next try may work
+        })
+        .then(function () {
+          busy = false;
+        });
+    }
+
+    // ---------- Start up ----------
+    renderLegend();          // the legend never changes, so draw it once
+    poll();                  // first load right away
+    setInterval(poll, POLL_MS);   // then every 2 seconds
+  </script>
+</body>
+</html>
