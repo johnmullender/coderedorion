@@ -433,3 +433,19 @@ def test_notes_reminders_are_not_repeated():
 def test_notes_skipped_zip_or_note_gives_no_reminder():
     p = place("a", ZIP_77004, NOTE)
     assert eligibility.notes_for(p, {}, zip_code="77004") == ["Appointment needed."]
+
+
+def test_youth_rule_is_not_asked_after_the_age_question():
+    # "Are you between 18 and 24?" then "Are you a young person?" asks the same thing twice.
+    p = {"id": "c", "eligibility": [{"type": "age", "min": 18, "max": 24, "source_quote": "q"},
+                                    {"type": "serves", "group": "youth", "source_quote": "q"}]}
+    key, _rule = eligibility.next_question([p], {}, None, 0)
+    assert key == "age:18-24"
+    assert eligibility.next_question([p], {key: True}, None, 1) is None
+    assert eligibility.filter_places([p], {key: True}, None) == [p]
+    assert eligibility.filter_places([p], {key: False}, None) == []
+
+
+def test_youth_rule_is_asked_when_there_is_no_age_rule():
+    p = {"id": "y", "eligibility": [{"type": "serves", "group": "youth", "source_quote": "q"}]}
+    assert eligibility.next_question([p], {}, None, 0)[0] == "serves:youth"
