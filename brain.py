@@ -125,30 +125,29 @@ SPANISH_WORDS = [
     "mañana", "qué", "que",
 ]
 
-# Words for "other options" at the end of an SMS, one per language.
-REPLY_HINTS = {
-    "en": "Reply 2 or 3 for other options.",
-    "es": "Responda 2 o 3 para otras opciones.",
-    "vi": "Trả lời 2 hoặc 3 để xem chỗ khác.",
-    "zh": "回复2或3查看其他选择。",
-    "ar": "أرسل 2 أو 3 لخيارات أخرى.",
+# The "more options" hint at the end of a reply, one set per language. SMS names the number to
+# reply with; the kiosk says to turn the knob. The main program adds it only when another option exists.
+MORE_SMS = {
+    "en": "Reply {number} for more options.",
+    "es": "Responda {number} para más opciones.",
+    "vi": "Trả lời {number} để xem thêm lựa chọn.",
+    "zh": "回复{number}查看更多选择。",
+    "ar": "أرسل {number} لمزيد من الخيارات.",
+}
+MORE_KIOSK = {
+    "en": "Turn the knob for more options.",
+    "es": "Gire la perilla para más opciones.",
+    "vi": "Vặn núm để xem thêm lựa chọn.",
+    "zh": "转动旋钮查看更多选择。",
+    "ar": "أدر المؤشر لمزيد من الخيارات.",
 }
 
-# The hint for two options (the SMS reply says "Reply 2", not "2 or 3").
-REPLY_HINT_TWO = {
-    "en": "Reply 2 for another option.",
-    "es": "Responda 2 para otra opción.",
-    "vi": "Trả lời 2 để xem chỗ khác.",
-    "zh": "回复2查看另一个选择。",
-    "ar": "أرسل 2 لخيار آخر.",
-}
 
-
-def reply_hint(language, count):
-    """The "reply with the option number" sentence for `count` options (matches the real count)."""
-    if count == 2:
-        return REPLY_HINT_TWO.get(language, REPLY_HINT_TWO["en"])
-    return REPLY_HINTS.get(language, REPLY_HINTS["en"])
+def more_options_hint(language, channel, number):
+    """'Reply 2 for more options.' on SMS (number = the option to reply with); the kiosk knob sentence otherwise."""
+    if channel == "sms":
+        return MORE_SMS.get(language, MORE_SMS["en"]).format(number=number)
+    return MORE_KIOSK.get(language, MORE_KIOSK["en"])
 
 
 # Words for each need, used inside the templates.
@@ -523,94 +522,117 @@ def _miles(match):
     return f"{float(match.get('distance_mi', 0)):.1f}"
 
 
-def _fit_sms(build, name, address):
-    """Build the SMS text, shortening the address and name until it fits 300 chars."""
-    text = build(name, address)
+def distance_phrase(language, miles):
+    """'1 mile away' / '0.8 miles away' in the language, with the singular where it applies."""
+    value = float(miles)
+    one = round(value, 1) == 1.0
+    if language == "es":
+        return "a 1 milla" if one else f"a {value:.1f} millas"
+    if language == "vi":
+        return f"cách {value:.1f} dặm"
+    if language == "zh":
+        return f"距离{value:.1f}英里"
+    if language == "ar":
+        return "على بعد ميل واحد" if one else f"على بعد {value:.1f} ميل"
+    return "1 mile away" if one else f"{value:.1f} miles away"
+
+
+def distance_text(language, place):
+    """The place's distance (its distance_mi field) as a phrase in the language."""
+    return distance_phrase(language, float(place.get("distance_mi") or 0))
+
+
+def _fit_sms(build, name):
+    """Build the SMS text, shortening the name until it fits SMS_LIMIT characters."""
+    text = build(name)
     for limit in (120, 60, 30):
         if len(text) <= SMS_LIMIT:
             break
-        text = build(name[:limit], address[:limit])
+        text = build(name[:limit])
     if len(text) > SMS_LIMIT:
         text = text[:SMS_LIMIT - 3] + "..."
     return text
 
 
 # Sentence pieces for the no-Gemini replies, one set per language.
-# {name}, {mi}, {closes}, {address}, {phone}, {need}, {opens} are filled in.
+# {name}, {mi}, {closes}, {need}, {opens}, {dist} and {phone} are filled in. A reply names a place with
+# one sentence: no address and no phone. Only the hours-unknown sentence keeps the phone, because
+# calling is the only way to learn those hours. Offers and the "more options" hint come after these
+# sentences; main.py adds them.
 TEMPLATES = {
     "en": {
-        "sms_address": ". {address}.",
-        "kiosk_open": "{name} is open now, {mi} miles away", "kiosk_closes": ", closes at {closes}",
-        "kiosk_address": ". Address: {address}.",
-        "sms_open": "{name} - open now, {mi} mi away", "sms_closes": ", closes {closes}",
-        "phone": " Phone {phone}.",
-        "next_none": "Nothing for {need} is open right now. The next one is {name}",
-        "next_opens": ", opening {opens}", "next_at": ", at {address}.",
+        "sms_open": "{name} - open now, {mi} mi away.",
+        "sms_open_closes": "{name} - open now, {mi} mi away, closes {closes}.",
+        "kiosk_open": "{name} is open now, {mi} miles away.",
+        "kiosk_open_closes": "{name} is open now, {mi} miles away, closes at {closes}.",
+        "next_none": "Nothing for {need} is open right now.",
+        "next_after_fit": "The next one to open is {name}",
+        "next_opens": ", opening {opens}",
+        "next_dist": ", {dist}.",
         "this_service": "this service",
         "not_found": "I could not find an open place right now. Please call 211 for help.",
         "unknown_hours": "{name}, {mi} miles away, hours not listed, call {phone} first.",
         "unknown_hours_nophone": "{name}, {mi} miles away, hours not listed.",
-        "next_after_fit": "The next one to open is {name}",
         "offers": "Offers: {items}.", "offers_sep": ", ",
     },
     "es": {
-        "sms_address": ". {address}.",
-        "kiosk_open": "{name} está abierto ahora, a {mi} millas", "kiosk_closes": ", cierra a las {closes}",
-        "kiosk_address": ". Dirección: {address}.",
-        "sms_open": "{name}: abierto ahora, a {mi} mi", "sms_closes": ", cierra a las {closes}",
-        "phone": " Tel {phone}.",
-        "next_none": "Nada de {need} está abierto ahora. El siguiente es {name}",
-        "next_opens": ", abre {opens}", "next_at": ", en {address}.",
+        "sms_open": "{name}: abierto ahora, a {mi} mi.",
+        "sms_open_closes": "{name}: abierto ahora, a {mi} mi, cierra a las {closes}.",
+        "kiosk_open": "{name} está abierto ahora, a {mi} millas.",
+        "kiosk_open_closes": "{name} está abierto ahora, a {mi} millas, cierra a las {closes}.",
+        "next_none": "Nada de {need} está abierto ahora.",
+        "next_after_fit": "El siguiente en abrir es {name}",
+        "next_opens": ", abre {opens}",
+        "next_dist": ", {dist}.",
         "this_service": "este servicio",
         "not_found": "No encontré un lugar abierto ahora. Llame al 211 para ayuda.",
         "unknown_hours": "{name}, a {mi} millas, horario no publicado, llame primero al {phone}.",
         "unknown_hours_nophone": "{name}, a {mi} millas, horario no publicado.",
-        "next_after_fit": "El siguiente en abrir es {name}",
         "offers": "Ofrece: {items}.", "offers_sep": ", ",
     },
     "vi": {
-        "sms_address": ". {address}.",
-        "kiosk_open": "{name} đang mở cửa, cách {mi} dặm", "kiosk_closes": ", đóng cửa lúc {closes}",
-        "kiosk_address": ". Địa chỉ: {address}.",
-        "sms_open": "{name}: đang mở cửa, cách {mi} dặm", "sms_closes": ", đóng cửa lúc {closes}",
-        "phone": " ĐT {phone}.",
-        "next_none": "Hiện không có nơi {need} nào mở cửa. Nơi tiếp theo là {name}",
-        "next_opens": ", mở cửa {opens}", "next_at": ", tại {address}.",
+        "sms_open": "{name}: đang mở cửa, cách {mi} dặm.",
+        "sms_open_closes": "{name}: đang mở cửa, cách {mi} dặm, đóng cửa lúc {closes}.",
+        "kiosk_open": "{name} đang mở cửa, cách {mi} dặm.",
+        "kiosk_open_closes": "{name} đang mở cửa, cách {mi} dặm, đóng cửa lúc {closes}.",
+        "next_none": "Hiện không có nơi {need} nào mở cửa.",
+        "next_after_fit": "Nơi tiếp theo mở cửa là {name}",
+        "next_opens": ", mở cửa {opens}",
+        "next_dist": ", {dist}.",
         "this_service": "dịch vụ này",
         "not_found": "Hiện tôi không tìm thấy nơi nào đang mở cửa. Vui lòng gọi 211 để được giúp.",
         "unknown_hours": "{name}, cách {mi} dặm, chưa có giờ mở cửa, hãy gọi {phone} trước.",
         "unknown_hours_nophone": "{name}, cách {mi} dặm, chưa có giờ mở cửa.",
-        "next_after_fit": "Nơi tiếp theo mở cửa là {name}",
         "offers": "Dịch vụ: {items}.", "offers_sep": ", ",
     },
     "zh": {
-        "sms_address": "。{address}。",
-        "kiosk_open": "{name}现在开放，距离{mi}英里", "kiosk_closes": "，{closes}关门",
-        "kiosk_address": "。地址：{address}。",
-        "sms_open": "{name}：现在开放，距离{mi}英里", "sms_closes": "，{closes}关门",
-        "phone": " 电话 {phone}。",
-        "next_none": "现在没有开放的{need}地点。下一个是{name}",
-        "next_opens": "，{opens}开门", "next_at": "，地址：{address}。",
+        "sms_open": "{name}：现在开放，距离{mi}英里。",
+        "sms_open_closes": "{name}：现在开放，距离{mi}英里，{closes}关门。",
+        "kiosk_open": "{name}现在开放，距离{mi}英里。",
+        "kiosk_open_closes": "{name}现在开放，距离{mi}英里，{closes}关门。",
+        "next_none": "现在没有开放的{need}地点。",
+        "next_after_fit": "下一个开放的是{name}",
+        "next_opens": "，{opens}开门",
+        "next_dist": "，{dist}。",
         "this_service": "这项服务",
         "not_found": "现在找不到开放的地点。请拨打211寻求帮助。",
         "unknown_hours": "{name}，距离{mi}英里，未列出营业时间，请先致电{phone}。",
         "unknown_hours_nophone": "{name}，距离{mi}英里，未列出营业时间。",
-        "next_after_fit": "下一个开放的是{name}",
         "offers": "提供：{items}。", "offers_sep": "、",
     },
     "ar": {
-        "sms_address": ". {address}.",
-        "kiosk_open": "{name} مفتوح الآن، على بعد {mi} ميل", "kiosk_closes": "، يغلق الساعة {closes}",
-        "kiosk_address": ". العنوان: {address}.",
-        "sms_open": "{name}: مفتوح الآن، على بعد {mi} ميل", "sms_closes": "، يغلق الساعة {closes}",
-        "phone": " هاتف {phone}.",
-        "next_none": "لا يوجد مكان مفتوح الآن لـ{need}. المكان التالي هو {name}",
-        "next_opens": "، يفتح {opens}", "next_at": "، في {address}.",
+        "sms_open": "{name}: مفتوح الآن، على بعد {mi} ميل.",
+        "sms_open_closes": "{name}: مفتوح الآن، على بعد {mi} ميل، يغلق الساعة {closes}.",
+        "kiosk_open": "{name} مفتوح الآن، على بعد {mi} ميل.",
+        "kiosk_open_closes": "{name} مفتوح الآن، على بعد {mi} ميل، يغلق الساعة {closes}.",
+        "next_none": "لا يوجد مكان مفتوح الآن لـ{need}.",
+        "next_after_fit": "المكان التالي الذي يفتح هو {name}",
+        "next_opens": "، يفتح {opens}",
+        "next_dist": "، {dist}.",
         "this_service": "هذه الخدمة",
         "not_found": "لم أجد مكانا مفتوحا الآن. يرجى الاتصال بالرقم 211 للمساعدة.",
         "unknown_hours": "{name}، على بعد {mi} ميل، ساعات العمل غير مدرجة، اتصل أولا بالرقم {phone}.",
         "unknown_hours_nophone": "{name}، على بعد {mi} ميل، ساعات العمل غير مدرجة.",
-        "next_after_fit": "المكان التالي الذي يفتح هو {name}",
         "offers": "تقدم: {items}.", "offers_sep": "، ",
     },
 }
@@ -704,14 +726,6 @@ def offers_line(place, language):
     return words["offers"].format(items=words["offers_sep"].join(names))
 
 
-def split_hint(text):
-    """(the reply without its 'Reply 2 or 3' sentence, that sentence or ""), so an extra line can go before it."""
-    for sentence in list(REPLY_HINTS.values()) + list(REPLY_HINT_TWO.values()):
-        if text.endswith(sentence):
-            return text[:-len(sentence)].rstrip(), sentence
-    return text, ""
-
-
 def _unknown_text(language, first, name=None):
     """'<name>, 0.8 miles away, hours not listed, call <phone> first.' (never says open)."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
@@ -728,94 +742,65 @@ def _is_next_place(match):
 
 
 def _template_sms(language, matches, unmet_next, need):
-    """Plain sentences for SMS, in the person's language."""
+    """Plain sentences for SMS, in the person's language. main.py adds the offers and the hint."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
     if matches and matches[0].get("hours_unknown"):
-        return _fit_sms(lambda name_part, address_part: _unknown_text(language, matches[0], name_part),
-                        matches[0].get("name", ""), matches[0].get("address", ""))
+        first = matches[0]
+        return _fit_sms(lambda name_part: _unknown_text(language, first, name_part), first.get("name", ""))
     if matches and _is_next_place(matches[0]):
         first = matches[0]
-        return _fit_sms(lambda name_part, address_part: _next_open_text(
-                            language, first, need, name_part, address_part, fit=True),
-                        first.get("name", ""), first.get("address", ""))
+        return _fit_sms(lambda name_part: next_open_text(language, dict(first, name=name_part)),
+                        first.get("name", ""))
     if matches:
         first = matches[0]
-        name = first.get("name", "")
-        address = first.get("address", "")
-        phone = first.get("phone")
         closes = _closes_text(first)
-        many = len(matches) > 1
 
-        def build(name_part, address_part):
-            text = words["sms_open"].format(name=name_part, mi=_miles(first))
+        def build(name_part):
             if closes:
-                text += words["sms_closes"].format(closes=closes)
-            text += words["sms_address"].format(address=address_part)
-            if phone:
-                text += words["phone"].format(phone=phone)
-            if many:
-                text += " " + reply_hint(language, len(matches))
-            return text
+                return words["sms_open_closes"].format(name=name_part, mi=_miles(first), closes=closes)
+            return words["sms_open"].format(name=name_part, mi=_miles(first))
 
-        return _fit_sms(build, name, address)
-
+        return _fit_sms(build, first.get("name", ""))
     if unmet_next:
-        # Same as above: shorten the name and address until it fits 300 chars.
-        def build_next(name_part, address_part):
-            return _next_open_text(language, unmet_next, need, name_part, address_part)
-        return _fit_sms(build_next, unmet_next.get("name", ""), unmet_next.get("address", ""))
-
+        return _fit_sms(lambda name_part: _nothing_open_text(language, dict(unmet_next, name=name_part), need),
+                        unmet_next.get("name", ""))
     return words["not_found"]
 
 
-def _next_open_text(language, next_place, need, name=None, address=None, fit=False):
-    """'Nothing is open now; the next one is X, opening at Y, at Z.'
-
-    name and address can be passed in shortened (for SMS); by default they
-    come from next_place.
-    """
+def next_open_text(language, next_place):
+    """'The next one to open is X, opening tomorrow 9 AM, 2.8 miles away.' No address and no phone."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
-    if name is None:
-        name = next_place.get("name", "")
-    if address is None:
-        address = next_place.get("address", "")
+    text = words["next_after_fit"].format(name=next_place.get("name", ""))
     opens = _opens_text(next_place.get("opens_at"), language)
-    phone = next_place.get("phone")
-    need_names = NEED_WORDS.get(language, NEED_WORDS["en"])
-    needed = need_names.get(need, words["this_service"]) if need else words["this_service"]
-    if fit:
-        text = words["next_after_fit"].format(name=name)
-    else:
-        text = words["next_none"].format(need=needed, name=name)
     if opens:
         text += words["next_opens"].format(opens=opens)
-    text += words["next_at"].format(address=address)
-    if phone:
-        text += words["phone"].format(phone=phone)
-    return text
+    return text + words["next_dist"].format(dist=distance_text(language, next_place))
 
 
-def next_open_text(language, next_place, need):
-    """'The next one to open is X, opening Y, at Z.' for use after 'none of the open places fit'."""
-    return _next_open_text(language, next_place, need, fit=True)
+def _nothing_open_text(language, next_place, need):
+    """'Nothing for food is open right now. The next one to open is X, ...' (used when no open place is given)."""
+    words = TEMPLATES.get(language, TEMPLATES["en"])
+    needed = words["this_service"]
+    if need:
+        needed = NEED_WORDS.get(language, NEED_WORDS["en"]).get(need, needed)
+    return words["next_none"].format(need=needed) + " " + next_open_text(language, next_place)
 
 
 def _template_kiosk(language, matches, unmet_next, need):
-    """One or two short spoken sentences. No links, no emoji."""
+    """One or two short spoken sentences. No links, no emoji. main.py adds the offers and the hint."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
     if matches and matches[0].get("hours_unknown"):
         return _unknown_text(language, matches[0])
     if matches and _is_next_place(matches[0]):
-        return _next_open_text(language, matches[0], need, fit=True)
+        return next_open_text(language, matches[0])
     if matches:
         first = matches[0]
         closes = _closes_text(first)
-        text = words["kiosk_open"].format(name=first.get("name", ""), mi=_miles(first))
         if closes:
-            text += words["kiosk_closes"].format(closes=closes)
-        return text + words["kiosk_address"].format(address=first.get("address", ""))
+            return words["kiosk_open_closes"].format(name=first.get("name", ""), mi=_miles(first), closes=closes)
+        return words["kiosk_open"].format(name=first.get("name", ""), mi=_miles(first))
     if unmet_next:
-        return _next_open_text(language, unmet_next, need)
+        return _nothing_open_text(language, unmet_next, need)
     return words["not_found"]
 
 
@@ -837,17 +822,20 @@ Write your reply in {language_name}.
 Rules:
 - Use ONLY the facts in the JSON below. Never invent names, addresses, hours or phone numbers.
 - The first option is the one you recommend. Other options are alternatives.
-- Distances are in miles. Say times in 12-hour style, like "6 PM".
+- Write at most 2 short sentences. The first one names the place and says whether it is open now
+  or when it opens, with its distance in miles. Use the second only if it answers a follow-up question.
+- Say times in 12-hour style, like "6 PM".
 - If the question is a follow-up, answer that question using the facts.
-- If channel is "sms": at most 300 characters. Include the place name, distance,
-  closing time and address. If there is more than one option, end with this
-  sentence in {language_name}: "{hint}"
-- If channel is "kiosk": one or two short sentences to be spoken aloud.
-  No web addresses, no emoji, no lists.
+- Never give an address, a phone number, eligibility notes, or bus or walking directions.
+- Never say to call a place to confirm its hours.
+- Do not list the offers, and do not say that other options exist. The app adds an "Offers" line
+  and a "more options" line after your reply.
+- If channel is "sms": at most 300 characters.
+- If channel is "kiosk": the reply is spoken aloud. No web addresses, no emoji, no lists.
 - If a place has hours_unknown true, its hours are not listed. Never say it is open.
-  Say its name, its distance, that its hours are not listed, and to call its phone first.
+  Say its name, its distance, that its hours are not listed, and its phone number to call.
 - If options is empty and unmet_next is given: say nothing is open right now,
-  and say the name, when and where the next one opens.
+  then the name, when the next one opens, and its distance.
 - If options is empty and unmet_next is null: say nothing was found and suggest calling 211.
 - If open_now is false and opens_at is given, say the place is not open now and when it opens.
 - Describe a place only with the offers listed in its "offers" field. Never suggest a
@@ -869,7 +857,6 @@ def _answer_with_gemini(client, question, language, need, matches, channel, unme
     }
     prompt = ANSWER_PROMPT.format(
         language_name=LANGUAGE_NAMES[language],
-        hint=reply_hint(language, len(matches)),
         facts=json.dumps(facts, ensure_ascii=False, indent=1, default=str),
     )
     config = types.GenerateContentConfig(temperature=0.2)
@@ -880,13 +867,14 @@ def _answer_with_gemini(client, question, language, need, matches, channel, unme
     return reply
 
 
-def _check_gemini_reply(reply, channel, matches, language):
-    """Return the reply if it follows the channel rules, otherwise None."""
+def _check_gemini_reply(reply, channel, matches):
+    """Return the reply if it follows the channel rules and leaks no address or phone, otherwise None."""
+    for match in matches:
+        if match.get("address") and match["address"] in reply:
+            return None
+        if match.get("phone") and not match.get("hours_unknown") and match["phone"] in reply:
+            return None
     if channel == "sms":
-        # Add the "reply 2 or 3" hint if the model left it out.
-        hint = reply_hint(language, len(matches))
-        if len(matches) > 1 and hint not in reply:
-            reply = reply + " " + hint
         if len(reply) > SMS_LIMIT:
             return None
         return reply
@@ -894,14 +882,17 @@ def _check_gemini_reply(reply, channel, matches, language):
         lowered = reply.lower()
         if "http" in lowered or "www." in lowered:
             return None
-        if re.search(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0F]", reply) or len(reply) > 350:
+        if re.search(r"[\U0001F000-\U0001FAFF☀-➿️]", reply) or len(reply) > 350:
             return None
     return reply
 
 
 def answer(question: str, language: str, need: str | None, matches: list[dict],
            channel: str, unmet_next: dict | None = None, history: list[dict] | None = None) -> str:
-    """Write the reply text. Uses only the facts in matches / unmet_next."""
+    """Write the main sentence of the reply, using only the facts in matches / unmet_next.
+
+    The offers line and the "more options" hint are added by main.py, so they are not part of this text.
+    """
     if language not in LANGUAGES:
         language = "en"
     matches = matches or []
@@ -911,7 +902,7 @@ def answer(question: str, language: str, need: str | None, matches: list[dict],
             try:
                 reply = _answer_with_gemini(client, question, language, need,
                                             matches, channel, unmet_next, history)
-                checked = _check_gemini_reply(reply, channel, matches, language)
+                checked = _check_gemini_reply(reply, channel, matches)
                 if checked is not None:
                     return checked
                 print("brain: Gemini reply broke the channel rules, using template")

@@ -162,22 +162,18 @@ def test_sms_with_three_long_matches_fits_300_chars():
     ]
     reply = brain.answer("I am hungry", "en", "food", matches, "sms")
     assert len(reply) <= 300
-    assert "Reply 2 or 3" in reply
+    assert "BBB" not in reply and "Reply" not in reply  # no address, and the hint comes from main.py
 
 
-def test_sms_single_match_has_no_reply_hint():
+def test_sms_single_match_is_one_sentence_without_address_or_hint():
     reply = brain.answer("I am hungry", "en", "food", [make_match("Pantry")], "sms")
-    assert "Pantry" in reply
-    assert "Reply 2 or 3" not in reply
-    assert "6 PM" in reply
+    assert reply == "Pantry - open now, 0.9 mi away, closes 6 PM."
 
 
 def test_sms_spanish_template():
     reply = brain.answer("tengo hambre", "es", "food",
                          [make_match("Despensa"), make_match("Otra")], "sms")
-    assert "Despensa" in reply
-    assert "Responda 2 para otra opción." in reply
-    assert len(reply) <= 300
+    assert reply == "Despensa: abierto ahora, a 0.9 mi, cierra a las 6 PM."
 
 
 def test_kiosk_answer_has_no_links():
@@ -231,11 +227,20 @@ def test_location_text_ignores_times(text, expected):
 
 def test_kiosk_gemini_reply_rejects_emoji_and_long_text():
     matches = [make_match("Pantry")]
-    assert brain._check_gemini_reply("Pantry is open now 😊", "kiosk", matches, "en") is None
-    assert brain._check_gemini_reply("Pantry is open now ☀", "kiosk", matches, "en") is None
-    assert brain._check_gemini_reply("x" * 351, "kiosk", matches, "en") is None
+    assert brain._check_gemini_reply("Pantry is open now 😊", "kiosk", matches) is None
+    assert brain._check_gemini_reply("Pantry is open now ☀", "kiosk", matches) is None
+    assert brain._check_gemini_reply("x" * 351, "kiosk", matches) is None
     ok = "Pantry is open now, 0.9 miles away."
-    assert brain._check_gemini_reply(ok, "kiosk", matches, "en") == ok
+    assert brain._check_gemini_reply(ok, "kiosk", matches) == ok
+
+
+def test_gemini_reply_with_address_or_phone_is_rejected():
+    matches = [make_match("Pantry")]
+    assert brain._check_gemini_reply("Pantry is at 100 Main St, Houston, TX 77002.", "kiosk", matches) is None
+    assert brain._check_gemini_reply("Pantry is open, call 713-555-0100.", "sms", matches) is None
+    hours_unknown = [dict(make_match("Pantry"), hours_unknown=True)]
+    said = "Pantry, 0.9 miles away, hours not listed, call 713-555-0100 first."
+    assert brain._check_gemini_reply(said, "kiosk", hours_unknown) == said
 
 
 def test_sms_unmet_next_with_long_fields_fits_300_chars():
@@ -280,7 +285,8 @@ def test_templates_without_gemini_use_the_persons_language(language, word, monke
     kiosk = brain.answer("food", language, "food", matches, "kiosk")
     sms = brain.answer("food", language, "food", matches, "sms")
     assert word in kiosk and "Sample Pantry" in kiosk
-    assert word in sms and brain.reply_hint(language, 2) in sms
+    assert word in sms and "Sample Pantry" in sms
+    assert "713-555-0100" not in kiosk and "100 Main St" not in sms
     nothing = brain.answer("food", language, "food", [], "kiosk")
     assert "211" in nothing and "Please call" not in nothing
 
@@ -377,10 +383,14 @@ def test_offers_line_is_none_without_offers():
     assert brain.offers_line(place_with_offers("bogus"), "en") is None
 
 
-def test_split_hint_takes_off_the_reply_sentence():
-    assert brain.split_hint("Pantry is open. Reply 2 or 3 for other options.") == (
-        "Pantry is open.", "Reply 2 or 3 for other options.")
-    assert brain.split_hint("Pantry is open.") == ("Pantry is open.", "")
+def test_more_options_hint_is_translated_for_each_channel():
+    for language in ("en", "es", "vi", "zh", "ar"):
+        sms = brain.more_options_hint(language, "sms", 2)
+        kiosk = brain.more_options_hint(language, "kiosk", 2)
+        assert "2" in sms and kiosk and sms != kiosk, language
+        assert "3" in brain.more_options_hint(language, "sms", 3), language
+    assert brain.more_options_hint("en", "sms", 3) == "Reply 3 for more options."
+    assert brain.more_options_hint("en", "kiosk", 3) == "Turn the knob for more options."
 
 
 def test_facts_send_offer_labels_but_not_notes_or_links():
@@ -427,6 +437,13 @@ def test_gemini_prompt_gets_offer_labels_and_no_notes():
     assert '"free meals"' in prompt and '"shelter beds"' in prompt
     assert "Call to see if you can get a bed" not in prompt
     assert "example.org" not in prompt
+
+
+def test_gemini_answer_prompt_has_the_short_shape_rules():
+    prompt = " ".join(brain.ANSWER_PROMPT.split())
+    assert "Never say to call a place to confirm its hours." in prompt
+    assert "Never give an address, a phone number, eligibility notes, or bus or walking directions." in prompt
+    assert "Reply 2" not in brain.ANSWER_PROMPT and "Turn the knob" not in brain.ANSWER_PROMPT
 
 
 def test_gemini_answer_prompt_carries_the_offers_rule(monkeypatch):
@@ -477,11 +494,14 @@ def test_opening_text_uses_houston_time_when_no_time_is_given():
                                                              "Fri", "Sat", "Sun")
 
 
-def test_next_open_text_is_translated_and_says_tomorrow():
-    place = {"name": "Later Place", "address": "2 Main St", "opens_at": "Tue 09:00", "phone": "713-555-0100"}
-    text = brain._next_open_text("es", place, "food")
+def test_next_open_text_is_translated_and_has_distance_only():
+    place = {"name": "Later Place", "address": "2 Main St", "opens_at": "Tue 09:00", "phone": "713-555-0100",
+             "distance_mi": 0.7}
+    text = brain.next_open_text("es", place)
     assert "Tue" not in text  # translated: hoy, mañana, or Mar
     assert "abre" in text
+    assert text.endswith(", a 0.7 millas.")
+    assert "2 Main St" not in text and "713-555-0100" not in text
 
 
 def test_next_open_place_is_never_described_as_open_now():
