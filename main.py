@@ -867,7 +867,11 @@ def api_requests():
         counts[need] = counts.get(need, 0) + 1
         if not row.get("matched"):
             unmet_counts[need] = unmet_counts.get(need, 0) + 1
-    return {"requests": rows, "counts": counts, "unmet_counts": unmet_counts}
+    places = db.get_resources()
+    now = datetime.now(HOUSTON)
+    open_now = sum(1 for place in places if matching.is_open(place, now))
+    return {"requests": rows, "counts": counts, "unmet_counts": unmet_counts,
+            "places_open": open_now, "places_total": len(places)}
 
 
 @app.get("/kiosk")

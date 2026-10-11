@@ -297,3 +297,12 @@ def test_pages_route_to_static_files(client):
     response = client.get("/dashboard")
     assert response.status_code == 200
     assert "html" in response.text.lower()
+
+
+def test_requests_api_counts_places_open_now(client, monkeypatch):
+    places = [{"id": "a"}, {"id": "b"}, {"id": "c"}]
+    monkeypatch.setattr(main.db, "get_resources", lambda: places)
+    monkeypatch.setattr(main.matching, "is_open", lambda place, when: place["id"] != "b")
+    data = client.get("/api/requests").json()
+    assert data["places_open"] == 2
+    assert data["places_total"] == 3
