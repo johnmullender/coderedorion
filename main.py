@@ -433,8 +433,32 @@ def handle_next_option(session, understood, text, channel):
     return make_result(session, reply, "next_option", need=session["need"])
 
 
-def handle_directions(session, channel):
-    """How to get to the selected place by bus.
+# Words too common in place names to tell options apart ("How do I get to the center?").
+NAME_STOPWORDS = {"the", "and", "for", "center", "centre", "houston", "of", "at", "de", "del", "la", "el",
+                  "house", "church", "ministries", "ministry", "community", "services", "clinic"}
+
+
+def named_option(options, text):
+    """The option number whose name the message mentions ("how do I get to Salvation Army?"), or None.
+
+    Counts the distinctive words of each name found in the message; the clear best match wins.
+    """
+    said = {word.lower() for word in WORD_PATTERN.findall(text or "")}
+    scores = []
+    for number, place in enumerate(options, start=1):
+        words = {word.lower() for word in WORD_PATTERN.findall(place.get("name") or "")}
+        words = {word for word in words if len(word) >= 3 and word not in NAME_STOPWORDS}
+        scores.append((len(words & said), number))
+    scores.sort(reverse=True)
+    if not scores or scores[0][0] == 0:
+        return None
+    if len(scores) > 1 and scores[1][0] == scores[0][0]:
+        return None  # two places match equally well: keep the selected one
+    return scores[0][1]
+
+
+def handle_directions(session, channel, text="", understood=None):
+    """How to get to a place by bus: the one the message names (or its number), else the selected one.
 
     The reply names the place. With no bus route, it says so, and on SMS it ends with a Google Maps
     transit link that plans a real route. With no bus data at all, it says bus times aren't there.
@@ -443,7 +467,9 @@ def handle_directions(session, channel):
     options = session["options"]
     if not options:
         return make_result(session, message(language, "no_options"), "directions", need=session["need"])
-    number = session["selected"] if 1 <= session["selected"] <= len(options) else 1
+    number = named_option(options, text) or (understood or {}).get("option_number") or session["selected"]
+    if not isinstance(number, int) or not 1 <= number <= len(options):
+        number = 1
     session["selected"] = number
     place = options[number - 1]
     name = place.get("name") or ""
@@ -730,7 +756,7 @@ def _handle_ask(channel, session_id, text, lang, lat, lng):
     if intent == "next_option":
         result = handle_next_option(session, understood, text, channel)
     elif intent == "directions":
-        result = handle_directions(session, channel)
+        result = handle_directions(session, channel, text, understood)
     elif intent == "followup":
         result = handle_followup(session, text, channel)
     elif intent == "help":

@@ -902,3 +902,34 @@ def test_eligible_lead_in_spanish(client, world):
     ask(client, "necesito comida", lang="es")
     data = ask(client, "sí", lang="es")
     assert data["reply"].startswith("Según sus respuestas, usted califica para:")
+
+
+def test_directions_go_to_the_place_the_person_names(client, world):
+    world["resources"] = [make_place("a", 0, name="The Beacon Day Center"),
+                          make_place("b", 1, name="Salvation Army Center of Hope")]
+    world["bus"] = ROUTE
+    ask(client, "I need food")
+    data = ask(client, "How do I get to Salvation Army?")
+    assert data["intent"] == "directions"
+    assert data["selected"] == 2
+    assert "Salvation Army Center of Hope" in data["reply"]
+    assert "Beacon" not in data["reply"]
+
+
+def test_directions_keep_the_selected_place_when_no_name_is_given(client, world):
+    world["resources"] = [make_place("a", 0, name="The Beacon Day Center"),
+                          make_place("b", 1, name="Salvation Army Center of Hope")]
+    world["bus"] = ROUTE
+    ask(client, "I need food")
+    data = ask(client, "how do I get there?")
+    assert data["selected"] == 1
+    assert "Beacon" in data["reply"]
+
+
+def test_named_option_ignores_common_words_and_ties():
+    options = [{"name": "Salvation Army Center of Hope"}, {"name": "Salvation Army Young Adult Resource Center"},
+               {"name": "The Beacon Day Center"}]
+    assert main.named_option(options, "how do I get to the beacon") == 3
+    assert main.named_option(options, "how do I get to the center") is None
+    assert main.named_option(options, "how do I get to salvation army") is None  # two match equally
+    assert main.named_option(options, "directions to salvation army young adult center") == 2
