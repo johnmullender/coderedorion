@@ -310,6 +310,17 @@ Notes:
 | WhatsApp: no reply | Check that the phone sent the `join …` message in the last 3 days, and that the sandbox webhook (11.5b step 4) has the current ngrok address |
 | You can see every request and reply in detail | Open http://127.0.0.1:4040 while ngrok is running |
 
+### 11.7 Real phones with no approval at all: Telegram
+
+The bot answers the same way as the text line. It needs no ngrok and no Twilio.
+
+1. In Telegram, message **@BotFather**, send `/newbot`, pick a name and a username ending in `bot`.
+2. Copy the token it gives you into `.env` as `TELEGRAM_BOT_TOKEN=...`.
+3. In a second terminal (venv on), run `python telegram_bot.py`. It prints `live on Telegram as @yourbot`.
+4. On your phone, open `t.me/yourbot`, tap Start, and send "I need food". Send a zip, or tap the paperclip, then Location, to share where you are.
+
+Keep the server terminal running too if you want the kiosk and dashboard at the same time.
+
 ## 12. Real places: check the data (do this before the demo)
 
 `data/resources.json` now holds 96 real Houston places, gathered from official pages and a few directories. Every place has `needs_review: true` until someone on the team checks it. The 12 old sample places moved to `tests/fixtures/` and are used only by the tests.
