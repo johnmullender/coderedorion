@@ -53,3 +53,6 @@ Times are Houston time, Sat Oct 10. Entries before 6:52 PM were backfilled from 
 | 7:02 PM | brain.py | Sonnet R5 | **CHANGES REQUIRED** | 6 fixes: Vietnamese "ăn" matched inside "khăn" (towel) → wrong need; time words parsed as places ("en la noche"); emoji/long kiosk replies not rejected; unmet SMS could pass 300 chars; "2" after Spanish switched to English; missing bath/shower words |
 | 7:02 PM | brain.py | Haiku #3 | Fix round 1 | Started |
 | 7:02 PM | dashboard.html | Sonnet R3 | **APPROVED** | Offset verified (40–170 m, stable per id), unmet on top, `node --check` passes |
+| 7:03 PM | station.ino | Haiku #4 | Fix round 1 done | Both fixes applied; g++ syntax check passes. Work: 92k tokens total |
+| 7:03 PM | station.ino | Sonnet R4 | Re-review | Started |
+| 7:04 PM | station.ino | Sonnet R4 | **APPROVED** | Both fixes verified; LCD code still identical to the hardware test |
