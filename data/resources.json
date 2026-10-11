@@ -90,7 +90,34 @@
   "notes": "Page: 'All clinics are closed for lunch from 12:00 - 1:00 pm each day.' After-hours phone support weekdays 5pm-8am and weekends.",
   "source_url": "https://www.homeless-healthcare.org/contact-us",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Primary Medical Care",
+    "url": "https://www.homeless-healthcare.org/"
+   },
+   {
+    "key": "dental_care",
+    "quote": "Comprehensive Dental",
+    "url": "https://www.homeless-healthcare.org/"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "Pharmacy",
+    "url": "https://www.homeless-healthcare.org/"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Integrated Mental Health",
+    "url": "https://www.homeless-healthcare.org/"
+   },
+   {
+    "key": "case_management",
+    "quote": "Case Management and Care Coordination",
+    "url": "https://www.homeless-healthcare.org/"
+   }
+  ]
  },
  {
   "id": "harris-health-gulfgate",
@@ -135,7 +162,24 @@
   "notes": "Scheduling line 713-526-4243. Third Friday of month noon-4 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
   "source_url": "https://www.harrishealth.org/locations-hh/pages/gulfgate-health-center.aspx",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "essential adult and pediatric medical care",
+    "url": "https://www.harrishealth.org/locations-hh/pages/gulfgate-health-center.aspx"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "on-site pharmacy, laboratory and x-ray services",
+    "url": "https://www.harrishealth.org/locations-hh/pages/gulfgate-health-center.aspx"
+   },
+   {
+    "key": "dental_care",
+    "quote": "high-quality specialty care for adult OB/GYN, dental and psychiatric needs",
+    "url": "https://www.harrishealth.org/locations-hh/pages/gulfgate-health-center.aspx"
+   }
+  ]
  },
  {
   "id": "harris-health-settegast",
@@ -180,7 +224,19 @@
   "notes": "Second Friday of month 1-5 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
   "source_url": "https://www.harrishealth.org/locations-hh/pages/settegast-health-center.aspx",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "pharmacy",
+    "quote": "on-site counseling, laboratory, nutrition and health education and pharmacy services",
+    "url": "https://www.harrishealth.org/locations-hh/pages/settegast-health-center.aspx"
+   },
+   {
+    "key": "medical_care",
+    "quote": "In addition to providing primary care",
+    "url": "https://www.harrishealth.org/locations-hh/pages/settegast-health-center.aspx"
+   }
+  ]
  },
  {
   "id": "harris-health-vallbona",
@@ -225,7 +281,24 @@
   "notes": "Third Thursday of month 1-5 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
   "source_url": "https://www.harrishealth.org/locations-hh/pages/vallbona-health-center.aspx",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "In addition to providing primary care, Vallbona Health Center offers a variety of specialty care services",
+    "url": "https://www.harrishealth.org/locations-hh/pages/vallbona-health-center.aspx"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "The center also provides convenient on-site laboratory, pharmacy and x-ray services",
+    "url": "https://www.harrishealth.org/locations-hh/pages/vallbona-health-center.aspx"
+   },
+   {
+    "key": "mental_health",
+    "quote": "including OB/GYN, mammography, podiatry and psychiatry.",
+    "url": "https://www.harrishealth.org/locations-hh/pages/vallbona-health-center.aspx"
+   }
+  ]
  },
  {
   "id": "harris-health-strawberry",
@@ -264,7 +337,24 @@
   "notes": "In Pasadena (Harris County). Urgent care Mon-Fri 8am-8pm, 713-218-2697. Hours wording was paraphrased by the fetch tool; verify quote.",
   "source_url": "https://www.harrishealth.org/locations-hh/pages/strawberry-health-center.aspx",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "In addition to providing primary care, Strawberry Health Center offers high-quality specialty care",
+    "url": "https://www.harrishealth.org/locations-hh/pages/strawberry-health-center.aspx"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "The center also provides convenient on-site pharmacy and laboratory services",
+    "url": "https://www.harrishealth.org/locations-hh/pages/strawberry-health-center.aspx"
+   },
+   {
+    "key": "dental_care",
+    "quote": "mammography, COVID clinic, dental care, podiatry, pulmonology, physical medicine and rehabilitation and psychiatric needs.",
+    "url": "https://www.harrishealth.org/locations-hh/pages/strawberry-health-center.aspx"
+   }
+  ]
  },
  {
   "id": "avenue-360-heights",
@@ -303,7 +393,24 @@
   "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
   "source_url": "https://www.avenue360.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Primary Care",
+    "url": "https://www.avenue360.org/locations"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Psychiatry, Mental Health Counseling, & Substance Use Treatment Services",
+    "url": "https://www.avenue360.org/locations"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "Pharmacy",
+    "url": "https://www.avenue360.org/locations"
+   }
+  ]
  },
  {
   "id": "avenue-360-midtown",
@@ -342,7 +449,29 @@
   "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
   "source_url": "https://www.avenue360.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "essential medical, dental, low-cost medication, and mental health care services",
+    "url": "https://www.avenue360.org/"
+   },
+   {
+    "key": "dental_care",
+    "quote": "essential medical, dental, low-cost medication, and mental health care services",
+    "url": "https://www.avenue360.org/"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "essential medical, dental, low-cost medication, and mental health care services",
+    "url": "https://www.avenue360.org/"
+   },
+   {
+    "key": "mental_health",
+    "quote": "essential medical, dental, low-cost medication, and mental health care services",
+    "url": "https://www.avenue360.org/"
+   }
+  ]
  },
  {
   "id": "avenue-360-spring-cypress",
@@ -381,7 +510,24 @@
   "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
   "source_url": "https://www.avenue360.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Primary Care",
+    "url": "https://www.avenue360.org/locations"
+   },
+   {
+    "key": "pharmacy",
+    "quote": "Pharmacy",
+    "url": "https://www.avenue360.org/locations"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Mental Health Counseling",
+    "url": "https://www.avenue360.org/locations"
+   }
+  ]
  },
  {
   "id": "avenue-360-humble",
@@ -420,7 +566,14 @@
   "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
   "source_url": "https://www.avenue360.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Primary Care",
+    "url": "https://www.avenue360.org/locations"
+   }
+  ]
  },
  {
   "id": "avenue-360-memorial-city-pediatrics",
@@ -459,7 +612,19 @@
   "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
   "source_url": "https://www.avenue360.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Well-Child Visits",
+    "url": "https://www.avenue360.org/locations"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Mental Health Counseling",
+    "url": "https://www.avenue360.org/locations"
+   }
+  ]
  },
  {
   "id": "el-centro-eastwood",
@@ -501,15 +666,27 @@
   "lng": -95.28777,
   "coords_source": "census-webfetch",
   "hours": {
-   "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
-   "sat": [],
+   "mon": [
+    "07:00-17:00"
+   ],
+   "tue": [
+    "07:00-17:00"
+   ],
+   "wed": [
+    "07:00-17:00"
+   ],
+   "thu": [
+    "07:00-17:00"
+   ],
+   "fri": [
+    "07:30-17:00"
+   ],
+   "sat": [
+    "09:00-16:00"
+   ],
    "sun": []
   },
-  "hours_quote": null,
+  "hours_quote": "Monday – Thursday (7:00 am – 5:00 pm) / Friday (7:30 am – 5:00 pm) / Saturday (9:00 am – 4:00 pm) / Sunday (Closed)",
   "eligibility": [],
   "services": "Community health center",
   "languages": [],
@@ -517,7 +694,25 @@
   "notes": "No hours or eligibility on page; call to confirm.",
   "source_url": "https://www.elcentrodecorazon.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Adult Primary Care",
+    "url": "https://www.elcentrodecorazon.org/locations/john-s-dunn-health-center/"
+   },
+   {
+    "key": "dental_care",
+    "quote": "Adult & Pediatric Dental",
+    "url": "https://www.elcentrodecorazon.org/locations/john-s-dunn-health-center/"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Behavioral Health",
+    "url": "https://www.elcentrodecorazon.org/locations/john-s-dunn-health-center/"
+   }
+  ],
+  "hours_url": "https://www.elcentrodecorazon.org/locations/john-s-dunn-health-center/"
  },
  {
   "id": "el-centro-magnolia",
@@ -546,7 +741,19 @@
   "notes": "No hours or eligibility on page; call to confirm.",
   "source_url": "https://www.elcentrodecorazon.org/locations",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Chronic disease management",
+    "url": "https://www.elcentrodecorazon.org/magnolia"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Psychiatric Evaluation",
+    "url": "https://www.elcentrodecorazon.org/magnolia"
+   }
+  ]
  },
  {
   "id": "legacy-southwest-pediatric-walk-in",
@@ -564,10 +771,14 @@
    "wed": [],
    "thu": [],
    "fri": [],
-   "sat": [],
-   "sun": []
+   "sat": [
+    "08:00-20:00"
+   ],
+   "sun": [
+    "12:00-18:00"
+   ]
   },
-  "hours_quote": null,
+  "hours_quote": "The Legacy Southwest Pediatric Walk-in Clinic is open Saturday, 8:00 am – 8:00 pm and Sunday, 12:00 pm – 6:00 pm",
   "eligibility": [],
   "services": "Pediatric walk-in clinic",
   "languages": [],
@@ -615,7 +826,19 @@
   "notes": "Third-party directory (Texas Criminal Justice Coalition), not official site (official site blocks fetch). Verify. No hours on page.",
   "source_url": "https://texascjc.org/good-neighbor-healthcare-center",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "medical_care",
+    "quote": "Good Neighbor offers primary and preventative care.",
+    "url": "https://texascjc.org/good-neighbor-healthcare-center"
+   },
+   {
+    "key": "dental_care",
+    "quote": "dental, optometry, family medicine, behavioral health, and prenatal care",
+    "url": "https://texascjc.org/good-neighbor-healthcare-center"
+   }
+  ]
  },
  {
   "id": "hope-clinic-alief",
@@ -654,7 +877,19 @@
   "notes": "CDC directory listing, not official site. Page says 'Contact organization for eligibility'. Other days listed as e.g. 'Wednesday,11:00am To 7:00pm'.",
   "source_url": "https://npin.cdc.gov/organization/hope-clinic-2",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "case_management",
+    "quote": "Case Management",
+    "url": "https://npin.cdc.gov/organization/hope-clinic-2"
+   },
+   {
+    "key": "medical_care",
+    "quote": "STI Treatment",
+    "url": "https://npin.cdc.gov/organization/hope-clinic-2"
+   }
+  ]
  },
  {
   "id": "lone-star-legal-aid-houston",
@@ -699,7 +934,14 @@
   "notes": "Page lists only \"Harris\" under Counties Served; no residency sentence, so no residency rule. Page states no income limit.",
   "source_url": "https://www.lonestarlegal.org/office/houston-office/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "legal_aid",
+    "quote": "We protect and advance the civil legal rights of low-income Texans",
+    "url": "https://www.lonestarlegal.org/"
+   }
+  ]
  },
  {
   "id": "houston-volunteer-lawyers",
@@ -734,7 +976,14 @@
   "notes": "Third-party directory (probono.net). No weekly hours.",
   "source_url": "https://www.probono.net/oppsguide/organization.135834?print=1",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "legal_aid",
+    "quote": "free legal assistance on civil legal matters to eligible, low-income area residents",
+    "url": "https://www.makejusticehappen.org/"
+   }
+  ]
  },
  {
   "id": "tsu-thurgood-marshall-legal-clinic",
@@ -779,7 +1028,19 @@
   "notes": "Another page (hlrs.org) says family/wills/criminal clinics only accept Harris County cases and screen by Federal Poverty Guidelines.",
   "source_url": "https://tmslaw.libanswers.com/faq/413386",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "legal_aid",
+    "quote": "The legal service component focuses on providing legal representation to people who cannot afford to hire a lawyer.",
+    "url": "https://tmslaw.libanswers.com/faq/413386"
+   },
+   {
+    "key": "immigration_help",
+    "quote": "Immigration Law Clinic",
+    "url": "https://tmslaw.libanswers.com/faq/413386"
+   }
+  ]
  },
  {
   "id": "stcl-sorrels-legal-clinics",
@@ -818,7 +1079,14 @@
   "notes": "Address from https://www.stcl.edu/venue/randall-o-sorrels-legal-clinics/ (phone 713-659-8040 there). Experiential-ed page says clinics 'offer free legal services to underserved populations'; hours pertain to that page.",
   "source_url": "https://www.stcl.edu/academics/experiential-education/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "legal_aid",
+    "quote": "offer free legal services to underserved populations through licensed attorneys",
+    "url": "https://www.stcl.edu/academics/experiential-education/"
+   }
+  ]
  },
  {
   "id": "catholic-charities-cabrini-immigrant-legal",
@@ -860,7 +1128,14 @@
   "notes": "Third-party directory; no hours; page says a nominal fee is charged: Yes.",
   "source_url": "https://www.immigrationadvocates.org/embedded/iamerica/organization.393338-Catholic_Charities_of_the_Archdiocese_of_GalvestonHouston_St_Frances_Cabri",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "immigration_help",
+    "quote": "provides low-cost or free representation in immigration cases",
+    "url": "https://www.immigrationadvocates.org/embedded/iamerica/organization.393338-Catholic_Charities_of_the_Archdiocese_of_GalvestonHouston_St_Frances_Cabri"
+   }
+  ]
  },
  {
   "id": "ymca-international-services-legal",
@@ -900,7 +1175,14 @@
   "notes": "Third-party directory; quote was reported by fetch tool, verify.",
   "source_url": "https://www.immigrationadvocates.org/nonprofit/legaldirectory/organization.393379-YMCA_of_Greater_Houston_International_Services",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "immigration_help",
+    "quote": "Legal consultations are available by appointment only.",
+    "url": "https://www.immigrationadvocates.org/nonprofit/legaldirectory/organization.393379-YMCA_of_Greater_Houston_International_Services"
+   }
+  ]
  },
  {
   "id": "christian-rescue-mission-3229-hadley",
@@ -978,7 +1260,24 @@
   "notes": "",
   "source_url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "Provides food assistance and washing detergent, baby diapers, toilet tissue and more.",
+    "url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/"
+   },
+   {
+    "key": "hygiene_items",
+    "quote": "Provides food assistance and washing detergent, baby diapers, toilet tissue and more.",
+    "url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/"
+   },
+   {
+    "key": "baby_supplies",
+    "quote": "Provides food assistance and washing detergent, baby diapers, toilet tissue and more.",
+    "url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/"
+   }
+  ]
  },
  {
   "id": "city-wide-club-elgin",
@@ -1185,7 +1484,14 @@
   "notes": "Other sources say open 9:00-12:00; arrive by 8:30.",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "Emergency Aid Coalition provides groceries through a food pantry",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "id": "guadalupe-center-pan-de-vida",
@@ -1228,7 +1534,14 @@
   "notes": "Tue drive-thru only; Fri only Food for Change enrollees; Thu walk-up.",
   "source_url": "https://catholiccharities.org/food",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "Catholic Charities' three regional food pantries offer in-person appointments and drive-through distributions.",
+    "url": "https://catholiccharities.org/food"
+   }
+  ]
  },
  {
   "id": "gulf-coast-community-services-kirby",
@@ -1317,7 +1630,14 @@
   "notes": "",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "This food pantry is open Monday through Friday from 11:30 am to 12:30 pm",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "id": "the-beacon-meals",
@@ -1331,14 +1651,29 @@
   "coords_source": "census-webfetch",
   "hours": {
    "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
-   "sat": [],
+   "tue": [
+    "07:00-09:30",
+    "11:00-12:00"
+   ],
+   "wed": [
+    "07:00-09:30",
+    "11:00-12:00"
+   ],
+   "thu": [
+    "07:00-09:30",
+    "11:00-12:00"
+   ],
+   "fri": [
+    "07:00-09:30",
+    "11:00-12:00"
+   ],
+   "sat": [
+    "07:00-09:30",
+    "11:00-12:00"
+   ],
    "sun": []
   },
-  "hours_quote": "Free meals (laundry and showers) are served Tuesday through Saturday.",
+  "hours_quote": "Free meals (laundry and showers) are served Tuesday through Saturday. Breakfast is served from 7 am to 9:30 am, and lunch is served from 11 am to 12 pm.",
   "eligibility": [
    {
     "type": "note",
@@ -1352,7 +1687,24 @@
   "notes": "No meal times on page; call to confirm.",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "hot_meals",
+    "quote": "Free meals (laundry and showers) are served Tuesday through Saturday.",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   },
+   {
+    "key": "showers",
+    "quote": "Free meals (laundry and showers) are served Tuesday through Saturday.",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   },
+   {
+    "key": "laundry",
+    "quote": "Free meals (laundry and showers) are served Tuesday through Saturday.",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "id": "heights-interfaith-ministries-pantry",
@@ -1385,7 +1737,14 @@
   "notes": "",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "Heights Interfaith Ministries Food Pantry",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "id": "st-joseph-catholic-kane",
@@ -1581,7 +1940,14 @@
   "notes": "",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "Food: Tuesday -Wednesday 9 am to 11 am.",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "id": "braes-interfaith-ministries",
@@ -1861,7 +2227,14 @@
   "notes": "Hours are appointment-call hours, not open hours.",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "You can go twice a month to this food pantry.",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "id": "living-water-international-apostolic",
@@ -1890,7 +2263,14 @@
   "notes": "2nd/4th Thursday 11:00-16:00 cannot be encoded in weekly hours.",
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "food_pantry",
+    "quote": "Food Pantry every 2nd and 4th Thursday from 11 am to 4 pm.",
+    "url": "https://houstoncasemanagers.com/houston-food-pantries/"
+   }
+  ]
  },
  {
   "lat": 29.72343,
@@ -1931,7 +2311,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-2050",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment that you can use to explore new skills",
+    "url": "https://www.houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.69852,
@@ -2013,7 +2400,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-2550",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment",
+    "url": "https://houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.75078,
@@ -2132,7 +2526,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-2660",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "To access computers in other locations, you can just walk in and use your MYLink Card.",
+    "url": "https://askhpl.houstonlibrary.org/Services/faq/401804"
+   }
+  ]
  },
  {
   "lat": 29.70366,
@@ -2173,7 +2574,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-1820",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment that you can use to explore new skills",
+    "url": "https://www.houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.69842,
@@ -2255,7 +2663,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-2120",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment",
+    "url": "https://houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.6678,
@@ -2376,7 +2791,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-1810",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "To access computers in other locations, you can just walk in and use your MYLink Card.",
+    "url": "https://askhpl.houstonlibrary.org/Services/faq/401804"
+   }
+  ]
  },
  {
   "lat": 29.7455,
@@ -2417,7 +2839,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-1800",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment that you can use to explore new skills",
+    "url": "https://www.houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.76403,
@@ -2495,7 +2924,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-2450",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment",
+    "url": "https://houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.73984,
@@ -2614,7 +3050,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-2410",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "To access computers in other locations, you can just walk in and use your MYLink Card.",
+    "url": "https://askhpl.houstonlibrary.org/Services/faq/401804"
+   }
+  ]
  },
  {
   "lat": 29.78243,
@@ -2655,7 +3098,14 @@
   "services": "Public library (free and open to the public)",
   "phone": "832-393-1720",
   "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
+  "source_url": "https://calendar.houstonlibrary.org/hours/",
+  "offers": [
+   {
+    "key": "computers",
+    "quote": "A unique program offering FREE access to state-of-the-art technology and equipment that you can use to explore new skills",
+    "url": "https://www.houstonlibrary.org/"
+   }
+  ]
  },
  {
   "lat": 29.72877,
@@ -2694,7 +3144,19 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-393-4051",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/third-ward-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/third-ward-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/third-ward-multi-service-center"
+   },
+   {
+    "key": "computers",
+    "quote": "Resource Center: computers, phones, and information on food, housing aid, medical support, and jobs",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/third-ward-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.77315,
@@ -2733,7 +3195,19 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-393-5950",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/west-end-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/west-end-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/west-end-multi-service-center"
+   },
+   {
+    "key": "mental_health",
+    "quote": "Harris Center for Mental Health and IDD",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/west-end-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.77254,
@@ -2772,7 +3246,14 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-393-3800",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/fifth-ward-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/fifth-ward-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/fifth-ward-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.61356,
@@ -2811,7 +3292,14 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-393-4240",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/hiram-clarke-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/hiram-clarke-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/hiram-clarke-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.73415,
@@ -2850,7 +3338,14 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-395-3380",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/magnolia-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/magnolia-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/magnolia-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.85046,
@@ -2889,7 +3384,14 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-395-0470",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/northeast-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/northeast-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/northeast-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.65829,
@@ -2928,7 +3430,19 @@
   "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
   "phone": "832-395-0069",
   "notes": "",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/sunnyside-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/sunnyside-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Serves as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/sunnyside-multi-service-center"
+   },
+   {
+    "key": "dental_care",
+    "quote": "Dental Services",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/sunnyside-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.85721,
@@ -2967,7 +3481,24 @@
   "services": "City of Houston multi-service center; provides water and snacks as a cooling center for individuals needing to escape high temperatures",
   "phone": "832-393-4145",
   "notes": "Friday 8 a.m. - 5:30 p.m. and weekends closed per same page.",
-  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center"
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "Provides water and snacks as a cooling center for individuals needing to escape high temperatures.",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center"
+   },
+   {
+    "key": "wifi",
+    "quote": "Lift Zone (Hotspot Internet Access)",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center"
+   },
+   {
+    "key": "mental_health",
+    "quote": "The Harris Center for Mental Health and IDD",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center"
+   }
+  ]
  },
  {
   "lat": 29.70366,
@@ -2984,19 +3515,37 @@
   ],
   "address": "11903 Bellaire Blvd., Houston, TX 77072",
   "hours": {
-   "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
    "sat": [],
    "sun": []
   },
-  "hours_quote": null,
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
   "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
   "phone": null,
   "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
-  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "All City of Houston libraries and multi-service centers will function as cooling centers",
+    "url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+   }
+  ],
+  "hours_url": "https://www.houstonhealth.org/services/multi-service-centers/alief-neighborhood-center"
  },
  {
   "lat": 29.7728,
@@ -3013,19 +3562,42 @@
   ],
   "address": "6402 Market St., Houston, TX 77020",
   "hours": {
-   "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
    "sat": [],
    "sun": []
   },
-  "hours_quote": null,
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
   "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
   "phone": null,
   "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
-  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "multi-service centers will function as cooling centers during their normal business hours weekdays and Saturdays",
+    "url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+   },
+   {
+    "key": "hot_meals",
+    "quote": "Free hot lunches",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/denver-harbor-multi-service-center"
+   }
+  ],
+  "hours_url": "https://www.houstonhealth.org/services/multi-service-centers/denver-harbor-multi-service-center"
  },
  {
   "lat": 29.80403,
@@ -3042,19 +3614,42 @@
   ],
   "address": "4802 Lockwood Dr., Houston, TX 77026",
   "hours": {
-   "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
    "sat": [],
    "sun": []
   },
-  "hours_quote": null,
+  "hours_quote": "Monday – Friday, 8:00 a.m. – 5 p.m.",
   "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
   "phone": null,
   "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
-  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "All City of Houston libraries and multi-service centers will function as cooling centers",
+    "url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+   },
+   {
+    "key": "food_pantry",
+    "quote": "Emergency Food Bank",
+    "url": "https://www.houstonhealth.org/services/multi-service-centers/kashmere-multi-service-center"
+   }
+  ],
+  "hours_url": "https://www.houstonhealth.org/services/multi-service-centers/kashmere-multi-service-center"
  },
  {
   "lat": 29.71072,
@@ -3071,19 +3666,37 @@
   ],
   "address": "6400 High Star Dr., Houston, TX 77074",
   "hours": {
-   "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
    "sat": [],
    "sun": []
   },
-  "hours_quote": null,
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
   "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
   "phone": null,
   "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
-  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html",
+  "offers": [
+   {
+    "key": "cooling",
+    "quote": "All City of Houston libraries and multi-service centers will function as cooling centers",
+    "url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+   }
+  ],
+  "hours_url": "https://www.houstonhealth.org/services/multi-service-centers/southwest-multi-service-center"
  },
  {
   "id": "star-of-hope-mens-development-center",
@@ -3153,7 +3766,29 @@
   "notes": "Hours are intake hours (Mon-Fri). ZIP not on page. Page also mentions showers.",
   "source_url": "https://www.sohmission.org/how-we-help/for-men/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "A clean bed, hot meals, clothing, and safety when you need it most.",
+    "url": "https://www.sohmission.org/how-we-help/for-men/"
+   },
+   {
+    "key": "showers",
+    "quote": "A safe place to sleep. Hot meals, clean clothing, showers, and chapel services.",
+    "url": "https://www.sohmission.org/how-we-help/for-men/"
+   },
+   {
+    "key": "case_management",
+    "quote": "Case managers help provide basic needs, give referrals, and provide you with tools for a stable restart.",
+    "url": "https://www.sohmission.org/how-we-help/for-men/"
+   },
+   {
+    "key": "job_help",
+    "quote": "Gain job training, computer skills, and the confidence to provide for yourself again.",
+    "url": "https://www.sohmission.org/how-we-help/for-men/"
+   }
+  ]
  },
  {
   "id": "star-of-hope-women-family-center",
@@ -3218,7 +3853,29 @@
   "notes": "Hours are intake hours (Mon-Fri).",
   "source_url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "Find rest and safety for you and your children, with immediate shelter, meals, hygiene supplies, and supportive care.",
+    "url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/"
+   },
+   {
+    "key": "showers",
+    "quote": "Private and shared rooms for single women and single-parent families, daily meals, showers, clothing, and essential supplies",
+    "url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/"
+   },
+   {
+    "key": "case_management",
+    "quote": "Safe room, clean clothes, meals, case management, and spiritual support.",
+    "url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/"
+   },
+   {
+    "key": "job_help",
+    "quote": "Earn your GED, build a resume, and gain skills to secure employment and move toward independence.",
+    "url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/"
+   }
+  ]
  },
  {
   "id": "covenant-house-texas-houston",
@@ -3273,7 +3930,34 @@
   "notes": "Phone 713-523-2231 listed on page for emergency help; shelter campus line 713-630-5601.",
   "source_url": "https://www.covenanthouse.org/homeless-shelters/houston-texas",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "gain access to safe shelter, warm meals, free healthcare, and supportive services",
+    "url": "https://www.covenanthouse.org/homeless-shelters/houston-texas"
+   },
+   {
+    "key": "medical_care",
+    "quote": "the Dr. H Medical Clinic offers free healthcare services to youth experiencing or at-risk of homelessness.",
+    "url": "https://www.covenanthouse.org/homeless-shelters/houston-texas"
+   },
+   {
+    "key": "showers",
+    "quote": "Offers day services and access to facilities, including meals, laundry, clothing, showers",
+    "url": "https://www.covenanthouse.org/homeless-shelters/houston-texas"
+   },
+   {
+    "key": "case_management",
+    "quote": "Each young person works with a case manager to create an individualized plan",
+    "url": "https://www.covenanthouse.org/homeless-shelters/houston-texas"
+   },
+   {
+    "key": "job_help",
+    "quote": "We also provide job readiness and career planning to empower youth",
+    "url": "https://www.covenanthouse.org/homeless-shelters/houston-texas"
+   }
+  ]
  },
  {
   "id": "mission-of-yahweh",
@@ -3308,7 +3992,14 @@
   "notes": "Page has no hours; says to submit the online intake form.",
   "source_url": "https://missionofyahweh.org/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "a faith-based shelter that empowers, enriches and restores the lives of homeless women and children",
+    "url": "https://missionofyahweh.org/"
+   }
+  ]
  },
  {
   "id": "hope-center-houston",
@@ -3347,7 +4038,29 @@
   "notes": "Page states no eligibility rules. Showers/laundry quote: We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers",
   "source_url": "https://hopecenterhouston.org/",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "hot_meals",
+    "quote": "We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers, clothing",
+    "url": "https://hopecenterhouston.org/"
+   },
+   {
+    "key": "showers",
+    "quote": "We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers, clothing",
+    "url": "https://hopecenterhouston.org/"
+   },
+   {
+    "key": "laundry",
+    "quote": "We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers, clothing",
+    "url": "https://hopecenterhouston.org/"
+   },
+   {
+    "key": "clothing",
+    "quote": "We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers, clothing",
+    "url": "https://hopecenterhouston.org/"
+   }
+  ]
  },
  {
   "id": "the-beacon-day-center",
@@ -3392,7 +4105,19 @@
   "notes": "Source is Healthcare for the Homeless Resource Hub. Hours range is breakfast 7-9:30 to lunch ending 12 noon; showers/laundry intake from 7 a.m. Page lists no Beacon phone (HHH 713-286-6000). ZIP on page truncated; 77002 from clinic listing.",
   "source_url": "https://www.homeless-healthcare.org/resourcehub",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "Five private showers: Intake starts at 7 a.m., first come, first served",
+    "url": "https://www.homeless-healthcare.org/resourcehub"
+   },
+   {
+    "key": "laundry",
+    "quote": "Full-service laundry: Intake starts at 7 a.m., first come, first served",
+    "url": "https://www.homeless-healthcare.org/resourcehub"
+   }
+  ]
  },
  {
   "id": "moving-waters-ecclesia",
@@ -3423,7 +4148,14 @@
   "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
   "source_url": "https://www.movingwaters-houston.org/showers",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "Our showers includes amenities such as toilets, sinks, mirrors, and shower stalls.",
+    "url": "https://www.movingwaters-houston.org/showers"
+   }
+  ]
  },
  {
   "id": "moving-waters-wheeler-ave-baptist",
@@ -3454,7 +4186,14 @@
   "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
   "source_url": "https://www.movingwaters-houston.org/showers",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "Our showers includes amenities such as toilets, sinks, mirrors, and shower stalls.",
+    "url": "https://www.movingwaters-houston.org/showers"
+   }
+  ]
  },
  {
   "id": "moving-waters-st-joseph",
@@ -3485,7 +4224,14 @@
   "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
   "source_url": "https://www.movingwaters-houston.org/showers",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "providing cleansing showers, thereby improving mental well-being",
+    "url": "https://www.movingwaters-houston.org/"
+   }
+  ]
  },
  {
   "id": "moving-waters-emergency-aid-coalition",
@@ -3516,7 +4262,14 @@
   "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
   "source_url": "https://www.movingwaters-houston.org/showers",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "Our showers includes amenities such as toilets, sinks, mirrors, and shower stalls.",
+    "url": "https://www.movingwaters-houston.org/showers"
+   }
+  ]
  },
  {
   "id": "moving-waters-nam",
@@ -3547,7 +4300,14 @@
   "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
   "source_url": "https://www.movingwaters-houston.org/showers",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "Our showers includes amenities such as toilets, sinks, mirrors, and shower stalls.",
+    "url": "https://www.movingwaters-houston.org/showers"
+   }
+  ]
  },
  {
   "id": "magnificat-house-houston",
@@ -3576,7 +4336,19 @@
   "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead.",
   "source_url": "https://www.cfthhouston.org/gethelp",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "To apply for shelter in one of our homes, please make an appointment through your social worker or call 713-529-4231.",
+    "url": "https://mhihouston.org/need-assistance/"
+   },
+   {
+    "key": "clothing",
+    "quote": "food and water, clothing, dates for health screening",
+    "url": "https://mhihouston.org/need-assistance/"
+   }
+  ]
  },
  {
   "id": "salvation-army-center-of-hope-houston",
@@ -3605,7 +4377,14 @@
   "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Sources disagree on who this shelter serves (Help Card: women and children; Salvation Army page: single men and veterans). Check before the demo.",
   "source_url": "https://www.cfthhouston.org/gethelp",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "served 398 men in the emergency shelter and 52 veterans with transitional beds",
+    "url": "https://southernusa.salvationarmy.org/houston/sns"
+   }
+  ]
  },
  {
   "id": "salvation-army-jones-family-residence",
@@ -3663,7 +4442,24 @@
   "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Official site not fetchable.",
   "source_url": "https://www.cfthhouston.org/gethelp",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "hot_meals",
+    "quote": "From meals and clothing to case management, Open Door provides wrap-around support for immediate and long-term needs.",
+    "url": "https://www.opendoorhouston.org/"
+   },
+   {
+    "key": "clothing",
+    "quote": "Find immediate relief through access to clothing, meals, and emergency shelter.",
+    "url": "https://www.opendoorhouston.org/"
+   },
+   {
+    "key": "case_management",
+    "quote": "From meals and clothing to case management, Open Door provides wrap-around support for immediate and long-term needs.",
+    "url": "https://www.opendoorhouston.org/"
+   }
+  ]
  },
  {
   "id": "bay-area-homeless-services",
@@ -3692,7 +4488,14 @@
   "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Baytown, Harris County.",
   "source_url": "https://www.cfthhouston.org/gethelp",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "shelter_beds",
+    "quote": "Emergency Shelter",
+    "url": "https://www.cfthhouston.org/gethelp"
+   }
+  ]
  },
  {
   "id": "salvation-army-yarc",
@@ -3721,6 +4524,33 @@
   "notes": "Address and phone come from the CFTH Help Card (https://www.cfthhouston.org/gethelp); the YARC page only shows the area command footer (2407 N Main St, 1-800-SAL-ARMY). No hours on either page.",
   "source_url": "https://southernusa.salvationarmy.org/houston/yarc",
   "last_verified": null,
-  "needs_review": true
+  "needs_review": true,
+  "offers": [
+   {
+    "key": "showers",
+    "quote": "Showers and lockers",
+    "url": "https://southernusa.salvationarmy.org/houston/yarc"
+   },
+   {
+    "key": "laundry",
+    "quote": "Laundry facilities",
+    "url": "https://southernusa.salvationarmy.org/houston/yarc"
+   },
+   {
+    "key": "hot_meals",
+    "quote": "Hot lunches, prepared carryout meals, and snacks",
+    "url": "https://southernusa.salvationarmy.org/houston/yarc"
+   },
+   {
+    "key": "computers",
+    "quote": "Access to telephones, Internet via a computer lab, and the use of a mailing address for contacts",
+    "url": "https://southernusa.salvationarmy.org/houston/yarc"
+   },
+   {
+    "key": "id_help",
+    "quote": "Assistance in obtaining proper identification",
+    "url": "https://southernusa.salvationarmy.org/houston/yarc"
+   }
+  ]
  }
 ]
