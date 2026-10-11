@@ -1,0 +1,1236 @@
+[
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-central-library",
+  "name": "Houston Public Library - Central Library, Jesse H. Jones",
+  "category": [
+   "library"
+  ],
+  "address": "500 McKinney St., Houston, TX 77002",
+  "hours": {
+   "mon": [
+    "12:00-18:00"
+   ],
+   "tue": [
+    "09:00-18:00"
+   ],
+   "wed": [
+    "09:00-18:00"
+   ],
+   "thu": [
+    "09:00-18:00"
+   ],
+   "fri": [
+    "09:00-18:00"
+   ],
+   "sat": [
+    "10:00-18:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1313",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-smith",
+  "name": "Houston Public Library - Smith Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "3624 Scott St., Houston, TX 77004",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2050",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-young",
+  "name": "Houston Public Library - Young Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "5107 Griggs Rd., Houston, TX 77021",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2140",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-johnson",
+  "name": "Houston Public Library - Johnson Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "3517 Reed Rd., Houston, TX 77051",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2550",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-flores",
+  "name": "Houston Public Library - Flores Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "110 North Milby St., Houston, TX 77003",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1780",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-walter",
+  "name": "Houston Public Library - Walter Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "7660 Clarewood Dr., Houston, TX 77036",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2500",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-express-southwest",
+  "name": "HPL Express Southwest",
+  "category": [
+   "library"
+  ],
+  "address": "6400 High Star Dr., Houston, TX 77074",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2660",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-alief-regional",
+  "name": "Houston Public Library - Alief-David M. Henington Regional Library",
+  "category": [
+   "library"
+  ],
+  "address": "11903 Bellaire Blvd, Houston, TX 77072",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "08:00-18:00"
+   ],
+   "wed": [
+    "08:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1820",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-stella-link",
+  "name": "Houston Public Library - McGovern-Stella Link Regional Library",
+  "category": [
+   "library"
+  ],
+  "address": "7405 Stella Link Rd., Houston, TX 77025",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2630",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-vinson",
+  "name": "Houston Public Library - Vinson Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "3810 West Fuqua St., Houston, TX 77045",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2120",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-mancuso",
+  "name": "Houston Public Library - Mancuso Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "6767 Bellfort Ave., Houston, TX 77087",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1920",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-park-place",
+  "name": "Houston Public Library - Park Place Regional Library",
+  "category": [
+   "library"
+  ],
+  "address": "8145 Park Place Blvd., Houston, TX 77017",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1970",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-heights",
+  "name": "Houston Public Library - Heights Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "1302 Heights Blvd., Houston, TX 77008",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1810",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-freed-montrose",
+  "name": "Houston Public Library - Freed-Montrose Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "1001 California Street, Houston, TX 77006",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1800",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-pleasantville",
+  "name": "Houston Public Library - Pleasantville Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "1520 Gellhorn Dr., Houston, TX 77029",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2330",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-kashmere-gardens",
+  "name": "Houston Public Library - McCrane-Kashmere Gardens Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "5411 Pardee St., Houston, TX 77026",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2450",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-stanaker",
+  "name": "Houston Public Library - Stanaker Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "611 S Sgt Macario Garcia Dr., Houston, TX 77011",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2080",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-melcher",
+  "name": "Houston Public Library - Melcher Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "7200 Keller St., Houston, TX 77012",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2480",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-walker",
+  "name": "Houston Public Library - Walker Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "11630 Chimney Rock Rd, Houston, TX 77035",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2410",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-carnegie",
+  "name": "Houston Public Library - Carnegie Neighborhood Library & Center for Learning",
+  "category": [
+   "library"
+  ],
+  "address": "1050 Quitman St., Houston, TX 77009",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1720",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-third-ward-msc",
+  "name": "Third Ward Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "3611 Ennis St., Houston, TX 77004",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-4051",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/third-ward-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-west-end-msc",
+  "name": "West End Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "170 Heights Blvd., Houston, TX 77007",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-5950",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/west-end-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-fifth-ward-msc",
+  "name": "Fifth Ward Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "4014 Market St., Houston, TX 77020",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-3800",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/fifth-ward-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-hiram-clarke-msc",
+  "name": "Hiram Clarke Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "3810 W. Fuqua St., Houston, TX 77045",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-4240",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/hiram-clarke-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-magnolia-msc",
+  "name": "Magnolia Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "7037 Capitol St., Houston, TX 77011",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-395-3380",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/magnolia-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-northeast-msc",
+  "name": "Northeast Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "9720 Spaulding St., Houston, TX 77016",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-395-0470",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/northeast-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-sunnyside-msc",
+  "name": "Sunnyside Health and Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "4410 Reed Rd., Houston, TX 77051",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5:00 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-395-0069",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/sunnyside-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-acres-homes-msc",
+  "name": "Acres Homes Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "6719 W. Montgomery Rd., Houston, TX 77091",
+  "hours": {
+   "mon": [
+    "08:00-20:30"
+   ],
+   "tue": [
+    "08:00-20:30"
+   ],
+   "wed": [
+    "08:00-20:30"
+   ],
+   "thu": [
+    "08:00-20:30"
+   ],
+   "fri": [
+    "08:00-17:30"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Thursday, 8 a.m. – 8:30 p.m.",
+  "services": "City of Houston multi-service center; provides water and snacks as a cooling center for individuals needing to escape high temperatures",
+  "phone": "832-393-4145",
+  "notes": "Friday 8 a.m. - 5:30 p.m. and weekends closed per same page.",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-alief-nc",
+  "name": "Alief Neighborhood Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "11903 Bellaire Blvd., Houston, TX 77072",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-denver-harbor-msc",
+  "name": "Denver Harbor Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "6402 Market St., Houston, TX 77020",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-kashmere-msc",
+  "name": "Kashmere Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "4802 Lockwood Dr., Houston, TX 77026",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-southwest-msc",
+  "name": "Southwest Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "6400 High Star Dr., Houston, TX 77074",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ }
+]

@@ -1,0 +1,978 @@
+[
+ {
+  "id": "san-jose-clinic-midtown",
+  "name": "San José Clinic - Midtown Clinic",
+  "category": [
+   "clinic"
+  ],
+  "address": "2615 Fannin St, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Hours: Monday - Friday: 8 a.m. - 5 p.m.",
+  "eligibility": [],
+  "services": "Clinic serving the uninsured and uninsurable",
+  "languages": [],
+  "phone": "713-228-9411",
+  "notes": "Also open 2nd Saturday of the month 8am-4:30pm (page: 'Saturday Clinic: 2nd Saturday of the Month'). Eligibility page https://www.sanjoseclinic.org/eligibility says low-income uninsured patients must first complete an eligibility interview; not recorded as a rule because it is on a different URL.",
+  "source_url": "https://www.sanjoseclinic.org/locationsandhours",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "healthcare-for-the-homeless-houston",
+  "name": "Healthcare for the Homeless - Houston",
+  "category": [
+   "clinic"
+  ],
+  "address": "1934 Caroline Street, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "tue": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "wed": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "thu": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "fri": [
+    "08:00-12:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday - Thursday 8:00 am - 5:00 pm and Friday 8:00 am - 12:00 pm.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Insurance not required, no co-pay",
+    "source_quote": "Insurance is not required, and you will never be charged a co-pay for services."
+   },
+   {
+    "type": "note",
+    "text": "No ID or proof of homelessness required",
+    "source_quote": "We do not require you to have verification of homelessness or identification."
+   }
+  ],
+  "services": "Healthcare for people experiencing housing instability",
+  "languages": [],
+  "phone": "713-286-6000",
+  "notes": "Page: 'All clinics are closed for lunch from 12:00 - 1:00 pm each day.' After-hours phone support weekdays 5pm-8am and weekends.",
+  "source_url": "https://www.homeless-healthcare.org/contact-us",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-gulfgate",
+  "name": "Harris Health - Gulfgate Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "7550 Office City Drive, Houston, TX 77012",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "07:00-16:00"
+   ],
+   "tue": [
+    "07:00-16:00"
+   ],
+   "wed": [
+    "07:00-16:00"
+   ],
+   "thu": [
+    "07:00-16:00"
+   ],
+   "fri": [
+    "07:00-16:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday - Friday, 7 a.m.-4 p.m.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Appointments: schedule through MyHealth or call; bring proper identification",
+    "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
+   }
+  ],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-495-3700",
+  "notes": "Scheduling line 713-526-4243. Third Friday of month noon-4 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/gulfgate-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-settegast",
+  "name": "Harris Health - Settegast Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "9105 North Wayside Drive, Houston, TX 77028",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "07:00-16:00"
+   ],
+   "tue": [
+    "07:00-16:00"
+   ],
+   "wed": [
+    "07:00-16:00"
+   ],
+   "thu": [
+    "07:00-16:00"
+   ],
+   "fri": [
+    "07:00-16:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday - Friday, 7 a.m.-4 p.m.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Appointments: schedule through MyHealth or call 713-526-4243",
+    "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
+   }
+  ],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-633-2020",
+  "notes": "Second Friday of month 1-5 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/settegast-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-vallbona",
+  "name": "Harris Health - Vallbona Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "6630 DeMoss Drive, Houston, TX 77074",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday - Friday, 8 a.m.-5 p.m.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Appointments: schedule through MyHealth or call 713-526-4243",
+    "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
+   }
+  ],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-272-2600",
+  "notes": "Third Thursday of month 1-5 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/vallbona-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-strawberry",
+  "name": "Harris Health - Strawberry Health Center (Pasadena)",
+  "category": [
+   "clinic"
+  ],
+  "address": "927 Shaw Ave, Pasadena, TX 77506",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday through Friday, 8 a.m. to 5 p.m.",
+  "eligibility": [],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-982-5900",
+  "notes": "In Pasadena (Harris County). Urgent care Mon-Fri 8am-8pm, 713-218-2697. Hours wording was paraphrased by the fetch tool; verify quote.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/strawberry-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-heights",
+  "name": "Avenue 360 - The Heights",
+  "category": [
+   "clinic"
+  ],
+  "address": "2150 West 18th St, 3rd Fl, Houston, TX 77008",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-18:00"
+   ],
+   "tue": [
+    "08:00-18:00"
+   ],
+   "wed": [
+    "08:00-18:00"
+   ],
+   "thu": [
+    "08:00-18:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon–Thu 8am–6pm; Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "713-426-0027",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-midtown",
+  "name": "Avenue 360 - Midtown",
+  "category": [
+   "clinic"
+  ],
+  "address": "2920 Fannin St, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "09:00-18:00"
+   ],
+   "tue": [
+    "09:00-18:00"
+   ],
+   "wed": [
+    "09:00-18:00"
+   ],
+   "thu": [
+    "09:00-18:00"
+   ],
+   "fri": [
+    "09:00-18:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon–Fri 9am–6pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "713-426-0027",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-spring-cypress",
+  "name": "Avenue 360 - Spring Cypress",
+  "category": [
+   "clinic"
+  ],
+  "address": "17010 Sugar Pine Dr, Houston, TX 77090",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "281-537-8627",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-humble",
+  "name": "Avenue 360 - Humble",
+  "category": [
+   "clinic"
+  ],
+  "address": "18842 S. Memorial Dr, Ste 206, Humble, TX 77338",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "281-570-2525",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-memorial-city-pediatrics",
+  "name": "Avenue 360 - Memorial City Pediatrics",
+  "category": [
+   "clinic"
+  ],
+  "address": "902 Frostwood, Suite 142, Houston, TX 77024",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-19:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon 8am–7pm; Tue–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "713-827-8266",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-southwest",
+  "name": "Avenue 360 - Southwest",
+  "category": [
+   "clinic"
+  ],
+  "address": "14095 South Main St, Houston, TX 77035",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "832-830-8345",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "el-centro-eastwood",
+  "name": "El Centro de Corazón - Eastwood Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "412 Telephone Rd, Houston, TX 77023",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Community health center",
+  "languages": [],
+  "phone": "713-660-1880",
+  "notes": "No hours or eligibility on page; call to confirm.",
+  "source_url": "https://www.elcentrodecorazon.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "el-centro-john-s-dunn",
+  "name": "El Centro de Corazón - John S. Dunn Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "7635 Canal St, Houston, TX 77012",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Community health center",
+  "languages": [],
+  "phone": "713-660-1880",
+  "notes": "No hours or eligibility on page; call to confirm.",
+  "source_url": "https://www.elcentrodecorazon.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "el-centro-magnolia",
+  "name": "El Centro de Corazón - Magnolia Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "7037 Capitol St, Ste N100, Houston, TX 77011",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Community health center",
+  "languages": [],
+  "phone": "713-660-1880",
+  "notes": "No hours or eligibility on page; call to confirm.",
+  "source_url": "https://www.elcentrodecorazon.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "legacy-southwest-pediatric-walk-in",
+  "name": "Legacy Community Health - Southwest Pediatric Walk-in Clinic",
+  "category": [
+   "clinic"
+  ],
+  "address": "6441 High Star, Houston, TX 77074",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Pediatric walk-in clinic",
+  "languages": [],
+  "phone": "832-548-5000",
+  "notes": "Page says Saturday 8am-8pm and Sunday 12pm-6pm but not as verbatim text; hours left empty. Sliding fee scale described at https://www.legacycommunityhealth.org/eligibility/ (not recorded as a rule).",
+  "source_url": "https://www.legacycommunityhealth.org/locations/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "good-neighbor-healthcare-center",
+  "name": "Good Neighbor Healthcare Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "190 Heights Boulevard, Houston, TX 77007",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "income_limit",
+    "question": "Can you show proof of income for a sliding scale payment?",
+    "source_quote": "Payment is on a sliding scale with proof of income."
+   },
+   {
+    "type": "note",
+    "text": "Appointment required",
+    "source_quote": "You must make an appointment."
+   }
+  ],
+  "services": "Sliding-scale healthcare",
+  "languages": [],
+  "phone": "713-529-3597",
+  "notes": "Third-party directory (Texas Criminal Justice Coalition), not official site (official site blocks fetch). Verify. No hours on page.",
+  "source_url": "https://texascjc.org/good-neighbor-healthcare-center",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "hope-clinic-alief",
+  "name": "HOPE Clinic - Alief",
+  "category": [
+   "clinic"
+  ],
+  "address": "13930 Bellaire Blvd, Houston, TX 77083",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "11:00-19:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday,8:00am To 5:00pm",
+  "eligibility": [],
+  "services": "HOPE Clinic Alief office",
+  "languages": [],
+  "phone": "713-773-0803",
+  "notes": "CDC directory listing, not official site. Page says 'Contact organization for eligibility'. Other days listed as e.g. 'Wednesday,11:00am To 7:00pm'.",
+  "source_url": "https://npin.cdc.gov/organization/hope-clinic-2",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "lone-star-legal-aid-houston",
+  "name": "Lone Star Legal Aid - Houston Office",
+  "category": [
+   "legal"
+  ],
+  "address": "1415 Fannin Street, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "8:00 a.m. – 5:00 p.m.",
+  "eligibility": [
+   {
+    "type": "residency",
+    "area": "Harris County",
+    "source_quote": "Harris"
+   },
+   {
+    "type": "note",
+    "text": "Accepts walk-in, online, and phone applications; phone intake Mon-Thu 8:30am-2:30pm",
+    "source_quote": "Lone Star Legal Aid accepts walk-in, online, and phone applications."
+   }
+  ],
+  "services": "Free civil legal aid",
+  "languages": [],
+  "phone": "713-652-0077",
+  "notes": "Page states no income limit. Residency quote 'Harris' is the 'Counties Served' value - weak, verify.",
+  "source_url": "https://www.lonestarlegal.org/office/houston-office/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "houston-volunteer-lawyers",
+  "name": "Houston Volunteer Lawyers",
+  "category": [
+   "legal"
+  ],
+  "address": "1111 Bagby Street, Suite FLB 300, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Flexible, Monthly Saturday Legal Advice Clinics from 8:30 am until approximately 1 pm",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Cases screened for client financial eligibility",
+    "source_quote": "HVL screens all cases for merit and client financial eligibility."
+   }
+  ],
+  "services": "Free legal help for low-income people",
+  "languages": [],
+  "phone": "713-228-0735",
+  "notes": "Third-party directory (probono.net). No weekly hours.",
+  "source_url": "https://www.probono.net/oppsguide/organization.135834?print=1",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "tsu-thurgood-marshall-legal-clinic",
+  "name": "Thurgood Marshall School of Law (TSU) - Legal Clinic",
+  "category": [
+   "legal"
+  ],
+  "address": "3100 Cleburne Street, STE 100, Houston, TX 77004",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-16:00"
+   ],
+   "tue": [
+    "08:00-16:00"
+   ],
+   "wed": [
+    "08:00-16:00"
+   ],
+   "thu": [
+    "08:00-16:00"
+   ],
+   "fri": [
+    "08:00-16:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Their office hours are Monday – Friday, 8:00 am to 4:00 pm.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Legal representation for people who cannot afford a lawyer",
+    "source_quote": "The legal service component focuses on providing legal representation to people who cannot afford to hire a lawyer."
+   }
+  ],
+  "services": "Criminal Defense/Title IX, Family Law, Immigration Law, and Wills, Probate, and Guardianship clinics",
+  "languages": [],
+  "phone": "713-313-7275",
+  "notes": "Another page (hlrs.org) says family/wills/criminal clinics only accept Harris County cases and screen by Federal Poverty Guidelines.",
+  "source_url": "https://tmslaw.libanswers.com/faq/413386",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "uh-law-immigration-clinic",
+  "name": "University of Houston Law Center - Immigration Clinic",
+  "category": [
+   "legal"
+  ],
+  "address": "4170 Martin Luther King Blvd, Houston, TX 77204",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Immigration Clinic representing immigrants who are victims of torture and persecution",
+  "languages": [],
+  "phone": "713-743-2094",
+  "notes": "No hours on page; phone is 'Legal Clinics' line.",
+  "source_url": "https://www.law.uh.edu/clinic/immi.asp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "stcl-sorrels-legal-clinics",
+  "name": "South Texas College of Law Houston - Randall O. Sorrels Legal Clinics",
+  "category": [
+   "legal"
+  ],
+  "address": "1303 San Jacinto St, 10th Floor, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:30-17:00"
+   ],
+   "tue": [
+    "08:30-17:00"
+   ],
+   "wed": [
+    "08:30-17:00"
+   ],
+   "thu": [
+    "08:30-17:00"
+   ],
+   "fri": [
+    "08:30-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday: 8:30 am – 5 pm",
+  "eligibility": [],
+  "services": "Free legal services to underserved populations",
+  "languages": [],
+  "phone": "713-646-2990",
+  "notes": "Address from https://www.stcl.edu/venue/randall-o-sorrels-legal-clinics/ (phone 713-659-8040 there). Experiential-ed page says clinics 'offer free legal services to underserved populations'; hours pertain to that page.",
+  "source_url": "https://www.stcl.edu/academics/experiential-education/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "catholic-charities-cabrini-immigrant-legal",
+  "name": "Catholic Charities Galveston-Houston - St. Frances Cabrini Center for Immigrant Legal Assistance",
+  "category": [
+   "legal"
+  ],
+  "address": "5599 San Felipe St, Suite 300, Houston, TX 77056",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Low-cost or free immigration representation",
+    "source_quote": "low-cost or free representation in immigration cases for families"
+   }
+  ],
+  "services": "Immigration legal help",
+  "languages": [
+   "ar",
+   "en",
+   "fr",
+   "pt",
+   "es",
+   "ur"
+  ],
+  "phone": "713-595-4100",
+  "notes": "Third-party directory; no hours; page says a nominal fee is charged: Yes.",
+  "source_url": "https://www.immigrationadvocates.org/embedded/iamerica/organization.393338-Catholic_Charities_of_the_Archdiocese_of_GalvestonHouston_St_Frances_Cabri",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "ymca-international-services-legal",
+  "name": "YMCA of Greater Houston - International Services (Immigration Legal Services)",
+  "category": [
+   "legal"
+  ],
+  "address": "3110 Hayes Road, Suite 300, Houston, TX 77082",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Legal consultations by appointment only",
+    "source_quote": "Legal consultations are available by appointment only."
+   }
+  ],
+  "services": "Immigration legal consultations",
+  "languages": [
+   "ar",
+   "en",
+   "fr",
+   "es"
+  ],
+  "phone": "713-758-9280",
+  "notes": "Third-party directory; quote was reported by fetch tool, verify.",
+  "source_url": "https://www.immigrationadvocates.org/nonprofit/legaldirectory/organization.393379-YMCA_of_Greater_Houston_International_Services",
+  "last_verified": null,
+  "needs_review": true
+ }
+]
