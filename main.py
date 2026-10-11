@@ -26,6 +26,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 import brain
 import db
 import eligibility
+import google_transit
 import location
 import matching
 import transit
@@ -302,12 +303,20 @@ def log_request(channel, need, language, lat, lng, options, text):
 
 
 def bus_for(session, place):
-    """The METRO route from where the person is to `place`, or None (no coordinates, no ride, or an error)."""
+    """The bus route from where the person is to `place`, or None (no coordinates, no ride, or an error).
+
+    Google Maps goes first when a key is set. When it gives no bus route, the METRO schedule is the backup.
+    """
     origin_lat, origin_lng = session["lat"], session["lng"]
     to_lat, to_lng = place.get("lat"), place.get("lng")
     if None in (origin_lat, origin_lng, to_lat, to_lng):
         return None
     try:
+        if google_transit.enabled():
+            found = google_transit.directions(origin_lat, origin_lng, to_lat, to_lng,
+                                              language=session["language"])
+            if found is not None:
+                return found
         return transit.directions(origin_lat, origin_lng, to_lat, to_lng)
     except Exception:
         log.exception("bus directions failed")
@@ -391,8 +400,8 @@ distance_phrase = brain.distance_phrase
 
 
 def bus_data_available():
-    """False when there is no bus data at all: no database and no local transit file."""
-    return db.enabled() or transit.LOCAL_PATH.exists()
+    """False when there is no bus data at all: no Google key, no database and no local transit file."""
+    return google_transit.enabled() or db.enabled() or transit.LOCAL_PATH.exists()
 
 
 # ---------------------------------------------------------------------------

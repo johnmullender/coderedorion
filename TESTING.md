@@ -54,7 +54,7 @@ If you already cloned the repo before, run `git pull` inside `coderedorion` to g
 ```bash
 python -m pytest -q
 ```
-**Expect:** `540 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
+**Expect:** `572 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
 
 ## 2. Start the server
 
@@ -333,11 +333,14 @@ The app only asks about rules that the place's own page states. A place with no 
    **Expect:** if the top places have rules, the reply is a yes/no question and `"asking"` is not null. Answer with `yes`, `no`, `skip` (or `sí`, `không`, `不知道`…) as the next `text` with the same `session_id`. A "no" removes places that need that rule. At most 3 questions, then the answer.
 3. In the kiosk, a question shows `Yes or No?` on the LCD. **Short press = yes, long press = no.**
 
-## 14. Bus directions (METRO)
+## 14. Bus directions (Google Maps, then METRO)
 
-1. Load METRO's schedule into Tiger Data once (needs `DATABASE_URL`): `python scripts/load_gtfs.py`. Without a database you can save the stops near the station instead: `python scripts/load_gtfs.py --local 29.7199 -95.3422`.
-2. Ask for a place, then `how do I get there?` (or `bus`, `¿cómo llego?`).
-3. **Expect:** "To Sample Pantry: Bus 54 from … 4:12PM, 6 stops …" in the person's language, and `"transit"` filled in the JSON. The kiosk LCD alternates `Option 1/3 0.9mi` and `Bus 54 4:12PM`. The replies in step 3 never carry a bus line; only this question does, and `"transit"` is `null` before it.
+Bus directions come from Google Maps first. The METRO schedule is the backup.
+
+1. **Google key (optional but best):** get the key as the README's "Bus directions (Google Maps)" section says, put `GOOGLE_MAPS_API_KEY=...` in `.env`, and restart the server.
+2. **METRO backup (optional):** load METRO's schedule into Tiger Data once (needs `DATABASE_URL`): `python scripts/load_gtfs.py`. Without a database you can save the stops near the station instead: `python scripts/load_gtfs.py --local 29.7199 -95.3422`. You can skip this if the Google key is set.
+3. Ask for a place, then `how do I get there?` (or `bus`, `¿cómo llego?`).
+4. **Expect:** a route with the bus number, for example "To Sample Pantry: Bus 54 from … 4:12PM, 6 stops …" in the person's language, and `"transit"` filled in the JSON. The kiosk LCD alternates `Option 1/3 0.9mi` and `Bus 54 4:12PM`. The replies in step 3 never carry a bus line; only this question does, and `"transit"` is `null` before it.
 4. **Late at night:** with no bus in the next 90 minutes, the reply says "No buses are running now. The first one: Bus 54 … 5:12AM …" (the first ride in the next 24 hours), and `"transit"` has `"later": true`.
 5. **No route at all:** the reply names the place, for example "No direct bus or transfer found to Sample Pantry (0.9 miles away)." It does not name stops, because the nearest stop may not have a bus to the place. On SMS it ends with a Google Maps transit link (`https://www.google.com/maps/dir/?api=1&origin=…&destination=…&travelmode=transit`). The kiosk gets no link.
 6. **No bus data loaded:** "Bus times aren't available right now. Sample Pantry is 0.9 miles away." (SMS also gets the Maps link.)

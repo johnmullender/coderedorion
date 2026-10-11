@@ -747,6 +747,8 @@ _KIOSK = {
                "getting off at {alight} after {stops}, then walk {walk_from} to your destination.",
         "first": "Walk {walk_to} to {board} and take bus {route} toward {headsign} {dep_at}, "
                  "getting off at {alight} after {stops}.",
+        "mid": "Transfer to bus {route} toward {headsign} {dep_at} from {board}, getting off at "
+               "{alight} after {stops}.",
         "last": "Transfer to bus {route} toward {headsign} {dep_at} from {board}, getting off at "
                 "{alight} after {stops}, then walk {walk_from} to your destination.",
     },
@@ -755,6 +757,8 @@ _KIOSK = {
                "bájese en {alight} después de {stops} y luego camine {walk_from} a su destino.",
         "first": "Camine {walk_to} hasta {board} y tome el autobús {route} hacia {headsign} {dep_at}, "
                  "bájese en {alight} después de {stops}.",
+        "mid": "Transborde al autobús {route} hacia {headsign} {dep_at} en {board}, bájese en {alight} "
+               "después de {stops}.",
         "last": "Transborde al autobús {route} hacia {headsign} {dep_at} en {board}, bájese en {alight} "
                 "después de {stops} y luego camine {walk_from} a su destino.",
     },
@@ -763,6 +767,8 @@ _KIOSK = {
                "{alight} sau {stops}, rồi đi bộ {walk_from} đến nơi cần đến.",
         "first": "Đi bộ {walk_to} đến {board}, đi xe buýt {route} hướng {headsign} {dep_at}, xuống tại "
                  "{alight} sau {stops}.",
+        "mid": "Đổi sang xe buýt {route} hướng {headsign} {dep_at} tại {board}, xuống tại {alight} sau "
+               "{stops}.",
         "last": "Đổi sang xe buýt {route} hướng {headsign} {dep_at} tại {board}, xuống tại {alight} sau "
                 "{stops}, rồi đi bộ {walk_from} đến nơi cần đến.",
     },
@@ -771,6 +777,7 @@ _KIOSK = {
                "经过{stops}后步行{walk_from}到达目的地。",
         "first": "步行{walk_to}到{board}，乘坐{route}路公交车（开往{headsign}），{dep_at}上车，在{alight}下车，"
                  "经过{stops}。",
+        "mid": "在{board}换乘{route}路公交车（开往{headsign}），{dep_at}上车，在{alight}下车，经过{stops}。",
         "last": "在{board}换乘{route}路公交车（开往{headsign}），{dep_at}上车，在{alight}下车，经过{stops}后步行"
                 "{walk_from}到达目的地。",
     },
@@ -779,6 +786,8 @@ _KIOSK = {
                "وانزل في {alight} بعد {stops}، ثم امشِ {walk_from} إلى وجهتك.",
         "first": "امشِ {walk_to} إلى {board} ثم اركب الحافلة {route} باتجاه {headsign} {dep_at}، "
                  "وانزل في {alight} بعد {stops}.",
+        "mid": "انتقل إلى الحافلة {route} باتجاه {headsign} {dep_at} من {board}، وانزل في {alight} "
+               "بعد {stops}.",
         "last": "انتقل إلى الحافلة {route} باتجاه {headsign} {dep_at} من {board}، وانزل في {alight} "
                 "بعد {stops}، ثم امشِ {walk_from} إلى وجهتك.",
     },
@@ -951,10 +960,13 @@ def _kiosk_summary(d, language):
     }
     if len(legs) == 1:
         return templates["one"].format(**walks, **_leg_values(legs[0], language, False))
-    first = templates["first"].format(**walks, **_leg_values(legs[0], language, False))
-    last = templates["last"].format(**walks, **_leg_values(legs[-1], language, False))
+    # First bus, one sentence per transfer in between, then the last bus and the walk home.
+    parts = [templates["first"].format(**walks, **_leg_values(legs[0], language, False))]
+    for leg in legs[1:-1]:
+        parts.append(templates["mid"].format(**_leg_values(leg, language, False)))
+    parts.append(templates["last"].format(**walks, **_leg_values(legs[-1], language, False)))
     joiner = "" if language == "zh" else " "
-    return first + joiner + last
+    return joiner.join(parts)
 
 
 def _sms_summary(d, language):
@@ -977,6 +989,8 @@ def summary(d, language, channel):
         return _NO_BUS[lang]["sms" if sms else "kiosk"]
     text = _sms_summary(d, lang) if sms else _kiosk_summary(d, lang)
     if d.get("later"):
-        prefix = (_NEXT_BUS if d.get("buses_running") else _LATER)[lang]
+        # True, or None (Google can't say whether other buses run): "the next bus". False or missing: "no buses running".
+        running = d.get("buses_running", False)
+        prefix = (_NEXT_BUS if running or running is None else _LATER)[lang]
         text = prefix + ("" if lang == "zh" else " ") + text
     return text

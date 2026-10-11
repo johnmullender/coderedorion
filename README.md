@@ -12,7 +12,8 @@ Text one number in any language and get the place in Houston that can help you r
 - `static/dashboard.html`: the live map for the city
 - `arduino/station/station.ino`: the help station firmware (UNO R4 WiFi)
 - `eligibility.py`: yes/no questions from each place's stated rules
-- `transit.py`: the next METRO bus from METRO's published schedule
+- `google_transit.py`: bus directions from Google Maps (the first choice, when a key is set)
+- `transit.py`: the next METRO bus from METRO's published schedule (the backup)
 - `scripts/`: geocode, check quotes against sources, load the METRO schedule
 - `CONTRACT.md`: how all the pieces fit together. `AGENT_LOG.md`: who wrote and reviewed what
 
@@ -35,6 +36,18 @@ Every key is optional. Without a key, that piece falls back:
 | `GEMINI_API_KEY` | Simple keyword rules and fixed-sentence replies in all 5 languages |
 | `DATABASE_URL` (Tiger Cloud service URL) | `data/resources.json` + in-memory request log |
 | `ELEVENLABS_API_KEY` | Chrome's built-in voices and speech recognition |
+| `GOOGLE_MAPS_API_KEY` | Bus directions from the METRO schedule only (see below) |
+
+## Bus directions (Google Maps)
+Bus directions come from Google Maps first. The METRO schedule is the backup.
+1. Go to https://console.cloud.google.com and sign in. Create a project, or select one.
+2. Turn on billing for the project. Google gives a free monthly credit, which covers a demo.
+3. Go to **APIs & Services > Library**, search for **Routes API**, and click **Enable**.
+4. Go to **APIs & Services > Credentials**, click **Create credentials > API key**, and copy the key.
+5. Click the new key, and under **API restrictions** choose **Restrict key**, then pick only **Routes API**. Save.
+6. Put it in `.env` as `GOOGLE_MAPS_API_KEY=` followed by the key, and restart the server.
+
+`load_gtfs.py` (the METRO schedule) is now optional. It is only the backup, for when Google has no route or no key is set.
 
 ## Tiger Data
 1. Create a free service at console.cloud.timescale.com and copy its connection string into `.env` as `DATABASE_URL`.
