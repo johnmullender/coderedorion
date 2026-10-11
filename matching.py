@@ -61,7 +61,7 @@ def _split_range(text):
 def _ranges_for(resource, weekday):
     """All (start, end) minute pairs for one weekday (0 = Monday)."""
     key = DAY_KEYS[weekday]
-    return [_split_range(text) for text in resource.get("hours", {}).get(key, [])]
+    return [_split_range(text) for text in (resource.get("hours") or {}).get(key) or []]
 
 
 def _current_range(resource, when):
@@ -103,7 +103,7 @@ def _has_location(resource):
 
 def _in_need(resource, need):
     """True if the resource lists this need in its categories."""
-    return need in resource.get("category", [])
+    return need in (resource.get("category") or [])
 
 
 def _make_match(resource, lat, lng):

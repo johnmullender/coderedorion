@@ -76,7 +76,7 @@ def test_kiosk_find_returns_options(client, calls):
     assert set(data["options"][0]) == {"n", "id", "name", "address", "distance_mi",
                                        "open_now", "closes_at", "opens_at", "phone"}
     assert set(data) == {"reply", "language", "need", "intent", "options",
-                         "selected", "unmet", "ask_location"}
+                         "selected", "unmet", "ask_location", "asking", "transit"}
     # The kiosk uses the station's fixed spot.
     assert calls[0]["lat"] == location.STATION_LAT and calls[0]["lng"] == location.STATION_LNG
     assert "Pantry A" in data["reply"]

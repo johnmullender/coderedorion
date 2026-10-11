@@ -1,188 +1,3804 @@
 [
-  {
-    "id": "sample-third-ward-pantry",
-    "name": "Sample Third Ward Pantry",
-    "category": ["food"],
-    "address": "123 Example St, Houston, TX 77004",
-    "lat": 29.7205, "lng": -95.3600,
-    "hours": {"mon": ["09:00-12:00", "13:00-17:00"], "tue": [], "wed": ["13:00-18:00"],
-              "thu": [], "fri": ["09:00-12:00"], "sat": [], "sun": []},
-    "requirements": {"id_required": true, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es"],
-    "phone": "713-555-0101",
-    "notes": "SAMPLE DATA ONLY. Closed weekends. Bring a bag.",
-    "source_url": "",
-    "last_verified": null
+ {
+  "id": "san-jose-clinic-midtown",
+  "name": "San José Clinic - Midtown Clinic",
+  "category": [
+   "clinic"
+  ],
+  "address": "2615 Fannin St, Houston, TX 77002",
+  "lat": 29.7447,
+  "lng": -95.37325,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-uh-food-closet",
-    "name": "Sample UH Food Closet",
-    "category": ["food"],
-    "address": "456 Example Ave, Houston, TX 77004",
-    "lat": 29.7215, "lng": -95.3425,
-    "hours": {"mon": ["11:00-19:00"], "tue": ["11:00-19:00"], "wed": ["11:00-19:00"],
-              "thu": ["11:00-19:00"], "fri": ["11:00-19:00"], "sat": ["11:00-19:00"],
-              "sun": ["11:00-19:00"]},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "vi"],
-    "phone": "713-555-0102",
-    "notes": "SAMPLE DATA ONLY. Open every day.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Hours: Monday - Friday: 8 a.m. - 5 p.m.",
+  "eligibility": [],
+  "services": "Clinic serving the uninsured and uninsurable",
+  "languages": [],
+  "phone": "713-228-9411",
+  "notes": "Also open 2nd Saturday of the month 8am-4:30pm (page: 'Saturday Clinic: 2nd Saturday of the Month'). Eligibility page https://www.sanjoseclinic.org/eligibility says low-income uninsured patients must first complete an eligibility interview; not recorded as a rule because it is on a different URL.",
+  "source_url": "https://www.sanjoseclinic.org/locationsandhours",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "healthcare-for-the-homeless-houston",
+  "name": "Healthcare for the Homeless - Houston",
+  "category": [
+   "clinic"
+  ],
+  "address": "1934 Caroline Street, Houston, TX 77002",
+  "lat": 29.74843,
+  "lng": -95.36791,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "tue": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "wed": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "thu": [
+    "08:00-12:00",
+    "13:00-17:00"
+   ],
+   "fri": [
+    "08:00-12:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-midtown-meal-site",
-    "name": "Sample Midtown Meal Site",
-    "category": ["food"],
-    "address": "789 Example Blvd, Houston, TX 77002",
-    "lat": 29.7290, "lng": -95.3700,
-    "hours": {"mon": [], "tue": ["17:00-19:00"], "wed": [], "thu": ["17:00-19:00"],
-              "fri": [], "sat": [], "sun": []},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es", "zh"],
-    "phone": "713-555-0103",
-    "notes": "SAMPLE DATA ONLY. Hot meals, Tuesday and Thursday evenings.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Monday - Thursday 8:00 am - 5:00 pm and Friday 8:00 am - 12:00 pm.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Insurance not required, no co-pay",
+    "source_quote": "Insurance is not required, and you will never be charged a co-pay for services."
+   },
+   {
+    "type": "note",
+    "text": "No ID or proof of homelessness required",
+    "source_quote": "We do not require you to have verification of homelessness or identification."
+   }
+  ],
+  "services": "Healthcare for people experiencing housing instability",
+  "languages": [],
+  "phone": "713-286-6000",
+  "notes": "Page: 'All clinics are closed for lunch from 12:00 - 1:00 pm each day.' After-hours phone support weekdays 5pm-8am and weekends.",
+  "source_url": "https://www.homeless-healthcare.org/contact-us",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-gulfgate",
+  "name": "Harris Health - Gulfgate Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "7550 Office City Drive, Houston, TX 77012",
+  "lat": 29.70065,
+  "lng": -95.28571,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "07:00-16:00"
+   ],
+   "tue": [
+    "07:00-16:00"
+   ],
+   "wed": [
+    "07:00-16:00"
+   ],
+   "thu": [
+    "07:00-16:00"
+   ],
+   "fri": [
+    "07:00-16:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-overnight-shelter",
-    "name": "Sample Overnight Shelter",
-    "category": ["shelter"],
-    "address": "101 Example Way, Houston, TX 77004",
-    "lat": 29.7180, "lng": -95.3580,
-    "hours": {"mon": ["19:00-07:00"], "tue": ["19:00-07:00"], "wed": ["19:00-07:00"],
-              "thu": ["19:00-07:00"], "fri": ["19:00-07:00"], "sat": ["19:00-07:00"],
-              "sun": ["19:00-07:00"]},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es", "vi"],
-    "phone": "713-555-0104",
-    "notes": "SAMPLE DATA ONLY. Overnight beds, doors open at 7 PM.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Monday - Friday, 7 a.m.-4 p.m.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Appointments: schedule through MyHealth or call; bring proper identification",
+    "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
+   }
+  ],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-495-3700",
+  "notes": "Scheduling line 713-526-4243. Third Friday of month noon-4 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/gulfgate-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-settegast",
+  "name": "Harris Health - Settegast Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "9105 North Wayside Drive, Houston, TX 77028",
+  "lat": 29.84503,
+  "lng": -95.28461,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "07:00-16:00"
+   ],
+   "tue": [
+    "07:00-16:00"
+   ],
+   "wed": [
+    "07:00-16:00"
+   ],
+   "thu": [
+    "07:00-16:00"
+   ],
+   "fri": [
+    "07:00-16:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-24-7-shelter",
-    "name": "Sample 24/7 Shelter",
-    "category": ["shelter"],
-    "address": "202 Example Rd, Houston, TX 77004",
-    "lat": 29.7255, "lng": -95.3510,
-    "hours": {"mon": ["00:00-24:00"], "tue": ["00:00-24:00"], "wed": ["00:00-24:00"],
-              "thu": ["00:00-24:00"], "fri": ["00:00-24:00"], "sat": ["00:00-24:00"],
-              "sun": ["00:00-24:00"]},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en"],
-    "phone": "713-555-0105",
-    "notes": "SAMPLE DATA ONLY. Open 24 hours, call ahead for a bed.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Monday - Friday, 7 a.m.-4 p.m.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Appointments: schedule through MyHealth or call 713-526-4243",
+    "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
+   }
+  ],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-633-2020",
+  "notes": "Second Friday of month 1-5 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/settegast-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-vallbona",
+  "name": "Harris Health - Vallbona Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "6630 DeMoss Drive, Houston, TX 77074",
+  "lat": 29.70725,
+  "lng": -95.49971,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-day-shelter",
-    "name": "Sample Day Shelter",
-    "category": ["shelter"],
-    "address": "303 Example Dr, Houston, TX 77004",
-    "lat": 29.7230, "lng": -95.3600,
-    "hours": {"mon": ["08:00-16:00"], "tue": ["08:00-16:00"], "wed": ["08:00-16:00"],
-              "thu": ["08:00-16:00"], "fri": ["08:00-16:00"], "sat": [], "sun": []},
-    "requirements": {"id_required": true, "proof_of_income": true, "zip_restricted": ["77004"]},
-    "languages": ["en", "es"],
-    "phone": "713-555-0106",
-    "notes": "SAMPLE DATA ONLY. Weekdays only. Residents of 77004 first.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Monday - Friday, 8 a.m.-5 p.m.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Appointments: schedule through MyHealth or call 713-526-4243",
+    "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
+   }
+  ],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-272-2600",
+  "notes": "Third Thursday of month 1-5 p.m. Page says Harris Health accepts most insurance plans; no free/sliding statement on page.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/vallbona-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "harris-health-strawberry",
+  "name": "Harris Health - Strawberry Health Center (Pasadena)",
+  "category": [
+   "clinic"
+  ],
+  "address": "927 Shaw Ave, Pasadena, TX 77506",
+  "lat": 29.71272,
+  "lng": -95.20279,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-hygiene-showers",
-    "name": "Sample Hygiene Showers",
-    "category": ["hygiene"],
-    "address": "404 Example Ln, Houston, TX 77004",
-    "lat": 29.7190, "lng": -95.3510,
-    "hours": {"mon": ["08:00-12:00"], "tue": ["08:00-12:00"], "wed": ["08:00-12:00"],
-              "thu": ["08:00-12:00"], "fri": ["08:00-12:00"], "sat": ["08:00-12:00"],
-              "sun": []},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es"],
-    "phone": "713-555-0107",
-    "notes": "SAMPLE DATA ONLY. Towels provided.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Monday through Friday, 8 a.m. to 5 p.m.",
+  "eligibility": [],
+  "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
+  "languages": [],
+  "phone": "713-982-5900",
+  "notes": "In Pasadena (Harris County). Urgent care Mon-Fri 8am-8pm, 713-218-2697. Hours wording was paraphrased by the fetch tool; verify quote.",
+  "source_url": "https://www.harrishealth.org/locations-hh/pages/strawberry-health-center.aspx",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-heights",
+  "name": "Avenue 360 - The Heights",
+  "category": [
+   "clinic"
+  ],
+  "address": "2150 West 18th St, 3rd Fl, Houston, TX 77008",
+  "lat": 29.80155,
+  "lng": -95.43718,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-18:00"
+   ],
+   "tue": [
+    "08:00-18:00"
+   ],
+   "wed": [
+    "08:00-18:00"
+   ],
+   "thu": [
+    "08:00-18:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-hygiene-kit-pickup",
-    "name": "Sample Hygiene Kit Pickup",
-    "category": ["hygiene"],
-    "address": "505 Example Ct, Houston, TX 77002",
-    "lat": 29.7300, "lng": -95.3440,
-    "hours": {"mon": [], "tue": [], "wed": ["10:00-14:00"], "thu": [],
-              "fri": ["10:00-14:00"], "sat": [], "sun": []},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "vi"],
-    "phone": "713-555-0108",
-    "notes": "SAMPLE DATA ONLY. Hygiene kits while supplies last.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Mon–Thu 8am–6pm; Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "713-426-0027",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-midtown",
+  "name": "Avenue 360 - Midtown",
+  "category": [
+   "clinic"
+  ],
+  "address": "2920 Fannin St, Houston, TX 77002",
+  "lat": 29.74285,
+  "lng": -95.37487,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "09:00-18:00"
+   ],
+   "tue": [
+    "09:00-18:00"
+   ],
+   "wed": [
+    "09:00-18:00"
+   ],
+   "thu": [
+    "09:00-18:00"
+   ],
+   "fri": [
+    "09:00-18:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-walk-in-clinic",
-    "name": "Sample Walk-In Clinic",
-    "category": ["clinic"],
-    "address": "606 Example Pl, Houston, TX 77004",
-    "lat": 29.7240, "lng": -95.3455,
-    "hours": {"mon": ["09:00-17:00"], "tue": ["09:00-17:00"], "wed": ["09:00-17:00"],
-              "thu": ["09:00-17:00"], "fri": ["09:00-17:00"], "sat": [], "sun": []},
-    "requirements": {"id_required": true, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es", "zh"],
-    "phone": "713-555-0109",
-    "notes": "SAMPLE DATA ONLY. Walk-ins welcome on weekdays.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Mon–Fri 9am–6pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "713-426-0027",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-spring-cypress",
+  "name": "Avenue 360 - Spring Cypress",
+  "category": [
+   "clinic"
+  ],
+  "address": "17010 Sugar Pine Dr, Houston, TX 77090",
+  "lat": 30.0099,
+  "lng": -95.45922,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-branch-library",
-    "name": "Sample Branch Library",
-    "category": ["library"],
-    "address": "707 Example Cir, Houston, TX 77004",
-    "lat": 29.7225, "lng": -95.3500,
-    "hours": {"mon": ["10:00-20:00"], "tue": ["10:00-20:00"], "wed": ["10:00-20:00"],
-              "thu": ["10:00-20:00"], "fri": ["10:00-17:00"], "sat": ["10:00-14:00"],
-              "sun": []},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es"],
-    "phone": "713-555-0110",
-    "notes": "SAMPLE DATA ONLY. Free Wi-Fi and computers.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Mon–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "281-537-8627",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-humble",
+  "name": "Avenue 360 - Humble",
+  "category": [
+   "clinic"
+  ],
+  "address": "18842 S. Memorial Dr, Ste 206, Humble, TX 77338",
+  "lat": 29.99296,
+  "lng": -95.27603,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-cooling-center",
-    "name": "Sample Cooling Center",
-    "category": ["cooling"],
-    "address": "808 Example Sq, Houston, TX 77002",
-    "lat": 29.7170, "lng": -95.3390,
-    "hours": {"mon": ["09:00-21:00"], "tue": ["09:00-21:00"], "wed": ["09:00-21:00"],
-              "thu": ["09:00-21:00"], "fri": ["09:00-21:00"], "sat": ["09:00-21:00"],
-              "sun": ["09:00-21:00"]},
-    "requirements": {"id_required": false, "proof_of_income": false, "zip_restricted": []},
-    "languages": ["en", "es", "vi", "zh", "ar"],
-    "phone": "713-555-0111",
-    "notes": "SAMPLE DATA ONLY. Air-conditioned room and water.",
-    "source_url": "",
-    "last_verified": null
+  "hours_quote": "Mon–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "281-570-2525",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-memorial-city-pediatrics",
+  "name": "Avenue 360 - Memorial City Pediatrics",
+  "category": [
+   "clinic"
+  ],
+  "address": "902 Frostwood, Suite 142, Houston, TX 77024",
+  "lat": 29.77954,
+  "lng": -95.5477,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-19:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
   },
-  {
-    "id": "sample-legal-aid",
-    "name": "Sample Legal Aid",
-    "category": ["legal"],
-    "address": "909 Example Hwy, Houston, TX 77004",
-    "lat": 29.7285, "lng": -95.3570,
-    "hours": {"mon": [], "tue": ["13:00-16:00"], "wed": [], "thu": ["13:00-16:00"],
-              "fri": [], "sat": [], "sun": []},
-    "requirements": {"id_required": true, "proof_of_income": true, "zip_restricted": []},
-    "languages": ["en", "es"],
-    "phone": "713-555-0112",
-    "notes": "SAMPLE DATA ONLY. Tuesday and Thursday afternoons, bring papers.",
-    "source_url": "",
-    "last_verified": null
-  }
+  "hours_quote": "Mon 8am–7pm; Tue–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "713-827-8266",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "avenue-360-southwest",
+  "name": "Avenue 360 - Southwest",
+  "category": [
+   "clinic"
+  ],
+  "address": "14095 South Main St, Houston, TX 77035",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon–Fri 8am–5pm",
+  "eligibility": [],
+  "services": "Community health center (Avenue 360 Health & Wellness)",
+  "languages": [],
+  "phone": "832-830-8345",
+  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
+  "source_url": "https://www.avenue360.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "el-centro-eastwood",
+  "name": "El Centro de Corazón - Eastwood Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "412 Telephone Rd, Houston, TX 77023",
+  "lat": 29.7379,
+  "lng": -95.33273,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Community health center",
+  "languages": [],
+  "phone": "713-660-1880",
+  "notes": "No hours or eligibility on page; call to confirm.",
+  "source_url": "https://www.elcentrodecorazon.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "el-centro-john-s-dunn",
+  "name": "El Centro de Corazón - John S. Dunn Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "7635 Canal St, Houston, TX 77012",
+  "lat": 29.73578,
+  "lng": -95.28777,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Community health center",
+  "languages": [],
+  "phone": "713-660-1880",
+  "notes": "No hours or eligibility on page; call to confirm.",
+  "source_url": "https://www.elcentrodecorazon.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "el-centro-magnolia",
+  "name": "El Centro de Corazón - Magnolia Health Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "7037 Capitol St, Ste N100, Houston, TX 77011",
+  "lat": 29.73414,
+  "lng": -95.30155,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Community health center",
+  "languages": [],
+  "phone": "713-660-1880",
+  "notes": "No hours or eligibility on page; call to confirm.",
+  "source_url": "https://www.elcentrodecorazon.org/locations",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "legacy-southwest-pediatric-walk-in",
+  "name": "Legacy Community Health - Southwest Pediatric Walk-in Clinic",
+  "category": [
+   "clinic"
+  ],
+  "address": "6441 High Star, Houston, TX 77074",
+  "lat": 29.71059,
+  "lng": -95.4959,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Pediatric walk-in clinic",
+  "languages": [],
+  "phone": "832-548-5000",
+  "notes": "Page says Saturday 8am-8pm and Sunday 12pm-6pm but not as verbatim text; hours left empty. Sliding fee scale described at https://www.legacycommunityhealth.org/eligibility/ (not recorded as a rule).",
+  "source_url": "https://www.legacycommunityhealth.org/locations/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "good-neighbor-healthcare-center",
+  "name": "Good Neighbor Healthcare Center",
+  "category": [
+   "clinic"
+  ],
+  "address": "190 Heights Boulevard, Houston, TX 77007",
+  "lat": 29.77391,
+  "lng": -95.3973,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "income_limit",
+    "question": "Can you show proof of income for a sliding scale payment?",
+    "source_quote": "Payment is on a sliding scale with proof of income."
+   },
+   {
+    "type": "note",
+    "text": "Appointment required",
+    "source_quote": "You must make an appointment."
+   }
+  ],
+  "services": "Sliding-scale healthcare",
+  "languages": [],
+  "phone": "713-529-3597",
+  "notes": "Third-party directory (Texas Criminal Justice Coalition), not official site (official site blocks fetch). Verify. No hours on page.",
+  "source_url": "https://texascjc.org/good-neighbor-healthcare-center",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "hope-clinic-alief",
+  "name": "HOPE Clinic - Alief",
+  "category": [
+   "clinic"
+  ],
+  "address": "13930 Bellaire Blvd, Houston, TX 77083",
+  "lat": 29.70392,
+  "lng": -95.6302,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "11:00-19:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday,8:00am To 5:00pm",
+  "eligibility": [],
+  "services": "HOPE Clinic Alief office",
+  "languages": [],
+  "phone": "713-773-0803",
+  "notes": "CDC directory listing, not official site. Page says 'Contact organization for eligibility'. Other days listed as e.g. 'Wednesday,11:00am To 7:00pm'.",
+  "source_url": "https://npin.cdc.gov/organization/hope-clinic-2",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "lone-star-legal-aid-houston",
+  "name": "Lone Star Legal Aid - Houston Office",
+  "category": [
+   "legal"
+  ],
+  "address": "1415 Fannin Street, Houston, TX 77002",
+  "lat": 29.75327,
+  "lng": -95.36646,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "8:00 a.m. – 5:00 p.m.",
+  "eligibility": [
+   {
+    "type": "residency",
+    "area": "Harris County",
+    "source_quote": "Harris"
+   },
+   {
+    "type": "note",
+    "text": "Accepts walk-in, online, and phone applications; phone intake Mon-Thu 8:30am-2:30pm",
+    "source_quote": "Lone Star Legal Aid accepts walk-in, online, and phone applications."
+   }
+  ],
+  "services": "Free civil legal aid",
+  "languages": [],
+  "phone": "713-652-0077",
+  "notes": "Page states no income limit. Residency quote 'Harris' is the 'Counties Served' value - weak, verify.",
+  "source_url": "https://www.lonestarlegal.org/office/houston-office/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "houston-volunteer-lawyers",
+  "name": "Houston Volunteer Lawyers",
+  "category": [
+   "legal"
+  ],
+  "address": "1111 Bagby Street, Suite FLB 300, Houston, TX 77002",
+  "lat": 29.75917,
+  "lng": -95.37072,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Flexible, Monthly Saturday Legal Advice Clinics from 8:30 am until approximately 1 pm",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Cases screened for client financial eligibility",
+    "source_quote": "HVL screens all cases for merit and client financial eligibility."
+   }
+  ],
+  "services": "Free legal help for low-income people",
+  "languages": [],
+  "phone": "713-228-0735",
+  "notes": "Third-party directory (probono.net). No weekly hours.",
+  "source_url": "https://www.probono.net/oppsguide/organization.135834?print=1",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "tsu-thurgood-marshall-legal-clinic",
+  "name": "Thurgood Marshall School of Law (TSU) - Legal Clinic",
+  "category": [
+   "legal"
+  ],
+  "address": "3100 Cleburne Street, STE 100, Houston, TX 77004",
+  "lat": 29.72464,
+  "lng": -95.36266,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-16:00"
+   ],
+   "tue": [
+    "08:00-16:00"
+   ],
+   "wed": [
+    "08:00-16:00"
+   ],
+   "thu": [
+    "08:00-16:00"
+   ],
+   "fri": [
+    "08:00-16:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Their office hours are Monday – Friday, 8:00 am to 4:00 pm.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Legal representation for people who cannot afford a lawyer",
+    "source_quote": "The legal service component focuses on providing legal representation to people who cannot afford to hire a lawyer."
+   }
+  ],
+  "services": "Criminal Defense/Title IX, Family Law, Immigration Law, and Wills, Probate, and Guardianship clinics",
+  "languages": [],
+  "phone": "713-313-7275",
+  "notes": "Another page (hlrs.org) says family/wills/criminal clinics only accept Harris County cases and screen by Federal Poverty Guidelines.",
+  "source_url": "https://tmslaw.libanswers.com/faq/413386",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "uh-law-immigration-clinic",
+  "name": "University of Houston Law Center - Immigration Clinic",
+  "category": [
+   "legal"
+  ],
+  "address": "4170 Martin Luther King Blvd, Houston, TX 77204",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Immigration Clinic representing immigrants who are victims of torture and persecution",
+  "languages": [],
+  "phone": "713-743-2094",
+  "notes": "No hours on page; phone is 'Legal Clinics' line.",
+  "source_url": "https://www.law.uh.edu/clinic/immi.asp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "stcl-sorrels-legal-clinics",
+  "name": "South Texas College of Law Houston - Randall O. Sorrels Legal Clinics",
+  "category": [
+   "legal"
+  ],
+  "address": "1303 San Jacinto St, 10th Floor, Houston, TX 77002",
+  "lat": 29.75357,
+  "lng": -95.36496,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:30-17:00"
+   ],
+   "tue": [
+    "08:30-17:00"
+   ],
+   "wed": [
+    "08:30-17:00"
+   ],
+   "thu": [
+    "08:30-17:00"
+   ],
+   "fri": [
+    "08:30-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday: 8:30 am – 5 pm",
+  "eligibility": [],
+  "services": "Free legal services to underserved populations",
+  "languages": [],
+  "phone": "713-646-2990",
+  "notes": "Address from https://www.stcl.edu/venue/randall-o-sorrels-legal-clinics/ (phone 713-659-8040 there). Experiential-ed page says clinics 'offer free legal services to underserved populations'; hours pertain to that page.",
+  "source_url": "https://www.stcl.edu/academics/experiential-education/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "catholic-charities-cabrini-immigrant-legal",
+  "name": "Catholic Charities Galveston-Houston - St. Frances Cabrini Center for Immigrant Legal Assistance",
+  "category": [
+   "legal"
+  ],
+  "address": "5599 San Felipe St, Suite 300, Houston, TX 77056",
+  "lat": 29.74998,
+  "lng": -95.47442,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Low-cost or free immigration representation",
+    "source_quote": "low-cost or free representation in immigration cases for families"
+   }
+  ],
+  "services": "Immigration legal help",
+  "languages": [
+   "ar",
+   "en",
+   "fr",
+   "pt",
+   "es",
+   "ur"
+  ],
+  "phone": "713-595-4100",
+  "notes": "Third-party directory; no hours; page says a nominal fee is charged: Yes.",
+  "source_url": "https://www.immigrationadvocates.org/embedded/iamerica/organization.393338-Catholic_Charities_of_the_Archdiocese_of_GalvestonHouston_St_Frances_Cabri",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "ymca-international-services-legal",
+  "name": "YMCA of Greater Houston - International Services (Immigration Legal Services)",
+  "category": [
+   "legal"
+  ],
+  "address": "3110 Hayes Road, Suite 300, Houston, TX 77082",
+  "lat": 29.73027,
+  "lng": -95.57577,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Legal consultations by appointment only",
+    "source_quote": "Legal consultations are available by appointment only."
+   }
+  ],
+  "services": "Immigration legal consultations",
+  "languages": [
+   "ar",
+   "en",
+   "fr",
+   "es"
+  ],
+  "phone": "713-758-9280",
+  "notes": "Third-party directory; quote was reported by fetch tool, verify.",
+  "source_url": "https://www.immigrationadvocates.org/nonprofit/legaldirectory/organization.393379-YMCA_of_Greater_Houston_International_Services",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "christian-rescue-mission-3229-hadley",
+  "name": "Christian Rescue Mission",
+  "category": [
+   "food"
+  ],
+  "address": "3229 Hadley St #A, Houston, TX 77004",
+  "lat": 29.73615,
+  "lng": -95.35222,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "10:00-12:00"
+   ],
+   "wed": [
+    "10:00-12:00"
+   ],
+   "thu": [
+    "10:00-12:00"
+   ],
+   "fri": [
+    "10:00-12:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Hours of operation: Tues – F: 10 a -12 p",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-659-7750",
+  "notes": "",
+  "source_url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "manna-house-third-ward-food",
+  "name": "Manna House Third Ward Food",
+  "category": [
+   "food"
+  ],
+  "address": "3118 Blodgett St, Houston, TX 77004",
+  "lat": 29.72133,
+  "lng": -95.36638,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "09:00-13:00"
+   ],
+   "fri": [
+    "09:00-13:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Hours of operation: Thursday and Friday 9 am to 1 pm",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77004"
+    ],
+    "source_quote": "County or Zip Codes Served: 77004 zip code."
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-529-3381",
+  "notes": "",
+  "source_url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "city-wide-club-elgin",
+  "name": "City Wide Club (Elgin St)",
+  "category": [
+   "food"
+  ],
+  "address": "3701 Elgin St, Houston, TX 77004",
+  "lat": 29.72794,
+  "lng": -95.34804,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "10:00-13:00"
+   ],
+   "wed": [
+    "10:00-13:00"
+   ],
+   "thu": [
+    "10:00-13:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Hours of operation: Tues – Th 10 a-1 p",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-752-2582",
+  "notes": "",
+  "source_url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "city-wide-club-san-jacinto",
+  "name": "City Wide Club (San Jacinto St)",
+  "category": [
+   "food"
+  ],
+  "address": "4101 San Jacinto St #206, Houston, TX 77004",
+  "lat": 29.73493,
+  "lng": -95.37975,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "10:00-13:00"
+   ],
+   "wed": [
+    "10:00-13:00"
+   ],
+   "thu": [
+    "10:00-13:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Hours of operation: Tues – Th 10 a-1 p",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-523-4904",
+  "notes": "",
+  "source_url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "wheeler-avenue-baptist-pantry",
+  "name": "Wheeler Avenue Baptist Church Food Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "3826 Wheeler Ave, Houston, TX 77004",
+  "lat": 29.71951,
+  "lng": -95.35231,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "09:00-13:00"
+   ],
+   "fri": [
+    "09:00-13:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Hours of operation: Thursday and Friday 9 am to 1 pm",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77004"
+    ],
+    "source_quote": "If outside the 77004 zip code Wheeler Church first to learn if you are eligible."
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-748-5240",
+  "notes": "Page lists pantry at 3118 1/2 Blodgett St, Houston, TX 77004; church is at 3826 Wheeler Ave. Confirm location.",
+  "source_url": "https://www.houstoncasemanagers.com/3rd-ward-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "christian-community-service-center-mercer",
+  "name": "Christian Community Services Center",
+  "category": [
+   "food"
+  ],
+  "address": "3230 Mercer St, Houston, TX 77027",
+  "lat": 29.73711,
+  "lng": -95.43221,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "10:00-14:00"
+   ],
+   "tue": [
+    "10:00-14:00"
+   ],
+   "wed": [
+    "10:00-14:00"
+   ],
+   "thu": [
+    "10:00-14:00"
+   ],
+   "fri": [
+    "10:00-14:00"
+   ],
+   "sat": [
+    "09:00-12:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "M – F 10a – 2 pm Sat 9 a  – 12 p (food and clothing only",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Serves listed zip codes (77002, 77003, 77004, 77005, 77006 and others); see page",
+    "source_quote": "County or Zip Codes Served: W-SW: 77002, 77003, 77004, 77005, 77006"
+   }
+  ],
+  "services": "Food and clothing",
+  "languages": [],
+  "phone": "713-961-3993",
+  "notes": "Exact spacing of hours_quote may differ slightly; a reader comment on source lists different hours.",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "emergency-aid-coalition-fannin",
+  "name": "Emergency Aid Coalition",
+  "category": [
+   "food"
+  ],
+  "address": "5401 Fannin St, Houston, TX 77004",
+  "lat": 29.72664,
+  "lng": -95.38756,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:30-12:00"
+   ],
+   "tue": [
+    "08:30-12:00"
+   ],
+   "wed": [
+    "08:30-12:00"
+   ],
+   "thu": [
+    "08:30-12:00"
+   ],
+   "fri": [
+    "08:30-12:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "You should arrive at 8:30 a.m. Monday-Friday to be served.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Does not provide groceries to clients who are homeless",
+    "source_quote": "Does not provide groceries to clients who are homeless."
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-528-3663",
+  "notes": "Other sources say open 9:00-12:00; arrive by 8:30.",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "guadalupe-center-pan-de-vida",
+  "name": "Guadalupe Center Market (Catholic Charities)",
+  "category": [
+   "food"
+  ],
+  "address": "326 S Jensen Dr, Houston, TX 77003",
+  "lat": 29.76031,
+  "lng": -95.34444,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "09:00-12:00"
+   ],
+   "wed": [
+    "09:00-12:00"
+   ],
+   "thu": [
+    "09:00-12:00"
+   ],
+   "fri": [
+    "09:00-12:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Wednesday: Walk-up clients, 9:00 AM – 12:00 PM",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Registration required; not a walk-in pantry",
+    "source_quote": "You must register to request food; we are NOT a walk-in food pantry."
+   }
+  ],
+  "services": "Food market/pantry by registration",
+  "languages": [],
+  "phone": "713-251-6919",
+  "notes": "Tue drive-thru only; Fri only Food for Change enrollees; Thu walk-up.",
+  "source_url": "https://catholiccharities.org/food",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "gulf-coast-community-services-kirby",
+  "name": "Gulf Coast Community Services Association",
+  "category": [
+   "food"
+  ],
+  "address": "9320 Kirby Dr, Houston, TX 77054",
+  "lat": 29.6693,
+  "lng": -95.41301,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "09:00-12:00",
+    "13:00-17:00"
+   ],
+   "tue": [
+    "09:00-12:00",
+    "13:00-17:00"
+   ],
+   "wed": [
+    "09:00-12:00",
+    "13:00-17:00"
+   ],
+   "thu": [
+    "09:00-12:00",
+    "13:00-17:00"
+   ],
+   "fri": [
+    "09:00-12:00",
+    "13:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday through Friday, 9:00 AM to 12:00 PM and 1:00 PM to 5:00 PM.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Assistance offered one time per year",
+    "source_quote": "Assistance is offered one time per year."
+   }
+  ],
+  "services": "Food assistance",
+  "languages": [],
+  "phone": "713-393-4700",
+  "notes": "Closed noon-1 PM per quote.",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "marthas-kitchen",
+  "name": "Martha's Kitchen",
+  "category": [
+   "food"
+  ],
+  "address": "322 S. Jensen, Houston, TX 77003",
+  "lat": 29.76027,
+  "lng": -95.34448,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "11:30-12:30"
+   ],
+   "tue": [
+    "11:30-12:30"
+   ],
+   "wed": [
+    "11:30-12:30"
+   ],
+   "thu": [
+    "11:30-12:30"
+   ],
+   "fri": [
+    "11:30-12:30"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "open Monday through Friday from 11:30 am to 12:30 pm",
+  "eligibility": [],
+  "services": "Hot meals",
+  "languages": [],
+  "phone": "713-224-2522",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "the-beacon-meals",
+  "name": "The Beacon",
+  "category": [
+   "food"
+  ],
+  "address": "1212 Prairie St, Houston, TX 77002",
+  "lat": 29.75957,
+  "lng": -95.36008,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Free meals (laundry and showers) are served Tuesday through Saturday.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Open to individuals experiencing homelessness or anyone in immediate need",
+    "source_quote": "They are open to individuals experiencing homelessness or anyone in immediate need."
+   }
+  ],
+  "services": "Free meals, laundry and showers",
+  "languages": [],
+  "phone": "713-220-9737",
+  "notes": "No meal times on page; call to confirm.",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "heights-interfaith-ministries-pantry",
+  "name": "Heights Interfaith Ministries Food Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "3523 Beauchamp St, Houston, TX 77009",
+  "lat": 29.78951,
+  "lng": -95.37424,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "16:00-18:00"
+   ],
+   "fri": [],
+   "sat": [
+    "10:00-12:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "Thursdays, 4 PM to 6 PM or Sell Out, Saturdays, 10 AM to 12 PM or Sell Out",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-861-6155",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "st-joseph-catholic-kane",
+  "name": "St. Joseph Catholic Church Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "1505 Kane St, Houston, TX 77007",
+  "lat": 29.7661,
+  "lng": -95.37244,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "09:00-12:00"
+   ],
+   "tue": [],
+   "wed": [
+    "10:00-14:00"
+   ],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday 9:00 a.m. – 12:00 p.m. , Wednesday 10:00 a.m. – 2:00 p.m",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77007",
+     "77008",
+     "77009"
+    ],
+    "source_quote": "County or Zip Codes Served: 77007, 77008, 77009"
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-222-8903",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "all-saints-catholic-heights",
+  "name": "All Saints Catholic Church Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "215 E 10th St, Houston, TX 77008",
+  "lat": 29.78893,
+  "lng": -95.39616,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "09:00-10:30"
+   ],
+   "tue": [
+    "09:00-10:30"
+   ],
+   "wed": [
+    "09:00-10:30",
+    "18:00-19:30"
+   ],
+   "thu": [
+    "09:00-10:30"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday through Thursday, 9-10:30 am, plus Wednesday, 6-7:30 pm.",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77007",
+     "77008"
+    ],
+    "source_quote": "Heights Area – 77007 and 77008"
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-864-2653",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "annette-strawder-here-to-help",
+  "name": "Annette Strawder Here To Help Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "835 W 23rd St, Houston, TX 77008",
+  "lat": 29.80686,
+  "lng": -95.41303,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "10:00-14:00"
+   ],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Tuesday 10:00 am – 2:00 pm",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-862-5117",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "immaculate-conception-harrisburg",
+  "name": "Immaculate Conception Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "7250 Harrisburg Blvd, Houston, TX 77011",
+  "lat": 29.73394,
+  "lng": -95.29682,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "09:30-11:30"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Every Thursday 9:30 am – 1130 am",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77011",
+     "77012"
+    ],
+    "source_quote": "County or Zip Codes Served: 77011, 77012"
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-921-1261",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "windsor-village-church-pantry",
+  "name": "Windsor Village Church Family Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "6011 W Orem Dr, Houston, TX 77085",
+  "lat": 29.62724,
+  "lng": -95.46941,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "09:00-11:00"
+   ],
+   "wed": [
+    "09:00-11:00"
+   ],
+   "thu": [
+    "10:30-12:30"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Tuesday -Wednesday 9 am to 11 am. Thursday 1030 am to 1230 pm",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-723-8187",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "braes-interfaith-ministries",
+  "name": "Braes Interfaith Ministries",
+  "category": [
+   "food"
+  ],
+  "address": "4300 W Bellfort Blvd, Houston, TX 77035",
+  "lat": 29.67326,
+  "lng": -95.44859,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "10:00-14:00"
+   ],
+   "tue": [],
+   "wed": [
+    "10:00-14:00"
+   ],
+   "thu": [],
+   "fri": [
+    "10:00-14:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon, Wed, Fri 10 am – 2 pm. You are encouraged to arrive prior to 1 pm.",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-723-2671",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "east-spring-branch-food-pantry",
+  "name": "East Spring Branch Food Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "7901 Westview Dr, Houston, TX 77055",
+  "lat": 29.79485,
+  "lng": -95.48499,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "11:00-14:00"
+   ],
+   "tue": [
+    "11:00-14:00"
+   ],
+   "wed": [],
+   "thu": [
+    "11:00-14:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mondays, Tuesdays, and Thursdays from 11:00 AM to 2:00 PM",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77024",
+     "77041",
+     "77043",
+     "77055",
+     "77080",
+     "77092"
+    ],
+    "source_quote": "County or Zip Codes Served: 77024, 77041, 77043, 77055, 77080 or 77092"
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-464-0852",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "north-channel-assistance-ministries",
+  "name": "North Channel Assistance Ministries",
+  "category": [
+   "food"
+  ],
+  "address": "13837 Bonham St, Houston, TX 77015",
+  "lat": 29.77619,
+  "lng": -95.17878,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "08:00-14:00"
+   ],
+   "wed": [
+    "08:00-14:00"
+   ],
+   "thu": [
+    "08:00-14:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Tuesday , Wednesday, Thursday 8 a-2 p",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "346-226-2105",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "target-hunger-lyons",
+  "name": "Target Hunger",
+  "category": [
+   "food"
+  ],
+  "address": "3300 Lyons Ave, Suite 103, Houston, TX 77020",
+  "lat": 29.77593,
+  "lng": -95.3377,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "09:00-17:00"
+   ],
+   "tue": [
+    "09:00-17:00"
+   ],
+   "wed": [
+    "09:00-17:00"
+   ],
+   "thu": [
+    "09:00-17:00"
+   ],
+   "fri": [
+    "09:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "M – F: 9 am to 5 pm",
+  "eligibility": [
+   {
+    "type": "zip_in",
+    "zips": [
+     "77016",
+     "77020",
+     "77026",
+     "77028",
+     "77078"
+    ],
+    "source_quote": "County or Zip Codes Served: 77016, 77020, 77026, 77028 and 77078"
+   }
+  ],
+  "services": "Food distribution",
+  "languages": [],
+  "phone": "832-767-1677",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "westbury-church-of-christ-pantry",
+  "name": "Westbury Church of Christ Pantry",
+  "category": [
+   "food"
+  ],
+  "address": "10424 Hillcroft St, Houston, TX 77096",
+  "lat": 29.66807,
+  "lng": -95.49231,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [
+    "10:00-12:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "Saturdays 10 am to 12 pm. You can come once per month.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Can come once per month",
+    "source_quote": "You can come once per month."
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-729-7880",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "touch-of-gods-love-outreach",
+  "name": "A Touch of God's Love Outreach",
+  "category": [
+   "food"
+  ],
+  "address": "10103 Fondren Rd #420, Houston, TX 77096",
+  "lat": 29.6697,
+  "lng": -95.50849,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "10:00-14:00"
+   ],
+   "tue": [
+    "10:00-14:00"
+   ],
+   "wed": [],
+   "thu": [
+    "10:00-14:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Mon./Tue and Thurs. 10:00 am – 2:00 pm (No Appointment Needed)",
+  "eligibility": [],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "346-701-8094",
+  "notes": "",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "wesley-community-center-lee-st",
+  "name": "Wesley Community Center",
+  "category": [
+   "food"
+  ],
+  "address": "1410 Lee St, Houston, TX 77009",
+  "lat": 29.78137,
+  "lng": -95.35372,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Must call to make an appointment Monday through Friday from 8 am to 12 pm.",
+  "eligibility": [
+   {
+    "type": "note",
+    "text": "Must call to make an appointment",
+    "source_quote": "Must call to make an appointment Monday through Friday from 8 am to 12 pm."
+   }
+  ],
+  "services": "Food pantry",
+  "languages": [],
+  "phone": "713-223-8131",
+  "notes": "Hours are appointment-call hours, not open hours.",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "living-water-international-apostolic",
+  "name": "Living Water International Apostolic Ministry",
+  "category": [
+   "food"
+  ],
+  "address": "7802 Jensen Dr, Houston, TX 77093",
+  "lat": 29.82993,
+  "lng": -95.34258,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Food Pantry every 2nd and 4th Thursday from 11 am to 4 pm.",
+  "eligibility": [],
+  "services": "Food pantry (2nd and 4th Thursday)",
+  "languages": [],
+  "phone": "713-384-3816",
+  "notes": "2nd/4th Thursday 11:00-16:00 cannot be encoded in weekly hours.",
+  "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-central-library",
+  "name": "Houston Public Library - Central Library, Jesse H. Jones",
+  "category": [
+   "library"
+  ],
+  "address": "500 McKinney St., Houston, TX 77002",
+  "hours": {
+   "mon": [
+    "12:00-18:00"
+   ],
+   "tue": [
+    "09:00-18:00"
+   ],
+   "wed": [
+    "09:00-18:00"
+   ],
+   "thu": [
+    "09:00-18:00"
+   ],
+   "fri": [
+    "09:00-18:00"
+   ],
+   "sat": [
+    "10:00-18:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1313",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.72343,
+  "lng": -95.35113,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-smith",
+  "name": "Houston Public Library - Smith Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "3624 Scott St., Houston, TX 77004",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2050",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.69852,
+  "lng": -95.33847,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-young",
+  "name": "Houston Public Library - Young Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "5107 Griggs Rd., Houston, TX 77021",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2140",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.65829,
+  "lng": -95.37078,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-johnson",
+  "name": "Houston Public Library - Johnson Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "3517 Reed Rd., Houston, TX 77051",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2550",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.75078,
+  "lng": -95.33494,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-flores",
+  "name": "Houston Public Library - Flores Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "110 North Milby St., Houston, TX 77003",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1780",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.70968,
+  "lng": -95.52036,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-walter",
+  "name": "Houston Public Library - Walter Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "7660 Clarewood Dr., Houston, TX 77036",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2500",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.71072,
+  "lng": -95.49488,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-express-southwest",
+  "name": "HPL Express Southwest",
+  "category": [
+   "library"
+  ],
+  "address": "6400 High Star Dr., Houston, TX 77074",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2660",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.70366,
+  "lng": -95.58895,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-alief-regional",
+  "name": "Houston Public Library - Alief-David M. Henington Regional Library",
+  "category": [
+   "library"
+  ],
+  "address": "11903 Bellaire Blvd, Houston, TX 77072",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "08:00-18:00"
+   ],
+   "wed": [
+    "08:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1820",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.69842,
+  "lng": -95.44006,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-stella-link",
+  "name": "Houston Public Library - McGovern-Stella Link Regional Library",
+  "category": [
+   "library"
+  ],
+  "address": "7405 Stella Link Rd., Houston, TX 77025",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2630",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.61356,
+  "lng": -95.43369,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-vinson",
+  "name": "Houston Public Library - Vinson Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "3810 West Fuqua St., Houston, TX 77045",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2120",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.6678,
+  "lng": -95.31041,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-mancuso",
+  "name": "Houston Public Library - Mancuso Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "6767 Bellfort Ave., Houston, TX 77087",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1920",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.68757,
+  "lng": -95.27489,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-park-place",
+  "name": "Houston Public Library - Park Place Regional Library",
+  "category": [
+   "library"
+  ],
+  "address": "8145 Park Place Blvd., Houston, TX 77017",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1970",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.79446,
+  "lng": -95.3977,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-heights",
+  "name": "Houston Public Library - Heights Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "1302 Heights Blvd., Houston, TX 77008",
+  "hours": {
+   "mon": [
+    "12:00-20:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "12pm – 8pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1810",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.7455,
+  "lng": -95.39058,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-freed-montrose",
+  "name": "Houston Public Library - Freed-Montrose Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "1001 California Street, Houston, TX 77006",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "12:00-20:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1800",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.76403,
+  "lng": -95.27284,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-pleasantville",
+  "name": "Houston Public Library - Pleasantville Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "1520 Gellhorn Dr., Houston, TX 77029",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2330",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.806,
+  "lng": -95.31684,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-kashmere-gardens",
+  "name": "Houston Public Library - McCrane-Kashmere Gardens Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "5411 Pardee St., Houston, TX 77026",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2450",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.73984,
+  "lng": -95.3029,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-stanaker",
+  "name": "Houston Public Library - Stanaker Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "611 S Sgt Macario Garcia Dr., Houston, TX 77011",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2080",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.70635,
+  "lng": -95.28999,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-melcher",
+  "name": "Houston Public Library - Melcher Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "7200 Keller St., Houston, TX 77012",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "12:00-20:00"
+   ],
+   "wed": [
+    "10:00-18:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2480",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.65335,
+  "lng": -95.48073,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-walker",
+  "name": "Houston Public Library - Walker Neighborhood Library",
+  "category": [
+   "library"
+  ],
+  "address": "11630 Chimney Rock Rd, Houston, TX 77035",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-2410",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.78243,
+  "lng": -95.35915,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "hpl-carnegie",
+  "name": "Houston Public Library - Carnegie Neighborhood Library & Center for Learning",
+  "category": [
+   "library"
+  ],
+  "address": "1050 Quitman St., Houston, TX 77009",
+  "hours": {
+   "mon": [
+    "10:00-18:00"
+   ],
+   "tue": [
+    "10:00-18:00"
+   ],
+   "wed": [
+    "12:00-20:00"
+   ],
+   "thu": [
+    "10:00-18:00"
+   ],
+   "fri": [
+    "13:00-17:00"
+   ],
+   "sat": [
+    "10:00-17:00"
+   ],
+   "sun": []
+  },
+  "hours_quote": "10am – 6pm",
+  "services": "Public library (free and open to the public)",
+  "phone": "832-393-1720",
+  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
+  "source_url": "https://calendar.houstonlibrary.org/hours/"
+ },
+ {
+  "lat": 29.72877,
+  "lng": -95.36185,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-third-ward-msc",
+  "name": "Third Ward Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "3611 Ennis St., Houston, TX 77004",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-4051",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/third-ward-multi-service-center"
+ },
+ {
+  "lat": 29.77315,
+  "lng": -95.39728,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-west-end-msc",
+  "name": "West End Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "170 Heights Blvd., Houston, TX 77007",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-5950",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/west-end-multi-service-center"
+ },
+ {
+  "lat": 29.77254,
+  "lng": -95.33044,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-fifth-ward-msc",
+  "name": "Fifth Ward Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "4014 Market St., Houston, TX 77020",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-3800",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/fifth-ward-multi-service-center"
+ },
+ {
+  "lat": 29.61356,
+  "lng": -95.43369,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-hiram-clarke-msc",
+  "name": "Hiram Clarke Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "3810 W. Fuqua St., Houston, TX 77045",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-393-4240",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/hiram-clarke-multi-service-center"
+ },
+ {
+  "lat": 29.73415,
+  "lng": -95.30155,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-magnolia-msc",
+  "name": "Magnolia Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "7037 Capitol St., Houston, TX 77011",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-395-3380",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/magnolia-multi-service-center"
+ },
+ {
+  "lat": 29.85046,
+  "lng": -95.304,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-northeast-msc",
+  "name": "Northeast Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "9720 Spaulding St., Houston, TX 77016",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-395-0470",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/northeast-multi-service-center"
+ },
+ {
+  "lat": 29.65829,
+  "lng": -95.36172,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-sunnyside-msc",
+  "name": "Sunnyside Health and Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "4410 Reed Rd., Houston, TX 77051",
+  "hours": {
+   "mon": [
+    "08:00-17:00"
+   ],
+   "tue": [
+    "08:00-17:00"
+   ],
+   "wed": [
+    "08:00-17:00"
+   ],
+   "thu": [
+    "08:00-17:00"
+   ],
+   "fri": [
+    "08:00-17:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Friday, 8 a.m. – 5:00 p.m.",
+  "services": "City of Houston multi-service center; serves as a cooling center for individuals needing to escape high temperatures (Beat the Heat program, June-October)",
+  "phone": "832-395-0069",
+  "notes": "",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/sunnyside-multi-service-center"
+ },
+ {
+  "lat": 29.85721,
+  "lng": -95.42085,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-acres-homes-msc",
+  "name": "Acres Homes Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "6719 W. Montgomery Rd., Houston, TX 77091",
+  "hours": {
+   "mon": [
+    "08:00-20:30"
+   ],
+   "tue": [
+    "08:00-20:30"
+   ],
+   "wed": [
+    "08:00-20:30"
+   ],
+   "thu": [
+    "08:00-20:30"
+   ],
+   "fri": [
+    "08:00-17:30"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "Monday – Thursday, 8 a.m. – 8:30 p.m.",
+  "services": "City of Houston multi-service center; provides water and snacks as a cooling center for individuals needing to escape high temperatures",
+  "phone": "832-393-4145",
+  "notes": "Friday 8 a.m. - 5:30 p.m. and weekends closed per same page.",
+  "source_url": "https://www.houstonhealth.org/services/multi-service-centers/acres-homes-multi-service-center"
+ },
+ {
+  "lat": 29.70366,
+  "lng": -95.58895,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-alief-nc",
+  "name": "Alief Neighborhood Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "11903 Bellaire Blvd., Houston, TX 77072",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "lat": 29.7728,
+  "lng": -95.30521,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-denver-harbor-msc",
+  "name": "Denver Harbor Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "6402 Market St., Houston, TX 77020",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "lat": 29.80403,
+  "lng": -95.31696,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-kashmere-msc",
+  "name": "Kashmere Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "4802 Lockwood Dr., Houston, TX 77026",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "lat": 29.71072,
+  "lng": -95.49488,
+  "coords_source": "census-webfetch",
+  "eligibility": [],
+  "languages": [],
+  "last_verified": null,
+  "needs_review": true,
+  "id": "cool-southwest-msc",
+  "name": "Southwest Multi-Service Center",
+  "category": [
+   "cooling"
+  ],
+  "address": "6400 High Star Dr., Houston, TX 77074",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "services": "City multi-service center; the City's heat plan says all City multi-service centers function as cooling centers during normal business hours",
+  "phone": null,
+  "notes": "Hours not on this source page; the center's houstonhealth.org page lists Monday - Friday, 8 a.m. - 5 p.m. Call 3-1-1 to confirm.",
+  "source_url": "https://houstontx.gov/citizensnet/2023/HeatEmergencyPlan20230614.html"
+ },
+ {
+  "id": "star-of-hope-mens-development-center",
+  "name": "Star of Hope Mission Men's Development Center",
+  "category": [
+   "shelter"
+  ],
+  "address": "1811 Ruiz St., Houston, TX",
+  "lat": 29.7603,
+  "lng": -95.35184,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-14:00"
+   ],
+   "tue": [
+    "08:00-14:00"
+   ],
+   "wed": [
+    "08:00-14:00"
+   ],
+   "thu": [
+    "08:00-14:00"
+   ],
+   "fri": [
+    "08:00-14:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "8:00am–2:00pm (M–F)",
+  "eligibility": [
+   {
+    "type": "note",
+    "source_quote": "Walk in with required documents.",
+    "text": "Walk in with required documents."
+   },
+   {
+    "type": "note",
+    "source_quote": "Valid ID and Social Security card (if available)",
+    "text": "Valid ID and Social Security card (if available)"
+   },
+   {
+    "type": "note",
+    "source_quote": "Aren’t sex offenders",
+    "text": "Aren’t sex offenders"
+   },
+   {
+    "type": "note",
+    "source_quote": "Don’t have ankle monitors",
+    "text": "Don’t have ankle monitors"
+   }
+  ],
+  "services": "Emergency shelter: A clean bed, hot meals, clothing, and safety when you need it most.",
+  "languages": [],
+  "phone": "713-226-5414",
+  "notes": "Hours are intake hours (Mon-Fri). ZIP not on page. Page also mentions showers.",
+  "source_url": "https://www.sohmission.org/how-we-help/for-men/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "star-of-hope-women-family-center",
+  "name": "Star of Hope Women and Family Development Center at Cornerstone Community",
+  "category": [
+   "shelter"
+  ],
+  "address": "2575 Reed Rd., Houston, TX 77051",
+  "lat": 29.65771,
+  "lng": -95.39011,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "08:00-15:30"
+   ],
+   "tue": [
+    "08:00-15:30"
+   ],
+   "wed": [
+    "08:00-15:30"
+   ],
+   "thu": [
+    "08:00-15:30"
+   ],
+   "fri": [
+    "08:00-15:30"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "8:00am–3:30pm (M–F)",
+  "eligibility": [
+   {
+    "type": "note",
+    "source_quote": "Must be able to care for yourself and not be a harm to yourself or others.",
+    "text": "Must be able to care for yourself and not be a harm to yourself or others."
+   }
+  ],
+  "services": "Emergency shelter for women and their children with meals, hygiene supplies, showers and support",
+  "languages": [],
+  "phone": "713-222-2220",
+  "notes": "Hours are intake hours (Mon-Fri). Exact wording of the care-for-yourself sentence is unverified; needs a script check.",
+  "source_url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "covenant-house-texas-houston",
+  "name": "Covenant House Texas",
+  "category": [
+   "shelter"
+  ],
+  "address": "1111 Lovett Blvd., Houston, TX 77006",
+  "lat": 29.74333,
+  "lng": -95.39278,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "00:00-24:00"
+   ],
+   "tue": [
+    "00:00-24:00"
+   ],
+   "wed": [
+    "00:00-24:00"
+   ],
+   "thu": [
+    "00:00-24:00"
+   ],
+   "fri": [
+    "00:00-24:00"
+   ],
+   "sat": [
+    "00:00-24:00"
+   ],
+   "sun": [
+    "00:00-24:00"
+   ]
+  },
+  "hours_quote": "Open 24/7",
+  "eligibility": [
+   {
+    "type": "age",
+    "source_quote": "Young people ages 18-24",
+    "min": 18,
+    "max": 24
+   }
+  ],
+  "services": "Shelter and services for young people experiencing homelessness",
+  "languages": [],
+  "phone": "713-523-2231",
+  "notes": "Phone 713-523-2231 listed on page for emergency help; shelter campus line 713-630-5601.",
+  "source_url": "https://www.covenanthouse.org/homeless-shelters/houston-texas",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "mission-of-yahweh",
+  "name": "The Mission of Yahweh",
+  "category": [
+   "shelter"
+  ],
+  "address": "10247 Algiers Road, Houston, TX 77041",
+  "lat": 29.84528,
+  "lng": -95.54682,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "serves",
+    "group": "women",
+    "source_quote": "homeless women and children"
+   }
+  ],
+  "services": "Faith-based emergency and transitional shelter for women and children",
+  "languages": [],
+  "phone": "713-466-4785",
+  "notes": "Page has no hours; says to submit the online intake form.",
+  "source_url": "https://missionofyahweh.org/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "hope-center-houston",
+  "name": "Hope Center Houston",
+  "category": [
+   "hygiene"
+  ],
+  "address": "821 Peakwood Drive, Houston, TX 77090",
+  "lat": 30.02082,
+  "lng": -95.44509,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "09:00-13:00"
+   ],
+   "tue": [
+    "09:00-13:00"
+   ],
+   "wed": [
+    "09:00-13:00"
+   ],
+   "thu": [
+    "09:00-13:00"
+   ],
+   "fri": [
+    "09:00-13:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "9:00am – 1:00pm We Welcome our Guests to Enter",
+  "eligibility": [],
+  "services": "Day center for individuals experiencing homelessness: breakfast and lunch, laundry, showers (Mon-Fri), clothing, medical and dental care",
+  "languages": [],
+  "phone": "832-965-5511",
+  "notes": "Page states no eligibility rules. Showers/laundry quote: We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers",
+  "source_url": "https://hopecenterhouston.org/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "the-beacon-day-center",
+  "name": "The Beacon Day Center",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1212 Prairie Street, Houston, TX 77002",
+  "lat": 29.75957,
+  "lng": -95.36008,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "07:00-12:00"
+   ],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "07:00-12:00"
+   ],
+   "fri": [
+    "07:00-12:00"
+   ],
+   "sat": [
+    "07:00-12:00"
+   ],
+   "sun": [
+    "07:00-12:00"
+   ]
+  },
+  "hours_quote": "Services offered Thursday–Monday.",
+  "eligibility": [
+   {
+    "type": "note",
+    "source_quote": "first come, first served",
+    "text": "first come, first served"
+   }
+  ],
+  "services": "Five private showers and full-service laundry (intake starts 7 a.m.), breakfast and lunch",
+  "languages": [],
+  "phone": null,
+  "notes": "Source is Healthcare for the Homeless Resource Hub. Hours range is breakfast 7-9:30 to lunch ending 12 noon; showers/laundry intake from 7 a.m. Page lists no Beacon phone (HHH 713-286-6000). ZIP on page truncated; 77002 from clinic listing.",
+  "source_url": "https://www.homeless-healthcare.org/resourcehub",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-ecclesia",
+  "name": "Moving Waters Mobile Showers at Ecclesia",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1100 Elder St., Houston, TX 77007",
+  "lat": 29.76837,
+  "lng": -95.36759,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [
+    "10:00-14:00"
+   ],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-wheeler-ave-baptist",
+  "name": "Moving Waters Mobile Showers at Wheeler Avenue Baptist Church",
+  "category": [
+   "hygiene"
+  ],
+  "address": "3826 Wheeler Ave, Houston, TX 77004",
+  "lat": 29.71951,
+  "lng": -95.35231,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [
+    "09:00-13:00"
+   ],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-st-joseph",
+  "name": "Moving Waters Mobile Showers at St. Joseph Catholic Church",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1505 Kane Street, Houston, TX 77007",
+  "lat": 29.7661,
+  "lng": -95.37244,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [
+    "09:00-13:00"
+   ],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-emergency-aid-coalition",
+  "name": "Moving Waters Mobile Showers at Emergency Aid Coalition",
+  "category": [
+   "hygiene"
+  ],
+  "address": "5401 Fannin Street, Houston, TX 77004",
+  "lat": 29.72664,
+  "lng": -95.38756,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "10:00-13:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-nam",
+  "name": "Moving Waters Mobile Showers at Northwest Assistance Ministries",
+  "category": [
+   "hygiene"
+  ],
+  "address": "15555 Kuykendahl Rd., Houston, TX 77090",
+  "lat": 30.01145,
+  "lng": -95.46687,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [
+    "10:00-14:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "magnificat-house-houston",
+  "name": "Magnificat House",
+  "category": [
+   "shelter"
+  ],
+  "address": "1410 Elgin St, Houston, TX 77004",
+  "lat": 29.73944,
+  "lng": -95.3735,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Emergency shelter (as listed)",
+  "languages": [],
+  "phone": "713-529-4231",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "salvation-army-center-of-hope-houston",
+  "name": "Salvation Army Center of Hope",
+  "category": [
+   "shelter"
+  ],
+  "address": "1500 Austin Street, Houston, TX 77002",
+  "lat": 29.75113,
+  "lng": -95.36451,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Emergency shelter (Help Card lists women and children; Salvation Army page southernusa.salvationarmy.org/houston/sns calls it a shelter for single men and veterans - conflict, verify)",
+  "languages": [],
+  "phone": "800-725-2769",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "salvation-army-jones-family-residence",
+  "name": "Salvation Army Jones Family Residence",
+  "category": [
+   "shelter"
+  ],
+  "address": "1603 McGowen St, Houston, TX 77004",
+  "lat": 29.74228,
+  "lng": -95.3688,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Housing navigation program for homeless women and families (per Salvation Army sns page); type not specified on Help Card",
+  "languages": [],
+  "phone": "713-650-6530",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Not confirmed to be walk-in emergency shelter.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "open-door-mission-houston",
+  "name": "Open Door Mission",
+  "category": [
+   "shelter"
+  ],
+  "address": "5803 Harrisburg Blvd, Houston, TX 77011",
+  "lat": 29.74043,
+  "lng": -95.31755,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Shelter/transitional housing (as listed)",
+  "languages": [],
+  "phone": "832-962-4256",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Official site not fetchable.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "bay-area-homeless-services",
+  "name": "Bay Area Homeless Services",
+  "category": [
+   "shelter"
+  ],
+  "address": "3406 Wisconsin St, Baytown, TX 77520",
+  "lat": 29.72925,
+  "lng": -95.00815,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Emergency shelter (as listed)",
+  "languages": [],
+  "phone": "281-837-1654",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Baytown, Harris County.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "salvation-army-yarc",
+  "name": "Salvation Army Young Adult Resource Center",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1621 McGowen St, Houston, TX 77004",
+  "lat": 29.7422,
+  "lng": -95.36866,
+  "coords_source": "census-webfetch",
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "age",
+    "source_quote": "Homeless Youths, 18 - 25 Years Of Age",
+    "min": 18,
+    "max": 25
+   }
+  ],
+  "services": "Showers and lockers; laundry facilities; homeless youths 18-25",
+  "languages": [],
+  "phone": "713-752-0677",
+  "notes": "Address and phone come from the CFTH Help Card (https://www.cfthhouston.org/gethelp); the YARC page only shows the area command footer (2407 N Main St, 1-800-SAL-ARMY). No hours on either page.",
+  "source_url": "https://southernusa.salvationarmy.org/houston/yarc",
+  "last_verified": null,
+  "needs_review": true
+ }
 ]

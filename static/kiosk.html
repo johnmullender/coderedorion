@@ -33,6 +33,7 @@
     }
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     margin: 0; padding: 16px; background: var(--bg); color: var(--text);
     font: 18px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -91,6 +92,7 @@
       <button id="longBtn">Long press</button>
       <button id="resetBtn">New person</button>
     </div>
+    <div class="row" id="askHint" hidden></div>
     <div class="row">
       <label for="knob">Knob: <span id="knobValue">0</span></label>
       <input id="knob" type="range" min="0" max="1023" value="0">
@@ -110,6 +112,8 @@
       <dt>Session</dt><dd id="sessionText"></dd>
       <dt>You said</dt><dd id="transcriptText" dir="auto">-</dd>
       <dt>Reply</dt><dd id="replyText" dir="auto">-</dd>
+      <dt>Asking</dt><dd id="askingText">-</dd>
+      <dt>Transit</dt><dd id="transitText">-</dd>
     </dl>
   </div>
 
@@ -161,6 +165,17 @@ const SORRY_TEXT = {
   ar: "عذرًا، لم أفهم ذلك. اضغط على الزر وحاول مرة أخرى.",
 };
 
+// Spoken once after an eligibility question (the reply is read first).
+const ASK_HINT = {
+  en: "Press for yes, hold for no.",
+  es: "Presione para sí, mantenga presionado para no.",
+  vi: "Nhấn để chọn có, giữ để chọn không.",
+  zh: "按一下表示是，长按表示否。",
+  ar: "اضغط للإجابة بنعم، واضغط مطولاً للإجابة بلا.",
+};
+
+const TRANSIT_FLIP_MS = 4 * 1000;  // LCD1 flips between the option line and the bus line
+
 const IDLE_RESET_MS = 60 * 1000;   // 60 s with no input -> start over
 const RECORD_MAX_MS = 8 * 1000;    // stop listening after 8 s
 const ASK_TIMEOUT_MS = 25 * 1000;  // give up on /ask after this
@@ -171,7 +186,8 @@ const TTS_TIMEOUT_MS = 15 * 1000;  // give up on /tts after this
    2. KIOSK STATE (everything the state machine remembers)
    ===================================================================== */
 
-// state is one of: "idle", "listening", "thinking", "answered"
+// state is one of: "idle", "listening", "thinking", "answered", "asking"
+// ("asking" = the reply is a yes/no question: short press = yes, long press = no)
 let state = "idle";
 let lang = "en";                 // English until the first KNOB arrives
 let sessionId = newSessionId();
@@ -185,6 +201,13 @@ let lastKnob = null;             // last raw knob value (0-1023)
 let optionBand = null;           // knob band (1..N) when the answer arrived
 let prevState = "idle";          // where to go back to if listening fails
 let lastActivity = Date.now();   // time of the last button/knob input
+let askRound = 0;                // goes up for every "asking" reply (stale hints check it)
+let lastAskingKey = "";          // latest "asking" key from /ask (debug panel only)
+let lastTransitLine = "";        // one-line transit summary (debug panel only)
+let transitBus = "";             // "Bus 54 4:12PM" for LCD1, "" when there is no transit
+let transitShowBus = false;      // which line LCD1 shows during the transit alternation
+let transitTimer = null;         // the timer that flips LCD1 every TRANSIT_FLIP_MS
+let transitFor = 0;              // the option number the transit answer is about (the server's "selected")
 
 // What the LCD should show (remembered so we can re-send it after a reconnect)
 let lcdRow1 = "";
@@ -400,10 +423,10 @@ function lcd2(text) {
 }
 
 // Scrolling row 2; the whole serial line must fit in 120 chars.
-function scroll2(text) {
+function scroll2(text, fallback) {
   lcdRow2 = toAscii(text).trim().slice(0, 120 - "SCROLL2:".length);
   // Chinese/Arabic text has no ASCII left after stripping: show a hint instead of a blank row.
-  if (!lcdRow2) lcdRow2 = "Press button to ask again";
+  if (!lcdRow2) lcdRow2 = fallback || "Press button to ask again";
   lcdRow2Scroll = true;
   sendLine("SCROLL2:" + lcdRow2);
   drawLcdMirror();
@@ -428,6 +451,15 @@ function showIdleLcd() {
 function showOptionLcd() {
   const opt = options[selected - 1];
   if (!opt) return;
+  showOptionRow1();
+  scroll2((opt.name || "") + " - " + (opt.address || ""));
+}
+
+// LCD row 1 for the selected option ("Option 1/3 0.9mi"), or the bus line during the transit flip.
+function showOptionRow1() {
+  const opt = options[selected - 1];
+  if (!opt) return;
+  if (transitShowBus && transitApplies()) { lcd1(transitBus); return; }
   let row1 = "Option " + selected + "/" + options.length;
   if (opt.distance_mi !== null && opt.distance_mi !== undefined) {
     // 10 mi or more: whole miles, so "Option 1/3 12mi" still fits in 16 chars.
@@ -435,7 +467,28 @@ function showOptionLcd() {
     row1 += " " + (d >= 10 ? Math.round(d) : d.toFixed(1)) + "mi";
   }
   lcd1(row1);
-  scroll2((opt.name || "") + " - " + (opt.address || ""));
+}
+
+// The yes/no question: "Yes or No?" on row 1, the reply scrolling on row 2.
+function showAskingLcd() {
+  lcd1("Yes or No?");
+  scroll2(lastReply, "Press=yes Hold=no");
+}
+
+// First leg of a transit answer as "Bus 54 4:12PM" (12-hour, no space before AM/PM).
+function busLine(t) {
+  const leg = t.legs[0];
+  const time = leg.departs ? to12h(leg.departs).replace(" ", "") : "";
+  return ("Bus " + (leg.route || "") + " " + time).trim();
+}
+
+// One line for the debug panel.
+function transitLine(t) {
+  if (!t) return "-";
+  const leg = t.legs[0];
+  const transfers = t.legs.length > 1 ? " (+" + (t.legs.length - 1) + " transfer)" : "";
+  return "Bus " + leg.route + " " + to12h(leg.departs) + " " + leg.board_stop + " -> " + leg.alight_stop +
+         transfers + ", walk " + t.walk_to_min + "+" + t.walk_from_min + " min, arrive by " + to12h(t.arrive_by);
 }
 
 // The answered screen when there are no options (nothing open / just a reply).
@@ -688,6 +741,7 @@ function stopListening() {
    ===================================================================== */
 
 function setState(newState) {
+  if (newState !== state) stopTransitCycle();   // any state change ends the LCD1 flip
   state = newState;
   render();
 }
@@ -699,6 +753,8 @@ function onShortPress() {
     stopListening();
   } else if (state === "idle" || state === "answered") {
     askQuestion();
+  } else if (state === "asking") {
+    answerYesNo("yes");
   }
   // while "thinking" we ignore the button
 }
@@ -711,6 +767,8 @@ function onLongPress() {
   } else if (state === "answered") {
     if (options.length) speak(allOptionsSentence(), optionSpeechLang());
     else speak(lastReply, lastReplyLang);
+  } else if (state === "asking") {
+    answerYesNo("no");
   }
 }
 
@@ -732,6 +790,7 @@ function onKnob(value) {
       optionBand = band;
       if (band !== selected) {
         selected = band;
+        syncTransitCycle();    // flip only while the option the bus line is for is selected
         showOptionLcd();
         render();
         speak(optionSentence(options[selected - 1], selected), optionSpeechLang());
@@ -796,7 +855,10 @@ async function didNotCatch() {
 }
 
 function backToPrevState() {
-  if (prevState === "answered") {
+  if (prevState === "asking") {
+    setState("asking");
+    showAskingLcd();
+  } else if (prevState === "answered") {
     setState("answered");
     if (options.length) showOptionLcd(); else showReplyOnlyLcd(false);
   } else {
@@ -843,11 +905,79 @@ function showAnswer(data) {
   // Remember where the knob is now, so only a real turn changes the option.
   optionBand = (lastKnob !== null && options.length) ? optionFromKnob(lastKnob, options.length) : null;
 
+  // Yes/no question from the server ("asking" = the question key, or null).
+  const asking = typeof data.asking === "string" && data.asking ? data.asking : null;
+  if (asking) lastAskingKey = asking;
+
+  // Transit directions (null when none): the bus line alternates with the option line on LCD1.
+  const transit = data.transit && Array.isArray(data.transit.legs) && data.transit.legs.length ? data.transit : null;
+  lastTransitLine = transitLine(transit);
+  transitBus = transit ? busLine(transit) : "";
+  transitFor = transit ? selected : 0;   // the bus line describes the option the server answered about
+  transitShowBus = false;
+
+  if (asking) {
+    askRound++;
+    const round = askRound;
+    setState("asking");
+    beep(2);
+    showAskingLcd();
+    // Read the question first, then the one-time hint (skipped if the state changed meanwhile).
+    speak(lastReply, lastReplyLang).then(() => speakAskHint(round));
+    return;
+  }
+
   setState("answered");
   beep(2);
   if (options.length) showOptionLcd();
   else showReplyOnlyLcd(Boolean(data.unmet));
   speak(lastReply, lastReplyLang);
+  syncTransitCycle();
+}
+
+// The bus line applies only while the selected option is the one the server answered about.
+function transitApplies() {
+  return Boolean(transitBus) && selected === transitFor && options.length > 0;
+}
+
+// Run the LCD1 flip while the bus line applies; stop it (showing the option line) otherwise.
+function syncTransitCycle() {
+  if (transitApplies() && state === "answered") {
+    if (!transitTimer) startTransitCycle();
+  } else {
+    stopTransitCycle();
+  }
+}
+
+// Yes (short press) or no (long press) for the pending question: sent as plain text to /ask.
+function answerYesNo(word) {
+  if (state !== "asking") return;
+  touch();
+  stopSpeaking();             // stop reading the question
+  prevState = "asking";
+  sendToServer(word, lastReplyLang);
+}
+
+// The one-time hint after a question, in the language of the reply.
+function speakAskHint(round) {
+  if (state !== "asking" || round !== askRound) return;
+  const code = LANGS[lastReplyLang] ? lastReplyLang : "en";
+  speak(ASK_HINT[code], code);
+}
+
+// LCD1 flips between the option line and the bus line every TRANSIT_FLIP_MS.
+function startTransitCycle() {
+  stopTransitCycle();
+  transitTimer = setInterval(() => {
+    transitShowBus = !transitShowBus;
+    showOptionRow1();
+  }, TRANSIT_FLIP_MS);
+}
+
+function stopTransitCycle() {
+  if (transitTimer) clearInterval(transitTimer);
+  transitTimer = null;
+  transitShowBus = false;
 }
 
 // 60 s with no input: back to the start screen with a new session.
@@ -862,6 +992,11 @@ function resetKiosk() {
   optionBand = null;
   lastReply = "";
   lastTranscript = "";
+  lastAskingKey = "";
+  lastTransitLine = "";
+  transitBus = "";
+  transitFor = 0;
+  stopTransitCycle();
   setState("idle");
   showIdleLcd();
 }
@@ -917,6 +1052,17 @@ function render() {
   document.getElementById("sessionText").textContent = sessionId;
   document.getElementById("transcriptText").textContent = lastTranscript || "-";
   document.getElementById("replyText").textContent = lastReply || "-";
+  document.getElementById("askingText").textContent = lastAskingKey || "-";
+  document.getElementById("transitText").textContent = lastTransitLine || "-";
+
+  // While a yes/no question is pending, the debug buttons say what they send.
+  const asking = state === "asking";
+  document.getElementById("shortBtn").textContent = asking ? "Yes (short press)" : "Short press";
+  document.getElementById("longBtn").textContent = asking ? "No (long press)" : "Long press";
+  const askHint = document.getElementById("askHint");
+  askHint.hidden = !asking;
+  askHint.textContent = "Question asked: short press = yes, long press = no. Or type any answer below (e.g. skip).";
+  document.getElementById("typed").placeholder = asking ? "Type an answer (e.g. skip)" : "Type a question (skips the mic)";
 
   const list = document.getElementById("optionsList");
   list.innerHTML = "";
