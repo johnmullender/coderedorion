@@ -758,3 +758,19 @@ def test_wording_next_bus_when_buses_run_but_none_goes_there():
     for language in ["es", "vi", "zh", "ar"]:
         assert transit.summary(d, language, "kiosk").startswith(transit._NEXT_BUS[language])
         assert transit._NEXT_BUS[language] != transit._LATER[language]
+
+
+def test_search_gives_up_when_over_its_time_budget(monkeypatch):
+    # A slow database must not make the kiosk time out: past the budget, no ride is returned.
+    monkeypatch.setattr(transit, "TIME_BUDGET_SEC", -1)
+    source = FakeSource([make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE")],
+                        services=lambda day: {"TUE"} if day == date(2026, 10, 13) else set())
+    assert ask(at(2026, 10, 12, 16, 0), source) is None
+
+
+def test_service_days_are_looked_up_once_per_search():
+    calls = []
+    source = FakeSource([make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE")],
+                        services=lambda day: calls.append(day) or ({"TUE"} if day == date(2026, 10, 13) else set()))
+    assert ask(at(2026, 10, 12, 16, 0), source) is not None
+    assert len(calls) == len(set(calls))

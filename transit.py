@@ -32,6 +32,8 @@ MAX_WALK_MI = 0.5
 MAX_WAIT_MIN = 90
 LATER_WAIT_MIN = 24 * 60  # when nothing leaves within MAX_WAIT_MIN, look this far ahead for a ride
 LATER_BATCHES = 20  # the 24-hour search reads at most this many batches of MAX_DEPARTURES trips
+LATER_TRANSFER_BATCHES = 3  # the 24-hour search tries transfers from only the first few batches
+TIME_BUDGET_SEC = 8.0  # directions() gives up after this long, so the kiosk never times out
 NEAREST_STOP_MILES = 2.0  # how far to look for the stop nearest a point, when no ride is found
 TRANSFER_MIN_MIN = 2  # minutes needed between getting off one bus and boarding the next
 MAX_DEPARTURES = 40  # per search: the earliest this many trips (one entry per trip) are considered
@@ -399,17 +401,35 @@ def _service_days(start, end):
     return days
 
 
+class _SearchTimeout(Exception):
+    """The search ran past TIME_BUDGET_SEC."""
+
+
 class _Search:
     """Caches trip lookups for one directions() call and turns service days into real times."""
 
-    def __init__(self, source):
+    def __init__(self, source, budget_sec=None):
         self.source = source
         self._trips = {}  # trip_id -> every stop of the trip, in order
+        self._services = {}  # day -> service ids, so each day is looked up once
+        self._deadline = time.monotonic() + (TIME_BUDGET_SEC if budget_sec is None else budget_sec)
+
+    def check_time(self):
+        """Stop the search once the time budget is used up."""
+        if time.monotonic() > self._deadline:
+            raise _SearchTimeout()
+
+    def service_ids(self, day):
+        """The service ids for a day, looked up once per search."""
+        if day not in self._services:
+            self._services[day] = self.source.service_ids(day)
+        return self._services[day]
 
     def load_trips(self, trip_ids):
         """Fetch the stop lists of trips not loaded yet, in one call."""
         missing = {trip_id for trip_id in trip_ids if trip_id not in self._trips}
         if missing:
+            self.check_time()
             found = self.source.trip_stops_after_many(list(missing)) or {}
             for trip_id in missing:
                 self._trips[trip_id] = found.get(trip_id, [])
@@ -435,7 +455,8 @@ class _Search:
             return []
         rows = []
         for day in _service_days(start, end):
-            services = self.source.service_ids(day)
+            self.check_time()
+            services = self.service_ids(day)
             if not services:
                 continue
             origin = _service_origin(day)
@@ -479,7 +500,7 @@ def _board_departures(search, board, now, wait_min=MAX_WAIT_MIN):
     return _usable(search, board, now, search.departures(list(board), earliest, latest), wait_min)
 
 
-def _later_batches(search, board, now):
+def _later_batches(search, board, now, batches=None):
     """Usable departures over the next 24 hours, MAX_DEPARTURES trips at a time, earliest first.
 
     Each batch starts one second after the last departure of the batch before, so no trip is read
@@ -487,7 +508,8 @@ def _later_batches(search, board, now):
     """
     start = now + timedelta(minutes=min(s["walk_min"] for s in board.values()))
     latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + LATER_WAIT_MIN)
-    for _batch in range(LATER_BATCHES):
+    for _batch in range(LATER_BATCHES if batches is None else batches):
+        search.check_time()
         deps = search.departures(list(board), start, latest)
         if not deps:
             return
@@ -634,7 +656,7 @@ def _later_search(search, board, alight, now):
         found = _direct_from(search, board, alight, usable)
         if found is not None:
             return found
-    for usable in _later_batches(search, board, now):
+    for usable in _later_batches(search, board, now, LATER_TRANSFER_BATCHES):
         found = _transfer_from(search, board, alight, usable)
         if found is not None:
             return found
@@ -672,6 +694,9 @@ def directions(from_lat, from_lng, to_lat, to_lng, when=None, source=None):
             later["later"] = True
             later["buses_running"] = _buses_running(search, board, now)
         return later
+    except _SearchTimeout:
+        print(f"Transit directions took over {TIME_BUDGET_SEC:.0f}s, giving up")
+        return None
     except Exception as problem:
         print(f"Transit directions failed: {problem}")
         return None
