@@ -777,22 +777,10 @@ def test_nothing_open_and_nothing_listed_points_to_211(client, world):
 
 
 # ---------------------------------------------------------------------------
-# Bus directions: the place name, the nearest stops, the Maps link, the next day's bus
+# Bus directions: the place name, the Maps link, the next day's bus
 # ---------------------------------------------------------------------------
 
 ROUTE_LATER = dict(ROUTE, later=True)
-
-
-def stops_fake(monkeypatch, names=("Scott@Holman", "Main@Gray")):
-    """Pretend the schedule knows the stops: returns the names for every call (or None when names is None)."""
-    calls = []
-
-    def fake_closest(from_lat, from_lng, to_lat, to_lng, language, channel, source=None):
-        calls.append((from_lat, from_lng, to_lat, to_lng, language, channel))
-        return names
-
-    monkeypatch.setattr(transit, "closest_stops", fake_closest)
-    return calls
 
 
 def test_directions_reply_names_the_place(client, world):
@@ -812,45 +800,31 @@ def test_later_bus_is_said_to_be_the_first_one(client, world):
     assert data["transit"]["later"] is True
 
 
-def test_no_route_says_nearest_stops_by_name_on_sms_with_map_link(client, world, monkeypatch):
+def test_no_route_on_sms_gives_a_map_link_and_no_stop_names(client, world, monkeypatch):
+    # Naming the nearest stops could send someone to a stop with no bus to the place.
     monkeypatch.setattr(main, "bus_data_available", lambda: True)
-    calls = stops_fake(monkeypatch)
     world["resources"] = [make_place("a", 0, name="Sample Pantry", lat=29.7300, lng=-95.3500)]
     world["bus"] = None
     ask(client, "I need food 77004", channel="sms")
     data = ask(client, "how do I get there?", channel="sms")
     assert data["transit"] is None
     assert "No direct bus or transfer found to Sample Pantry" in data["reply"]
-    assert "Nearest stop to you: Scott@Holman." in data["reply"]
-    assert "Nearest stop to Sample Pantry: Main@Gray." in data["reply"]
+    assert "Nearest stop" not in data["reply"]
     link = data["reply"].split("Google Maps transit route: ")[1]
-    origin = calls[-1]
     assert link.startswith("https://www.google.com/maps/dir/?api=1&origin=")
-    assert link == (f"https://www.google.com/maps/dir/?api=1&origin={origin[0]:.6f},{origin[1]:.6f}"
-                    f"&destination=29.730000,-95.350000&travelmode=transit")
+    assert link.endswith("&destination=29.730000,-95.350000&travelmode=transit")
     assert len(data["reply"]) <= 300
 
 
-def test_no_route_on_kiosk_names_stops_without_a_link(client, world, monkeypatch):
+def test_no_route_on_kiosk_names_the_place_without_stops_or_link(client, world, monkeypatch):
     monkeypatch.setattr(main, "bus_data_available", lambda: True)
-    stops_fake(monkeypatch)
-    world["resources"] = [make_place("a", 0, name="Sample Pantry")]
-    world["bus"] = None
-    ask(client, "I need food")
-    data = ask(client, "how do I get there?", channel="kiosk")
-    assert "Nearest stop to you: Scott@Holman." in data["reply"]
-    assert "http" not in data["reply"]
-
-
-def test_no_route_without_stops_still_names_the_place(client, world, monkeypatch):
-    monkeypatch.setattr(main, "bus_data_available", lambda: True)
-    stops_fake(monkeypatch, names=None)
     world["resources"] = [make_place("a", 0, name="Sample Pantry")]
     world["bus"] = None
     ask(client, "I need food")
     data = ask(client, "how do I get there?", channel="kiosk")
     assert "No direct bus or transfer found to Sample Pantry" in data["reply"]
     assert "Nearest stop" not in data["reply"]
+    assert "http" not in data["reply"]
 
 
 def test_bus_times_unavailable_names_the_place_and_links_on_sms(client, world, monkeypatch):
@@ -870,7 +844,6 @@ def test_bus_times_unavailable_names_the_place_and_links_on_sms(client, world, m
 
 def test_long_place_name_keeps_the_map_link_inside_sms_limit(client, world, monkeypatch):
     monkeypatch.setattr(main, "bus_data_available", lambda: True)
-    stops_fake(monkeypatch, names=("A very long stop name " * 4, "Another long stop name " * 4))
     world["resources"] = [make_place("a", 0, name="Name " * 60)]
     world["bus"] = None
     ask(client, "I need food 77004", channel="sms")
@@ -882,7 +855,7 @@ def test_long_place_name_keeps_the_map_link_inside_sms_limit(client, world, monk
 def test_no_route_message_wording_in_every_language(monkeypatch):
     monkeypatch.setattr(brain, "_client", None)
     for language in ["en", "es", "vi", "zh", "ar"]:
-        for key in ["no_bus", "no_bus_stops", "bus_unavailable", "to_place", "map_link", "nothing_open"]:
+        for key in ["no_bus", "bus_unavailable", "to_place", "map_link", "nothing_open"]:
             text = main.message(language, key, name="Pantry", dist="0.2 miles away", start="A", end="B",
                                 text="Bus", link="https://example.org")
             assert "{" not in text and text.strip(), (language, key)
