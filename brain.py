@@ -30,7 +30,7 @@ MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
 LANGUAGES = ["en", "es", "vi", "zh", "ar"]
 NEEDS = ["food", "shelter", "hygiene", "clinic", "library", "cooling", "legal"]
-INTENTS = ["find", "next_option", "followup", "help", "other"]
+INTENTS = ["find", "next_option", "followup", "help", "directions", "other"]
 
 LANGUAGE_NAMES = {
     "en": "English",
@@ -100,6 +100,16 @@ HELP_WORDS = [
     "người", "giúp", "hỗ trợ",
     "人工", "真人", "帮助",
     "مساعدة",
+]
+
+# Phrases that ask how to get to a place or which bus to take (intent "directions").
+DIRECTIONS_WORDS = [
+    "how do i get there", "how can i get there", "how do i get to", "how can i get to",
+    "which bus", "what bus", "how far by bus", "by bus",
+    "cómo llego", "como llego", "qué autobús", "que autobus", "qué bus", "cuál autobús",
+    "làm sao để đến", "đi bằng xe buýt", "xe buýt nào", "đến đó",
+    "怎么去", "坐哪路公交", "怎么走", "公交",
+    "كيف أصل", "أي حافلة", "كيف أذهب", "حافلة",
 ]
 
 # Vietnamese letters that Spanish does not use. Seeing one means Vietnamese.
@@ -249,6 +259,8 @@ Fields:
   - "next_option": the person picks one of the places already listed.
     Example: "2" -> next_option, option_number 2. "option 3" -> option_number 3.
     "the second one" -> option_number 2.
+  - "directions": the person asks how to get to a place, or which bus to take.
+    Example: "how do I get there?" -> directions. "which bus goes there?" -> directions.
   - "followup": a question about the places already given, not a new search.
     Example: "is it open tomorrow?" -> followup. "is it far?" -> followup.
   - "help": the person asks for a human, or 211. Example: "HELP" -> help.
@@ -386,6 +398,8 @@ def _understand_with_rules(text, history):
         intent = "help"
     elif need is not None:
         intent = "find"
+    elif any(_has_word(lowered, phrase) for phrase in DIRECTIONS_WORDS):
+        intent = "directions"
     elif "?" in clean_text:
         intent = "followup"
     else:
