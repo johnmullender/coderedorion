@@ -573,6 +573,8 @@ let listenTimer = null;      // 8 s limit for the recorder
 let recogTimer = null;       // 8 s limit for Chrome recognition
 
 // Get the microphone. Re-use the stream we already have if it is still live.
+let cancelMicWait = null;   // set while waiting for the mic to start
+
 async function getMicStream() {
   const live = micStream && micStream.getAudioTracks().some((t) => t.readyState === "live");
   if (!live) {
@@ -591,10 +593,19 @@ function stopMicTracks() {
 async function recordAudio() {
   let stream;
   try {
-    stream = await getMicStream();
+    // Don't wait forever for the mic: a hidden permission prompt or a mic in use
+    // by another app would leave the station stuck on "Listening...".
+    // A second press (or the 8 s limit) also gives up waiting.
+    stream = await new Promise((resolve, reject) => {
+      cancelMicWait = () => reject(new Error("it never started. Check Chrome's microphone permission (icon in the address bar) and that no other app is using the mic"));
+      setTimeout(() => reject(new Error("it never started. Check Chrome's microphone permission (icon in the address bar) and that no other app is using the mic")), RECORD_MAX_MS);
+      getMicStream().then(resolve, reject);
+    });
   } catch (e) {
     log("err", "Microphone not available: " + e.message);
     return null;
+  } finally {
+    cancelMicWait = null;
   }
   return new Promise((resolve) => {
     const chunks = [];
@@ -677,6 +688,7 @@ function recognizeWithChrome() {
 
 // End listening early (second short press, or either 8 s timer). Ends BOTH the recorder and recognition.
 function stopListening() {
+  if (cancelMicWait) cancelMicWait();
   clearTimeout(listenTimer);
   clearTimeout(recogTimer);
   if (recorder && recorder.state !== "inactive") recorder.stop();

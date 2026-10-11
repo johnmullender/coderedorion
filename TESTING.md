@@ -239,6 +239,7 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
 
 | Problem | Likely cause |
 |---|---|
+| Stuck on "Listening..." or "Microphone not available" in the log | Chrome is waiting for mic permission. Click the mic or lock icon in the address bar, set Microphone to **Allow**, and reload. Also close other apps using the mic (Zoom, FaceTime). In macOS System Settings → Privacy & Security → Microphone, Chrome must be on |
 | `python: command not found` | Turn on the environment with `source .venv/bin/activate`, or use `python3` |
 | `ModuleNotFoundError` | The `.venv` isn't on (no `(.venv)` in your prompt): run `source .venv/bin/activate`. Then `python -m pip install -r requirements.txt` |
 | `error: externally-managed-environment` from pip | You're installing outside the `.venv`. Turn it on first |
