@@ -281,6 +281,22 @@ US trial numbers can't text real phones until Twilio approves the number (see 11
 - Upgrading to a paid account removes the "trial" text and the verified-numbers limit, but US numbers still need registration (toll-free verification or A2P 10DLC).
 - When it's approved: text the Twilio number from your phone with `necesito comida cerca de UH` and expect the same reply as in 11.4.
 
+### 11.5b Real phones tonight: WhatsApp Sandbox (no approval needed)
+
+Twilio's WhatsApp Sandbox lets real phones reach the app right away. The app answers WhatsApp exactly like SMS, so no code changes are needed.
+
+1. In the Twilio Console, open **Messaging → Try it out → Send a WhatsApp message**. Accept the terms if asked.
+2. The page shows the sandbox number (**+1 415 523 8886**) and a code like `join purple-tiger`.
+3. On each phone that will test, open WhatsApp and send that exact `join …` message to +1 415 523 8886. Twilio replies that you've joined. A QR code on the same page does the same thing.
+4. On the same Console page, open **Sandbox settings**. In **When a message comes in**, paste `https://<your-ngrok-address>/sms`, set the method to **POST**, and click **Save**.
+5. From a joined phone, send `necesito comida cerca de UH` on WhatsApp.
+6. **Expect:** a Spanish reply within a few seconds, and a pin on the dashboard. `2`, follow-ups and `AYUDA` work the same as SMS.
+
+Notes:
+- Each phone stays joined for **3 days**. After that, send the `join …` message again.
+- Trial accounts include a limited number of free WhatsApp messages (about 100).
+- **Demo tip:** put the join message and the sandbox number on a slide or a QR code so judges can try it from their own phones.
+
 ### 11.6 If texting doesn't work
 
 | What you see | Fix |
@@ -290,7 +306,8 @@ US trial numbers can't text real phones until Twilio approves the number (see 11
 | ngrok shows `POST /sms 502` | The server isn't running. Start it again in its own terminal |
 | `ERR_NGROK_...` in the ngrok window | Run the `ngrok config add-authtoken` step again |
 | Twilio Console → **Monitor → Logs → Messaging** shows error 11200 | Twilio couldn't load your URL: ngrok or the server is down, or the address changed |
-| Error 30032 / 30034 or "unverified" in the logs (real phone only) | The number isn't approved for US texting yet (11.5). Use the Virtual Phone |
+| Error 30032 / 30034 or "unverified" in the logs (real phone only) | The number isn't approved for US texting yet (11.5). Use the Virtual Phone or WhatsApp (11.5b) |
+| WhatsApp: no reply | Check that the phone sent the `join …` message in the last 3 days, and that the sandbox webhook (11.5b step 4) has the current ngrok address |
 | You can see every request and reply in detail | Open http://127.0.0.1:4040 while ngrok is running |
 
 ---

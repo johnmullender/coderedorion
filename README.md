@@ -40,7 +40,7 @@ Every key is optional. Without a key, that piece falls back:
 ## Texting (Twilio)
 1. `ngrok http 8000` gives you a public `https://...ngrok-free.app` URL.
 2. In the Twilio console, set your number's "A message comes in" webhook to `https://<that-url>/sms` (HTTP POST).
-3. Test from **Messaging → Virtual Phone** in the Twilio console. Real phones need Toll-Free Verification on a US trial number.
+3. Test from **Messaging → Virtual Phone** in the Twilio console, or from real phones through the **WhatsApp Sandbox** (same `/sms` URL). Real phones over SMS need Toll-Free Verification on a US trial number.
 
 Full step-by-step instructions are in `TESTING.md` step 11.
 
