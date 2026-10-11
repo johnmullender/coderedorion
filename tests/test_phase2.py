@@ -424,13 +424,21 @@ def test_no_with_new_need_starts_new_search(client, world):
     assert main.SESSIONS["s1"]["answers"] == {}
 
 
-def test_long_message_without_need_is_not_an_answer(client, world):
+def test_unclear_long_message_asks_the_question_again(client, world):
     world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
     ask(client, "I need food")
     data = ask(client, "I have no idea what to say to you right now")
-    assert data["intent"] == "other"
-    assert main.SESSIONS["s1"]["awaiting_answer"] is None
+    assert data["asking"] == "id"
+    assert main.SESSIONS["s1"]["awaiting_answer"] == "id"
     assert main.SESSIONS["s1"]["answers"] == {}
+
+
+def test_longer_answer_counts_by_its_first_word(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "I need food")
+    data = ask(client, "no I do not have one")
+    assert main.SESSIONS["s1"]["answers"] == {"id": False}
+    assert ids(data) == ["b"]
 
 
 def test_short_no_is_still_an_answer(client, world):

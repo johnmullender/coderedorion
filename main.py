@@ -604,6 +604,16 @@ def _handle_ask(channel, session_id, text, lang, lat, lng):
         value = eligibility.parse_yes_no(text) if looks_like_answer(text) else "unclear"
         if value == "unclear":
             understood = brain.understand(text, session["history"], lang_hint=lang)
+            if not understood.get("need") and not understood.get("location_text") \
+                    and understood.get("intent") not in ("next_option", "help", "directions"):
+                # Not a new request: "no I am not" still answers by its first word,
+                # and anything else gets the same question again.
+                words = WORD_PATTERN.findall(text or "")
+                value = eligibility.parse_yes_no(words[0]) if words else "unclear"
+                if value == "unclear":
+                    result = search_step(session, channel)
+                    remember_turn(session, text, result["reply"])
+                    return result
         if value != "unclear":
             if lang:
                 session["language"] = lang
