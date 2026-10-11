@@ -11,6 +11,9 @@ Text one number in any language and get the place in Houston that can help you r
 - `static/kiosk.html`: the help station page (Chrome on the hidden laptop)
 - `static/dashboard.html`: the live map for the city
 - `arduino/station/station.ino`: the help station firmware (UNO R4 WiFi)
+- `eligibility.py`: yes/no questions from each place's stated rules
+- `transit.py`: the next METRO bus from METRO's published schedule
+- `scripts/`: geocode, check quotes against sources, load the METRO schedule
 - `CONTRACT.md`: how all the pieces fit together. `AGENT_LOG.md`: who wrote and reviewed what
 
 ## Run it on your laptop
@@ -54,4 +57,4 @@ Step-by-step manual checks for every feature are in `TESTING.md`.
 python -m pytest -q
 ```
 
-**Note:** `data/resources.json` holds **sample** places (every name starts with "Sample"). Replace them with real, checked places before the demo.
+**Data:** `data/resources.json` holds 99 real Houston places gathered from official pages. Each is marked `needs_review` until the team checks it (TESTING.md step 12). The tests use the 12 sample places in `tests/fixtures/`.

@@ -233,6 +233,35 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
 5. **Expect:** a Spanish reply within a few seconds, starting with "Sent from your Twilio trial account". A pin also drops on the dashboard.
 6. Repeat the conversations from step 3 from a real phone (`2`, a follow-up, `AYUDA`).
 
+## 12. Real places: check the data (do this before the demo)
+
+`data/resources.json` now holds 99 real Houston places, gathered from official pages and a few directories. Every place has `needs_review: true` until someone on the team checks it. The 12 old sample places moved to `tests/fixtures/` and are used only by the tests.
+
+Run these on your Mac (the cloud setup can't reach these sites):
+
+1. **Map locations:** `python scripts/geocode.py`. This re-checks every address with the US Census geocoder. Three places have no location yet (Avenue 360 Southwest, UH Law Immigration Clinic, Central Library). If the geocoder can't find them either, type their `lat`/`lng` in by hand and set `"coords_source": "manual"`. Places without a location are skipped by the app.
+2. **No made-up facts:** `python scripts/validate.py --check-sources`. This downloads every `source_url` and lists every hours or eligibility quote that isn't on that page. **Expect:** some quotes fail because the research tool shortened or reformatted them. For each one, open the page and fix the quote to the exact words, or delete the rule.
+3. **Spot check:** open each place's `source_url`, compare name, address, phone, hours and rules, then set `"needs_review": false` and `"last_verified": "2026-10-11"` (today's date). Start with the places near UH (zip 77004), since the demo station is there.
+4. Load into Tiger Data: `python seed_db.py`.
+
+## 13. Eligibility questions
+
+The app only asks about rules that the place's own page states. A place with no rules gets no questions.
+
+1. Find a place with rules: `python -c "import json;[print(p['name'],[r['type'] for r in p['eligibility']]) for p in json.load(open('data/resources.json')) if p['eligibility']]"`.
+2. Text-style test (Covenant House only takes ages 18–24):
+   ```bash
+   curl -s localhost:8000/ask -H 'content-type: application/json' -d '{"channel":"sms","session_id":"e1","text":"I need a shelter near 77006"}'
+   ```
+   **Expect:** if the top places have rules, the reply is a yes/no question and `"asking"` is not null. Answer with `yes`, `no`, `skip` (or `sí`, `không`, `不知道`…) as the next `text` with the same `session_id`. A "no" removes places that need that rule. At most 3 questions, then the answer.
+3. In the kiosk, a question shows `Yes or No?` on the LCD. **Short press = yes, long press = no.**
+
+## 14. Bus directions (METRO)
+
+1. Load METRO's schedule into Tiger Data once (needs `DATABASE_URL`): `python scripts/load_gtfs.py`. Without a database you can save the stops near the station instead: `python scripts/load_gtfs.py --local 29.7199 -95.3422`.
+2. Ask for a place, then `how do I get there?` (or `bus`, `¿cómo llego?`).
+3. **Expect:** "Take bus 54 from … at 4:12 PM, ride 6 stops …" in the person's language, and `"transit"` filled in the JSON. The kiosk LCD alternates `Option 1/3 0.9mi` and `Bus 54 4:12PM`. With no bus found: "no direct bus right now" plus the distance.
+
 ---
 
 ## If something doesn't work
