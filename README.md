@@ -44,6 +44,8 @@ Every key is optional. Without a key, that piece falls back:
 3. Turn the knob to choose a language, then press the button and ask.
 
 ## Tests
+
+Step-by-step manual checks for every feature are in `TESTING.md`.
 ```bash
 python3 -m pytest -q
 ```
