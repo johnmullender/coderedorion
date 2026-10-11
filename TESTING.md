@@ -8,13 +8,33 @@ All commands run in the repo folder in a terminal. The server address is `http:/
 
 ## 0. One-time setup
 
-```bash
-git clone https://github.com/johnmullender/coderedorion
-cd coderedorion
-python3 -m pip install -r requirements.txt
-cp .env.example .env
-```
-Leave `.env` empty for now. Every feature has a fallback, so the app runs without any keys.
+On a Mac the command is **`python3`**, not `python`. `python` only works once the virtual environment below is turned on.
+
+1. **Check your Python version.** It needs to be 3.10 or newer.
+   ```bash
+   python3 --version
+   ```
+   If it says 3.9 or lower, or "command not found", install Python 3.12 from https://www.python.org/downloads/ (or run `brew install python@3.12`). Then open a new terminal.
+
+2. **Get the code and set it up.** This makes a private Python environment (`.venv`) just for this project.
+   ```bash
+   git clone https://github.com/johnmullender/coderedorion
+   cd coderedorion
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install -r requirements.txt
+   cp .env.example .env
+   ```
+   **Expect:** your prompt now starts with `(.venv)`. Leave `.env` empty for now. Every feature has a fallback, so the app runs without any keys.
+
+3. **Every time you open a new terminal** for this project, run these two lines first:
+   ```bash
+   cd coderedorion
+   source .venv/bin/activate
+   ```
+   You're in the right folder when `ls` shows `main.py`, `TESTING.md` and `requirements.txt`.
+
+If you already cloned the repo before, run `git pull` inside `coderedorion` to get the latest code, then do step 2 from `python3 -m venv .venv` onward.
 
 **About the sample data.** `data/resources.json` has 12 made-up places (every name starts with "Sample"). Their hours decide what counts as "open now", which these steps use:
 
@@ -32,16 +52,16 @@ Leave `.env` empty for now. Every feature has a fallback, so the app runs withou
 ## 1. Automated tests (30 seconds)
 
 ```bash
-python3 -m pytest -q
+python -m pytest -q
 ```
 **Expect:** `137 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
 
 ## 2. Start the server
 
 ```bash
-python3 -m uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
-Leave this terminal running and open a **second terminal** for the next steps.
+Leave this terminal running. Open a **second terminal** for the next steps (`cd coderedorion` there too; the curl commands don't need the `.venv`).
 **Expect:** the log ends with `Uvicorn running on http://127.0.0.1:8000`. Opening http://localhost:8000 in a browser shows `{"ok":true,"service":"HelpLine Houston"}`.
 
 ## 3. Text line, without a phone
@@ -140,7 +160,7 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
 1. Create a free service at https://console.cloud.timescale.com and copy its connection string (it ends in `sslmode=require`) into `.env` as `DATABASE_URL=...`.
 2. Load the places:
    ```bash
-   python3 seed_db.py
+   python seed_db.py
    ```
    **Expect:** `Loaded 12 resources into Tiger Data`.
 3. Restart the server and send a couple of texts from step 3.
@@ -150,7 +170,7 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
    SELECT * FROM timescaledb_information.hypertables;
    ```
    **Expect:** your requests in the first query, and `requests` listed as a hypertable in the second. That's the line for the judges.
-5. **Prove it's the database talking:** in the console, run `UPDATE resources SET data = jsonb_set(data, '{name}', '"Tiger Test Shelter"') WHERE id = 'sample-24-7-shelter';`. Wait a minute, because places are cached for 60 seconds, then redo 3a. The reply should say "Tiger Test Shelter". Run `python3 seed_db.py` again to undo it.
+5. **Prove it's the database talking:** in the console, run `UPDATE resources SET data = jsonb_set(data, '{name}', '"Tiger Test Shelter"') WHERE id = 'sample-24-7-shelter';`. Wait a minute, because places are cached for 60 seconds, then redo 3a. The reply should say "Tiger Test Shelter". Run `python seed_db.py` again to undo it.
 6. **Fallback:** put a wrong password in `DATABASE_URL` and restart. Texts still work, with a one-time "Database unavailable, using in-memory storage" warning.
 
 ## 8. Turn on ElevenLabs
@@ -215,7 +235,10 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
 
 | Problem | Likely cause |
 |---|---|
-| `ModuleNotFoundError` | Run `python3 -m pip install -r requirements.txt` again |
+| `python: command not found` | Turn on the environment with `source .venv/bin/activate`, or use `python3` |
+| `ModuleNotFoundError` | The `.venv` isn't on (no `(.venv)` in your prompt): run `source .venv/bin/activate`. Then `python -m pip install -r requirements.txt` |
+| `error: externally-managed-environment` from pip | You're installing outside the `.venv`. Turn it on first |
+| `TypeError: unsupported operand type(s) for \|` | Your Python is older than 3.10. See step 0.1 |
 | Port 8000 already in use | Another server is still running. Close it, or use `--port 8001` |
 | Kiosk: no "Connect station" port listed | Not using Chrome, or Serial Monitor still has the port open |
 | Kiosk: mic never asks for permission | Open the page as `localhost`, not your laptop's IP address |

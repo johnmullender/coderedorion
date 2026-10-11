@@ -15,10 +15,14 @@ Text one number in any language and get the place in Houston that can help you r
 
 ## Run it on your laptop
 
+Needs Python 3.10 or newer (`python3 --version`).
+
 ```bash
-python3 -m pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate     # do this in every new terminal
+python -m pip install -r requirements.txt
 cp .env.example .env          # then paste your keys into .env
-python3 -m uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 Open http://localhost:8000/dashboard and http://localhost:8000/kiosk (use Chrome for the kiosk).
 
@@ -31,7 +35,7 @@ Every key is optional. Without a key, that piece falls back:
 
 ## Tiger Data
 1. Create a free service at console.cloud.timescale.com and copy its connection string into `.env` as `DATABASE_URL`.
-2. Run `python3 seed_db.py` to load the places. The request log table is created on its own the first time the server starts.
+2. Run `python seed_db.py` to load the places. The request log table is created on its own the first time the server starts.
 
 ## Texting (Twilio)
 1. `ngrok http 8000` gives you a public `https://...ngrok-free.app` URL.
@@ -47,7 +51,7 @@ Every key is optional. Without a key, that piece falls back:
 
 Step-by-step manual checks for every feature are in `TESTING.md`.
 ```bash
-python3 -m pytest -q
+python -m pytest -q
 ```
 
 **Note:** `data/resources.json` holds **sample** places (every name starts with "Sample"). Replace them with real, checked places before the demo.
