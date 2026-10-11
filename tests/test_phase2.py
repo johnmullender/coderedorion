@@ -128,12 +128,12 @@ def test_no_removes_the_place(client, world):
     assert "Place A" not in data["reply"]
 
 
-def test_skip_keeps_place_and_adds_reminder(client, world):
+def test_skip_keeps_place_without_reminder(client, world):
     world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
     ask(client, "I need food")
     data = ask(client, "skip")
     assert ids(data) == ["a", "b"]
-    assert "Bring a photo ID if you have one." in data["reply"]
+    assert "Bring a photo ID" not in data["reply"]  # eligibility notes are not in a recommendation
 
 
 def test_yes_keeps_place_without_reminder(client, world):
@@ -220,66 +220,57 @@ def test_zip_in_rule_filters_by_zip_silently(client, world):
     assert ids(data) == ["b"]
 
 
-def test_confirm_hours_line_for_unverified_place(client, world):
+def test_unverified_place_has_no_confirm_line(client, world):
     world["resources"] = [make_place("a", 0, needs_review=True, last_verified=None, hours_quote=None)]
     data = ask(client, "necesito comida", channel="kiosk", lang="es")
-    assert "Llame para confirmar el horario: 713-555-0100." in data["reply"]
+    assert "Place A" in data["reply"]
+    assert "confirmar" not in data["reply"]
+    assert "713-555-0100" not in data["reply"]
 
 
 # ---------------------------------------------------------------------------
 # Bus directions
 # ---------------------------------------------------------------------------
 
-def test_bus_line_and_transit_in_json(client, world):
+def test_find_reply_has_no_bus_line_or_transit(client, world):
     world["resources"] = [make_place("a", 0)]
     world["bus"] = ROUTE
     data = ask(client, "I need food")
-    assert "54" in data["reply"] and "Downtown" in data["reply"]
-    assert data["transit"]["legs"][0]["route"] == "54"
-    assert world["bus_calls"] == [(location.STATION_LAT, location.STATION_LNG, 29.72, -95.34)]
+    assert "54" not in data["reply"] and "Downtown" not in data["reply"]
+    assert data["transit"] is None
+    assert world["bus_calls"] == []  # the bus is looked up only when the person asks for directions
 
 
-def test_next_option_gets_bus_line(client, world):
+def test_next_option_has_no_bus_line(client, world):
     world["resources"] = [make_place("a", 0), make_place("b", 1)]
     world["bus"] = ROUTE
     ask(client, "I need food")
     data = ask(client, "2")
     assert data["selected"] == 2
-    assert data["transit"]["legs"][0]["route"] == "54"
-    assert world["bus_calls"][-1][2:] == (pytest.approx(29.73), -95.34)
+    assert data["transit"] is None
+    assert "54" not in data["reply"] and "Downtown" not in data["reply"]
+    assert world["bus_calls"] == []
 
 
-def test_sms_fits_with_bus_line(client, world):
+def test_sms_find_reply_has_no_bus_line(client, world):
     world["resources"] = [make_place("a", 0)]
     world["bus"] = ROUTE
     data = ask(client, "I need food 77004", channel="sms")
-    assert "54" in data["reply"]
+    assert "54" not in data["reply"]
     assert "Reply BUS" not in data["reply"]
     assert len(data["reply"]) <= 300
 
 
-def test_sms_drops_bus_line_first(client, world):
-    # About 175 characters: with the bus line the reply is over 300, without it the notes fit.
+def test_sms_long_notes_stay_out_of_the_reply(client, world):
     note = ("Bring a bag and a copy of any mail you have, and ask the front desk staff for help "
             "with the intake forms before you go home today, and bring a friend if you can.")
     world["resources"] = [make_place("a", 0, [{"type": "note", "text": note, "source_quote": "x"}])]
     world["bus"] = ROUTE
     data = ask(client, "I need food 77004", channel="sms")
+    assert data["reply"].startswith("Place A - open now, ")
     assert len(data["reply"]) <= 300
-    assert "Reply BUS for directions." in data["reply"]
-    assert "54" not in data["reply"]
-    assert "Bring a bag and a copy" in data["reply"]
-    assert data["transit"]["legs"][0]["route"] == "54"
-
-
-def test_sms_drops_notes_after_bus_line(client, world):
-    long_note = "Bring a bag and a copy of your lease " + "and a friend " * 20 + "to the front desk."
-    world["resources"] = [make_place("a", 0, [{"type": "note", "text": long_note, "source_quote": "x"}])]
-    world["bus"] = ROUTE
-    data = ask(client, "I need food 77004", channel="sms")
-    assert len(data["reply"]) <= 300
-    assert "Reply BUS for directions." in data["reply"]
-    assert "front desk" not in data["reply"]
+    assert "Bring a bag" not in data["reply"] and "54" not in data["reply"]
+    assert "Reply BUS" not in data["reply"]
 
 
 def test_directions_intent_uses_selected_option(client, world):
@@ -496,20 +487,23 @@ def test_gemini_prompt_knows_about_unknown_hours():
     assert "hours_unknown" in brain.ANSWER_PROMPT and "Never say it is open" in brain.ANSWER_PROMPT
 
 
-def test_confirm_line_only_for_empty_hours_or_missing_quote(client, world):
+def test_find_reply_never_has_a_confirm_line(client, world):
     world["resources"] = [make_place("a", 0, needs_review=True, hours_quote="Open every day.")]
     data = ask(client, "I need food", session_id="q1")
-    assert "Call to confirm hours" not in data["reply"]
+    assert "Call to confirm" not in data["reply"]
     world["resources"] = [make_place("b", 0, needs_review=True, hours_quote=None)]
     data = ask(client, "I need food", session_id="q2")
-    assert "Call to confirm hours: 713-555-0100." in data["reply"]
+    assert "Call to confirm" not in data["reply"]
+    assert "confirm" not in data["reply"].lower()
+    assert "713-555-0100" not in data["reply"]  # an open place's phone is not in its sentence
 
 
-def test_zip_note_when_zip_is_unknown(client, world):
+def test_zip_note_is_not_in_the_reply(client, world):
     rule = {"type": "zip_in", "zips": ["77004", "77021"], "source_quote": "x"}
     world["resources"] = [make_place("a", 0, [rule])]
     data = ask(client, "I need food")  # kiosk: no zip anywhere
-    assert "Serves zip codes: 77004, 77021." in data["reply"]
+    assert "Place A" in data["reply"]
+    assert "Serves zip codes" not in data["reply"]
 
 
 def test_zip_note_in_every_language():
@@ -531,32 +525,41 @@ def test_zip_comes_from_resolved_location(client, world):
     assert data["asking"] is None
 
 
-def test_notes_get_full_stops_and_spaces(client, world):
+def test_notes_are_not_in_the_reply(client, world):
     notes = [{"type": "note", "text": "Bring a bag", "source_quote": "x"},
              {"type": "note", "text": "Ask at the desk", "source_quote": "x"}]
     world["resources"] = [make_place("a", 0, notes)]
     data = ask(client, "I need food")
-    assert "Bring a bag. Ask at the desk." in data["reply"]
+    assert "Bring a bag" not in data["reply"] and "Ask at the desk" not in data["reply"]
 
 
-def test_reply_hint_matches_option_count_in_every_language(monkeypatch):
-    monkeypatch.setattr(brain, "_client", None)
-    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
-    two = [dict(make_place("x", 0), distance_mi=0.2, open_now=True, closes_at=None, opens_at=None),
-           dict(make_place("y", 1), distance_mi=0.4, open_now=True, closes_at=None, opens_at=None)]
+def test_more_options_hint_in_every_language(client, world):
+    world["resources"] = [make_place("a", 0), make_place("b", 1)]
     for language in ("en", "es", "vi", "zh", "ar"):
-        reply = brain.answer("food", language, "food", two, "sms")
-        assert brain.reply_hint(language, 2) in reply
-        assert brain.reply_hint(language, 3) not in reply
-    assert brain.reply_hint("en", 2) == "Reply 2 for another option."
-    assert brain.reply_hint("en", 3) == "Reply 2 or 3 for other options."
+        sms = ask(client, "I need food 77004", channel="sms", session_id="sms-" + language, lang=language)
+        assert sms["reply"].endswith(brain.more_options_hint(language, "sms", 2)), language
+        assert brain.more_options_hint(language, "sms", 3) not in sms["reply"], language
+        kiosk = ask(client, "I need food", channel="kiosk", session_id="kiosk-" + language, lang=language)
+        assert kiosk["reply"].endswith(brain.more_options_hint(language, "kiosk", 2)), language
+    assert brain.more_options_hint("en", "sms", 2) == "Reply 2 for more options."
+    assert brain.more_options_hint("en", "kiosk", 2) == "Turn the knob for more options."
 
 
 def test_sms_hint_for_two_options_end_to_end(client, world):
     world["resources"] = [make_place("a", 0), make_place("b", 1)]
     data = ask(client, "I need food 77004", channel="sms")
-    assert "Reply 2 for another option." in data["reply"]
-    assert "2 or 3" not in data["reply"]
+    assert data["reply"].endswith("Reply 2 for more options.")
+    assert "2 or 3" not in data["reply"] and "Reply 3" not in data["reply"]
+
+
+def test_sms_hint_names_reply_three_on_option_two(client, world):
+    world["resources"] = [make_place("a", 0), make_place("b", 1), make_place("c", 2)]
+    ask(client, "I need food 77004", channel="sms")
+    data = ask(client, "2", channel="sms")
+    assert data["selected"] == 2
+    assert data["reply"].endswith("Reply 3 for more options.")
+    data = ask(client, "3", channel="sms")
+    assert "more options" not in data["reply"]  # the last option has no hint
 
 
 def test_distance_phrase_singular_and_plural():
@@ -585,8 +588,9 @@ def test_all_ruled_out_then_next_place_to_open(client, world):
     ask(client, "I need food")
     data = ask(client, "no")
     assert data["unmet"] is True and data["options"] == []
-    assert data["reply"].startswith("None of the open places fit your answers.")
-    assert "The next one to open is Later Place" in data["reply"]
+    assert data["reply"].startswith("None of the open places fit your answers. The next one to open is Later Place")
+    assert data["reply"].endswith("away.")
+    assert "Main St" not in data["reply"] and "Turn the knob" not in data["reply"]
     assert "Nothing for" not in data["reply"]
     assert "211" not in data["reply"]
 
@@ -636,38 +640,32 @@ def test_offers_line_is_not_in_the_reply_for_places_without_offers(client, world
     assert "Offers" not in data["reply"]
 
 
-def test_sms_notes_are_dropped_before_the_offers_line(client, world):
-    # About 200 characters of notes: with the offers line the reply is over 300, so the notes go
-    # and the offers line stays. Without the offers line the notes would have fitted.
+def test_sms_offers_line_fits_and_notes_stay_out(client, world):
     note = ("Bring a bag and a copy of any mail you have, and ask the front desk staff for help "
             "with the intake forms before you go home today. Ask for Maria at the desk. "
             "Bring a friend if you can, and a snack for the trip.")
-    assert 190 < len(note) < 215
     world["resources"] = [make_place("a", 0, [{"type": "note", "text": note, "source_quote": "x"}],
                                      offers=offers("showers", "wifi"))]
     data = ask(client, "I need food 77004", channel="sms")
     assert len(data["reply"]) <= 300
     assert "Offers: showers, Wi-Fi." in data["reply"]
     assert "Bring a bag and a copy" not in data["reply"]
-    world["resources"] = [make_place("a", 0, [{"type": "note", "text": note, "source_quote": "x"}])]
-    data = ask(client, "I need food 77004", channel="sms", session_id="s2")
-    assert "Bring a bag and a copy" in data["reply"]  # no offers: the notes fit
 
 
-def test_sms_offers_line_kept_with_short_notes(client, world):
+def test_sms_offers_line_kept_and_notes_left_out(client, world):
     world["resources"] = [make_place("a", 0, [{"type": "note", "text": "Bring a bag.", "source_quote": "x"}],
                                      offers=offers("showers", "wifi"))]
     data = ask(client, "I need food 77004", channel="sms")
     assert "Offers: showers, Wi-Fi." in data["reply"]
-    assert "Bring a bag." in data["reply"]
+    assert "Bring a bag." not in data["reply"]
     assert len(data["reply"]) <= 300
 
 
 def test_sms_reply_hint_stays_last_after_the_offers_line(client, world):
     world["resources"] = [make_place("a", 0, offers=offers("showers")), make_place("b", 1, offers=offers("wifi"))]
     data = ask(client, "I need food 77004", channel="sms")  # place B is nearer, so it is the one described
-    assert data["reply"].endswith("Reply 2 for another option.")
-    assert data["reply"].index("Offers: Wi-Fi.") < data["reply"].index("Reply 2 for another option.")
+    assert data["reply"].endswith("Reply 2 for more options.")
+    assert data["reply"].index("Offers: Wi-Fi.") < data["reply"].index("Reply 2 for more options.")
     assert len(data["reply"]) <= 300
 
 
@@ -702,11 +700,12 @@ def tomorrow_only_hours():
 def test_nothing_open_leads_with_the_next_place_to_open(client, world):
     world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name="Later Place")]
     data = ask(client, "I need food", channel="kiosk")
-    assert data["reply"].startswith("Nothing nearby is open right now.")
-    assert "The next one to open is Later Place" in data["reply"]
-    assert "It is " in data["reply"] and "miles away." in data["reply"]  # its distance
+    assert data["reply"].startswith("Nothing nearby is open right now. The next one to open is Later Place, opening ")
+    assert data["reply"].endswith("away.")  # its distance, in the same sentence
+    assert "Main St" not in data["reply"]
     assert data["unmet"] is True
     assert ids(data) == ["later"] and data["selected"] == 1
+    assert "more options" not in data["reply"]  # only one option: no hint
 
 
 def test_nothing_open_then_places_with_no_hours_listed(client, world):
@@ -716,7 +715,7 @@ def test_nothing_open_then_places_with_no_hours_listed(client, world):
     data = ask(client, "I need food", channel="kiosk")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert "The next one to open is Later Place" in data["reply"]
-    assert "Turn the knob to option 2 for a nearby place with no listed hours." in data["reply"]
+    assert data["reply"].endswith("Turn the knob for more options.")
     assert "Unknown Place" not in data["reply"]  # option 2 is described only when it is chosen
     assert ids(data) == ["later", "u1"]
     assert data["unmet"] is True
@@ -729,11 +728,11 @@ def test_nothing_open_sms_keeps_the_lead_and_fits(client, world):
     data = ask(client, "I need food 77004", channel="sms")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert "The next one to open is Later Place" in data["reply"]
-    assert data["reply"].endswith("Reply 2 for a nearby place with no listed hours.")
+    assert data["reply"].endswith("Reply 2 for more options.")
     assert len(data["reply"]) <= 300
 
 
-def test_nothing_open_sms_drops_the_hint_first_when_long(client, world):
+def test_nothing_open_sms_keeps_the_hint_when_long(client, world):
     long_name = "Later Place " + "Community Clinic and Services " * 5
     world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name=long_name,
                                      address="1 Long Road " * 6, offers=offers("showers", "wifi")),
@@ -741,7 +740,8 @@ def test_nothing_open_sms_drops_the_hint_first_when_long(client, world):
     data = ask(client, "I need food 77004", channel="sms")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert len(data["reply"]) <= 300
-    assert "Reply 2 for a nearby place" not in data["reply"]
+    assert data["reply"].endswith("Reply 2 for more options.")  # the hint is kept, the name is shortened
+    assert "1 Long Road" not in data["reply"]
     assert ids(data) == ["later", "u1"]
 
 
@@ -886,3 +886,25 @@ def test_no_route_message_wording_in_every_language(monkeypatch):
             text = main.message(language, key, name="Pantry", dist="0.2 miles away", start="A", end="B",
                                 text="Bus", link="https://example.org")
             assert "{" not in text and text.strip(), (language, key)
+
+
+def test_find_reply_has_no_address_phone_or_bus_text(client, world):
+    world["resources"] = [make_place("a", 0, needs_review=True, hours_quote=None)]
+    world["bus"] = ROUTE
+    for channel, text in (("kiosk", "I need food"), ("sms", "I need food 77004")):
+        data = ask(client, text, session_id="plain-" + channel, channel=channel)
+        reply = data["reply"]
+        assert "Main St" not in reply and "77004" not in reply
+        assert "713-555-0100" not in reply
+        assert "Call to confirm" not in reply
+        assert "Reply BUS" not in reply and "54" not in reply
+
+
+def test_hours_unknown_keeps_the_phone_and_drops_the_address(client, world):
+    world["resources"] = [make_place("u1", 0, hours={d: [] for d in DAYS}, phone="713-555-0111")]
+    data = ask(client, "I need food", channel="kiosk")
+    assert "hours not listed, call 713-555-0111 first." in data["reply"]
+    assert "Main St" not in data["reply"]
+    sms = ask(client, "I need food 77004", channel="sms", session_id="unknown-sms")
+    assert "hours not listed, call 713-555-0111 first." in sms["reply"]
+    assert "Main St" not in sms["reply"]

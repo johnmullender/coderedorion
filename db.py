@@ -205,8 +205,10 @@ def get_resources():
     return matching.load_resources()
 
 
-def upsert_resources(rows):
+def upsert_resources(rows, remove_others=False):
     """Insert the resource records, or update them if the id already exists.
+
+    With remove_others=True, any place in the table that is not in `rows` is deleted.
 
     Returns how many rows were saved. Returns 0 if there is no database.
     """
@@ -240,6 +242,10 @@ def upsert_resources(rows):
                         for row in rows
                     ],
                 )
+                if remove_others:
+                    # Places no longer in the file (e.g. the old samples) are removed.
+                    cur.execute("DELETE FROM resources WHERE NOT (id = ANY(%s))",
+                                ([row["id"] for row in rows],))
         _mark_up()
         # The table changed, so forget the cached copy.
         _resources_cache = {"at": 0.0, "rows": None}

@@ -84,7 +84,7 @@ def answer(question: str, language: str, need: str | None, matches: list[dict],
 - `followup` = a question about the places already given ("is it open tomorrow?", "is it far?"), not a new search.
 - If `lang_hint` is given (the kiosk knob), `language` must equal it.
 
-`answer` writes the reply in `language` using ONLY facts present in `matches` / `unmet_next` (name, address, distance_mi, closes_at, opens_at, requirements, phone, offers as labels only, hours). `notes` is never sent to Gemini (internal research remarks). The first match is the one being recommended. For `channel == "sms"`: ≤ 300 characters, includes name, distance, closing time, address, and ends with a hint to reply 2/3 for other options (when more than one match). For `channel == "kiosk"`: 1–2 short spoken sentences, no URLs, no emoji. With no matches and `unmet_next`, say nothing is open now and when/where the next one opens. With no matches and no `unmet_next`, say nothing was found and suggest calling 211.
+`answer` writes the reply in `language` using ONLY facts present in `matches` / `unmet_next` (name, address, distance_mi, closes_at, opens_at, requirements, phone, offers as labels only, hours). `notes` is never sent to Gemini (internal research remarks). The first match is the one being recommended. For `channel == "sms"`: ≤ 300 characters. For `channel == "kiosk"`: 1–2 short spoken sentences, no URLs, no emoji. Either way a place gets one sentence (name, open/closes or opening time, distance): no address, no phone, no eligibility notes, no bus line. Hours-unknown places keep their phone ("call <phone> first"). `answer` does not add the hint: `main.py` adds the Offers line and the more-options hint after it (see the Phase 2 section). With no matches and `unmet_next`, say nothing is open now and when the next one opens, with its name and distance. With no matches and no `unmet_next`, say nothing was found and suggest calling 211.
 
 Gemini: `google-genai` client, key from env `GEMINI_API_KEY`, model from env `GEMINI_MODEL` (default `"gemini-2.5-flash"`), load `.env` with python-dotenv. `understand` must use structured JSON output (response schema). **Both functions must work with no key or on any API error** via a rule-based fallback (keyword lists in all 5 languages for needs/help, digit detection for option_number, simple template replies in all 5 languages). Never raise to the caller.
 
@@ -214,7 +214,7 @@ Knob → language when idle (5 equal bands: EN, ES, VI, ZH, AR, same as `hardwar
 }
 ```
 - The old `requirements` object stays readable (old sample data) but new data uses `eligibility`.
-- `hours` may be all-empty when the source gives no hours; such a place is never "open now" and is only shown as a fallback with "call to confirm".
+- `hours` may be all-empty when the source gives no hours; such a place is never "open now" and is only shown as a fallback, described as "hours not listed, call <phone> first" (calling is the only way to learn its hours).
 
 ## Offers (`offers` list, optional)
 
@@ -226,8 +226,8 @@ What a place offers, each item copied from a page:
   phone_charging, mail, id_help, medical_care, dental_care, pharmacy, mental_health, legal_aid, immigration_help,
   case_management, job_help, cooling, heating, hygiene_items, baby_supplies (`brain.OFFER_KEYS`).
 - `quote` is the exact text from `url`; `url` is an http(s) link. A place with no offers has `[]` or no field.
-- Replies: an "Offers: ..." line follows the main line (up to 4 labels, in data order, translated via
-  `brain.OFFER_LABELS`). On SMS it is dropped after the notes, and only after them.
+- Replies: an "Offers: ..." line follows the main sentence (up to 4 labels, in data order, translated via
+  `brain.OFFER_LABELS`). On SMS, if the reply is too long, it is dropped first; the more-options hint always stays last.
 - Gemini gets the labels only, and its prompt says to describe a place only with its listed offers.
 - `scripts/validate.py` checks the key, quote and url; `--check-sources` looks for each offer quote on its own `url`.
 
@@ -279,6 +279,7 @@ def parse_yes_no(text: str) -> bool | None | str
 
 def notes_for(place: dict) -> list[str]
     # texts of "note" rules, plus for each rule answered None (skipped): a reminder ("Bring a photo ID if you have one")
+    # Not used in recommendation replies (no eligibility notes there); the eligibility questions stay as they are.
 ```
 
 ## `transit.py` (METRO bus directions from GTFS)
@@ -330,8 +331,11 @@ class GtfsSource:   # interface used by directions(); DbSource and LocalSource i
 - After a `find` with candidates: `q = eligibility.next_question(...)`; if q, reply with `question_text` and set
   `awaiting_answer` (response field `"asking": "<key>"`). The next message is first tried with `parse_yes_no`;
   "unclear" → fall through to normal understanding (a new need ends the questions).
-- When no more questions: answer as before, plus `notes_for` the chosen place, plus the bus line from
-  `transit.directions(origin, chosen place)` when found (`"transit": {...}` in the /ask JSON, `null` otherwise).
+- When no more questions: the main sentence, then the Offers line and the more-options hint (`main.add_extras`).
+  No notes, no address, no phone and no bus line. `transit.directions` runs only for the directions intent, and that
+  reply carries `"transit": {...}` in the /ask JSON (`null` otherwise).
+- The more-options hint: "Reply N for more options." on SMS (N = the next option number), "Turn the knob for more options."
+  on the kiosk. It is added only when another option is listed after the one shown (translated in all 5 languages in `brain.MORE_SMS` / `brain.MORE_KIOSK`).
 - New intent `"directions"` from `brain.understand` ("how do I get there", "¿cómo llego?", "đi bằng xe buýt nào", "怎么去", "كيف أصل"):
   replies with `transit.summary` for the selected option, or "no direct bus" + distance.
 - Kiosk: short press while a question is pending = yes, long press = no (the kiosk sends text "yes"/"no").

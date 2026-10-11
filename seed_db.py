@@ -23,9 +23,10 @@ def main():
     # Create the tables if they are not there yet.
     db.init_db()
 
-    # Read the sample resources and save them (new ones are added, old ones updated).
+    # Read the places and save them: new ones are added, old ones updated, and
+    # places no longer in the file (like the old samples) are removed.
     rows = json.loads(RESOURCES_FILE.read_text(encoding="utf-8"))
-    count = db.upsert_resources(rows)
+    count = db.upsert_resources(rows, remove_others=True)
 
     # upsert_resources returns 0 when the database could not be reached.
     if count == 0 and rows:
