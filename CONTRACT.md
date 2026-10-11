@@ -311,7 +311,8 @@ def closest_stops(from_lat, from_lng, to_lat, to_lng, language, channel, source=
 def summary(d: dict, language: str, channel: str) -> str
     # kiosk: one spoken sentence per leg; sms: compact "Bus 54 from Scott@Holman 4:12PM, 6 stops to Main@Gray, walk 2 min."
     # times in 12-hour style; all 5 languages via fixed templates (no Gemini)
-    # "later": True puts "No buses are running now. The first one:" (translated) in front
+    # "later": True puts "No buses are running now. The first one:" in front when "buses_running" is false,
+    # or "The next bus that goes there:" when buses run from the stops but none goes there soon
 
 class GtfsSource:   # interface used by directions(); DbSource and LocalSource implement it
     def stops_near(self, lat, lng, miles) -> list[dict]          # {"stop_id","name","lat","lng"}

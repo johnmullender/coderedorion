@@ -54,7 +54,7 @@ If you already cloned the repo before, run `git pull` inside `coderedorion` to g
 ```bash
 python -m pytest -q
 ```
-**Expect:** `536 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
+**Expect:** `540 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
 
 ## 2. Start the server
 

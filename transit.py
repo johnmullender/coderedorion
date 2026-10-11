@@ -31,6 +31,7 @@ WALK_MPH = 3.0
 MAX_WALK_MI = 0.5
 MAX_WAIT_MIN = 90
 LATER_WAIT_MIN = 24 * 60  # when nothing leaves within MAX_WAIT_MIN, look this far ahead for a ride
+LATER_BATCHES = 20  # the 24-hour search reads at most this many batches of MAX_DEPARTURES trips
 NEAREST_STOP_MILES = 2.0  # how far to look for the stop nearest a point, when no ride is found
 TRANSFER_MIN_MIN = 2  # minutes needed between getting off one bus and boarding the next
 MAX_DEPARTURES = 40  # per search: the earliest this many trips (one entry per trip) are considered
@@ -460,17 +461,47 @@ class _Search:
         return unique
 
 
-def _board_departures(search, board, now, wait_min=MAX_WAIT_MIN):
-    """Usable departures from the boarding stops: reachable on foot in time, leaving within wait_min."""
-    earliest = now + timedelta(minutes=min(s["walk_min"] for s in board.values()))
-    latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + wait_min)
+def _usable(search, board, now, deps, wait_min):
+    """The departures that can be reached on foot in time and leave within wait_min. Loads their trips."""
     usable = []
-    for dep in search.departures(list(board), earliest, latest):
+    for dep in deps:
         reach = now + timedelta(minutes=board[dep["stop_id"]]["walk_min"])
         if reach <= dep["dep_dt"] <= reach + timedelta(minutes=wait_min):
             usable.append(dep)
     search.load_trips(d["trip_id"] for d in usable)
     return usable
+
+
+def _board_departures(search, board, now, wait_min=MAX_WAIT_MIN):
+    """Usable departures from the boarding stops: reachable on foot in time, leaving within wait_min."""
+    earliest = now + timedelta(minutes=min(s["walk_min"] for s in board.values()))
+    latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + wait_min)
+    return _usable(search, board, now, search.departures(list(board), earliest, latest), wait_min)
+
+
+def _later_batches(search, board, now):
+    """Usable departures over the next 24 hours, MAX_DEPARTURES trips at a time, earliest first.
+
+    Each batch starts one second after the last departure of the batch before, so no trip is read
+    twice and a busy stop cannot hide a later route behind its first 40 trips.
+    """
+    start = now + timedelta(minutes=min(s["walk_min"] for s in board.values()))
+    latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + LATER_WAIT_MIN)
+    for _batch in range(LATER_BATCHES):
+        deps = search.departures(list(board), start, latest)
+        if not deps:
+            return
+        yield _usable(search, board, now, deps, LATER_WAIT_MIN)
+        start = max(dep["dep_dt"] for dep in deps) + timedelta(seconds=1)
+        if start > latest:
+            return
+
+
+def _buses_running(search, board, now):
+    """True when any trip leaves the boarding stops within the normal wait window (route or not)."""
+    earliest = now + timedelta(minutes=min(s["walk_min"] for s in board.values()))
+    latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + MAX_WAIT_MIN)
+    return bool(search.departures(list(board), earliest, latest))
 
 
 def _leg(dep, board_name, alight_name, arrive, rides):
@@ -488,8 +519,13 @@ def _leg(dep, board_name, alight_name, arrive, rides):
 
 def _direct(search, board, alight, now, wait_min=MAX_WAIT_MIN):
     """The direct ride with the earliest arrival (final walk included), or None."""
+    return _direct_from(search, board, alight, _board_departures(search, board, now, wait_min))
+
+
+def _direct_from(search, board, alight, usable):
+    """The best direct ride among these usable departures (see _direct), or None."""
     best = None
-    for dep in _board_departures(search, board, now, wait_min):
+    for dep in usable:
         if best is not None and dep["dep_dt"] >= best["total"]:
             break  # later departures cannot arrive before the best one
         for rides, stop in search.riding(dep):
@@ -526,8 +562,13 @@ def _one_transfer(search, board, alight, now, wait_min=MAX_WAIT_MIN):
     stop they reach, keep the earliest arrival. Then find the second bus that leaves at least
     TRANSFER_MIN_MIN later and reaches the destination.
     """
+    return _transfer_from(search, board, alight, _board_departures(search, board, now, wait_min))
+
+
+def _transfer_from(search, board, alight, usable):
+    """The best one-transfer route whose first bus is one of these usable departures (see _one_transfer)."""
     firsts = {}
-    for dep in _board_departures(search, board, now, wait_min):
+    for dep in usable:
         for rides, stop in search.riding(dep):
             if not stop["drop_off"]:
                 continue
@@ -587,6 +628,19 @@ def _one_transfer(search, board, alight, now, wait_min=MAX_WAIT_MIN):
     }
 
 
+def _later_search(search, board, alight, now):
+    """The first ride in the next 24 hours, read a batch at a time: a direct ride first, then one transfer."""
+    for usable in _later_batches(search, board, now):
+        found = _direct_from(search, board, alight, usable)
+        if found is not None:
+            return found
+    for usable in _later_batches(search, board, now):
+        found = _transfer_from(search, board, alight, usable)
+        if found is not None:
+            return found
+    return None
+
+
 def directions(from_lat, from_lng, to_lat, to_lng, when=None, source=None):
     """The soonest-arriving bus route between two points, direct rides first.
 
@@ -613,11 +667,10 @@ def directions(from_lat, from_lng, to_lat, to_lng, when=None, source=None):
         if transfer is not None:
             return transfer
         # Nothing leaves within the wait limit (late at night, say): the first ride in the next 24 hours.
-        later = _direct(search, board, alight, now, LATER_WAIT_MIN)
-        if later is None:
-            later = _one_transfer(search, board, alight, now, LATER_WAIT_MIN)
+        later = _later_search(search, board, alight, now)
         if later is not None:
             later["later"] = True
+            later["buses_running"] = _buses_running(search, board, now)
         return later
     except Exception as problem:
         print(f"Transit directions failed: {problem}")
@@ -733,13 +786,22 @@ _NO_BUS = {
 
 _AT = {"en": "at", "es": "en", "vi": "tại", "zh": "和", "ar": "عند"}
 
-# Said before a ride that is not in the next 90 minutes ("later": True).
+# Said before the first ride when no bus leaves the stops in the next 90 minutes ("later": True).
 _LATER = {
     "en": "No buses are running now. The first one:",
     "es": "No hay autobuses ahora. El primero:",
     "vi": "Hiện không có xe buýt chạy. Chuyến đầu tiên:",
     "zh": "现在没有公交车运行。第一班车：",
     "ar": "لا توجد حافلات تعمل الآن. الأولى:",
+}
+
+# Said before the next ride when buses run but none goes there soon ("later": True, "buses_running": True).
+_NEXT_BUS = {
+    "en": "The next bus that goes there:",
+    "es": "El próximo autobús que va allí:",
+    "vi": "Chuyến xe buýt tiếp theo đi đến đó:",
+    "zh": "下一班去那里的公交车：",
+    "ar": "الحافلة التالية التي تذهب إلى هناك:",
 }
 
 
@@ -890,5 +952,6 @@ def summary(d, language, channel):
         return _NO_BUS[lang]["sms" if sms else "kiosk"]
     text = _sms_summary(d, lang) if sms else _kiosk_summary(d, lang)
     if d.get("later"):
-        text = _LATER[lang] + ("" if lang == "zh" else " ") + text
+        prefix = (_NEXT_BUS if d.get("buses_running") else _LATER)[lang]
+        text = prefix + ("" if lang == "zh" else " ") + text
     return text
