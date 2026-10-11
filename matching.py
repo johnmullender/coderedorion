@@ -61,7 +61,7 @@ def _split_range(text):
 def _ranges_for(resource, weekday):
     """All (start, end) minute pairs for one weekday (0 = Monday)."""
     key = DAY_KEYS[weekday]
-    return [_split_range(text) for text in resource.get("hours", {}).get(key, [])]
+    return [_split_range(text) for text in (resource.get("hours") or {}).get(key) or []]
 
 
 def _current_range(resource, when):
@@ -103,7 +103,7 @@ def _has_location(resource):
 
 def _in_need(resource, need):
     """True if the resource lists this need in its categories."""
-    return need in resource.get("category", [])
+    return need in (resource.get("category") or [])
 
 
 def _make_match(resource, lat, lng):
@@ -145,6 +145,37 @@ def _soonest_opening(candidates, lat, lng, when):
     match = _make_match(best_resource, lat, lng)
     match["opens_at"] = f"{DAY_NAMES[best_start.weekday()]} {_hhmm(best_start.hour * 60 + best_start.minute)}"
     return match
+
+
+def has_no_hours(resource):
+    """True when the place lists no hours at all (every day empty): its hours are unknown."""
+    hours = resource.get("hours") or {}
+    return not any(hours.get(key) for key in DAY_KEYS)
+
+
+def find_unknown_hours(need, lat, lng, resources=None, limit=8):
+    """The nearest places in `need` with no hours listed, marked hours_unknown (never open)."""
+    if resources is None:
+        resources = load_resources()
+    candidates = [r for r in resources if _in_need(r, need) and _has_location(r) and has_no_hours(r)]
+    matches = []
+    for resource in candidates:
+        match = _make_match(resource, lat, lng)
+        match["hours_unknown"] = True
+        matches.append(match)
+    matches.sort(key=lambda m: m["distance_mi"])
+    return matches[:limit]
+
+
+def next_open_for(need, lat, lng, when=None, resources=None):
+    """The place in `need` that opens soonest (within 7 days), or None. Used when nothing else fits."""
+    if when is None:
+        when = datetime.now(HOUSTON)
+    if resources is None:
+        resources = load_resources()
+    candidates = [r for r in resources
+                  if _in_need(r, need) and _has_location(r) and _current_range(r, when) is None]
+    return _soonest_opening(candidates, lat, lng, when)
 
 
 def find_matches(need, lat, lng, when=None, resources=None, limit=3):

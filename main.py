@@ -1,4 +1,4 @@
-"""HelpLine Houston web app: wires the brain, matching, location, db and voice together.
+"""HelpLine Houston web app: wires the brain, matching, location, db, eligibility, transit and voice together.
 
 Routes:
 - POST /ask           JSON question from the kiosk (or any client) -> JSON answer
@@ -12,6 +12,7 @@ Everything is synchronous (plain `def`), as the contract asks.
 
 import logging
 import pathlib
+import re
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -24,8 +25,10 @@ from twilio.twiml.messaging_response import MessagingResponse
 
 import brain
 import db
+import eligibility
 import location
 import matching
+import transit
 import voice
 
 log = logging.getLogger("helpline")
@@ -38,9 +41,17 @@ SESSION_TIMEOUT_SECONDS = 30 * 60   # forget a conversation after 30 idle minute
 HISTORY_LIMIT = 6                   # keep the last 6 history items (user + bot)
 LOG_TEXT_LIMIT = 140                # how much of the user's text goes in the request log
 REQUEST_LOG_LIMIT = 500             # how many requests /api/requests shows
+MATCH_LIMIT = 8                     # open places kept for the eligibility questions
+OPTIONS_SHOWN = 3                   # how many of the eligible places we offer
+SMS_LIMIT = 300                     # the longest SMS reply we send
 
 ERROR_REPLY = "Sorry, something went wrong. Call 211 for help."
 OPTION_KEYS = ["id", "name", "address", "distance_mi", "open_now", "closes_at", "opens_at", "phone"]
+
+# A message that is only one of these words asks for the bus directions.
+BUS_WORDS = {"bus", "autobús", "autobus", "xe buýt", "xe buyt", "公交", "حافلة"}
+
+ZIP_PATTERN = re.compile(r"(?<!\d)(\d{5})(?!\d)")
 
 # ---------------------------------------------------------------------------
 # Short fixed messages, one set per language.
@@ -55,6 +66,11 @@ MESSAGES = {
         "bad_number": "Please reply with a number from 1 to {count}.",
         "no_options": "I don't have any places for you yet. What do you need? For example: food, shelter, or a clinic.",
         "intro": "Hi, this is HelpLine Houston. Tell me what you need (food, shelter, showers, a clinic, a library, a cooling center, or legal help) and where you are, and I'll find a free place open now.",
+        "none_fit": "None of the open places fit your answers.",
+        "bus_hint": "Reply BUS for directions.",
+        "no_bus": "There is no direct bus right now. It is {dist}.",
+        "bus_unavailable": "Bus times aren't available right now. It is {dist}.",
+        "confirm_hours": "Call to confirm hours: {phone}.",
     },
     "es": {
         "ask_need": "¿Qué necesita? Puedo ayudar a encontrar comida, refugio, duchas, una clínica, una biblioteca, un centro de enfriamiento o ayuda legal.",
@@ -64,6 +80,11 @@ MESSAGES = {
         "bad_number": "Por favor responda con un número del 1 al {count}.",
         "no_options": "Todavía no tengo lugares para usted. ¿Qué necesita? Por ejemplo: comida, refugio o una clínica.",
         "intro": "Hola, esta es HelpLine Houston. Dígame qué necesita (comida, refugio, duchas, una clínica, una biblioteca, un centro de enfriamiento o ayuda legal) y dónde está, y le busco un lugar gratis abierto ahora.",
+        "none_fit": "Ninguno de los lugares abiertos le corresponde según sus respuestas.",
+        "bus_hint": "Responda AUTOBÚS para la ruta.",
+        "no_bus": "No hay autobús directo ahora. Está {dist}.",
+        "bus_unavailable": "Los horarios del autobús no están disponibles ahora. Está {dist}.",
+        "confirm_hours": "Llame para confirmar el horario: {phone}.",
     },
     "vi": {
         "ask_need": "Bạn cần gì? Tôi có thể giúp tìm thức ăn, chỗ ngủ, chỗ tắm, phòng khám, thư viện, nơi tránh nóng hoặc trợ giúp pháp lý.",
@@ -73,6 +94,11 @@ MESSAGES = {
         "bad_number": "Vui lòng trả lời bằng một số từ 1 đến {count}.",
         "no_options": "Tôi chưa có địa điểm nào cho bạn. Bạn cần gì? Ví dụ: thức ăn, chỗ ngủ hoặc phòng khám.",
         "intro": "Xin chào, đây là HelpLine Houston. Hãy cho tôi biết bạn cần gì (thức ăn, chỗ ngủ, chỗ tắm, phòng khám, thư viện, nơi tránh nóng hoặc trợ giúp pháp lý) và bạn đang ở đâu, tôi sẽ tìm một nơi miễn phí đang mở cửa.",
+        "none_fit": "Không có địa điểm nào đang mở phù hợp với câu trả lời của bạn.",
+        "bus_hint": "Trả lời XE BUÝT để xem đường đi.",
+        "no_bus": "Hiện không có xe buýt trực tiếp. Địa điểm {dist}.",
+        "bus_unavailable": "Hiện chưa có giờ xe buýt. Địa điểm {dist}.",
+        "confirm_hours": "Gọi để xác nhận giờ mở cửa: {phone}.",
     },
     "zh": {
         "ask_need": "您需要什么？我可以帮您找食物、住宿、洗浴、诊所、图书馆、避暑中心或法律援助。",
@@ -82,6 +108,11 @@ MESSAGES = {
         "bad_number": "请回复1到{count}之间的数字。",
         "no_options": "我还没有为您找到地点。您需要什么？例如：食物、住宿或诊所。",
         "intro": "您好，这里是HelpLine Houston。请告诉我您需要什么（食物、住宿、洗浴、诊所、图书馆、避暑中心或法律援助）以及您在哪里，我会为您找一个现在开放的免费地点。",
+        "none_fit": "开放的地点都不符合您的情况。",
+        "bus_hint": "回复公交查看路线。",
+        "no_bus": "现在没有直达公交车。地点{dist}。",
+        "bus_unavailable": "现在无法获取公交时间。地点{dist}。",
+        "confirm_hours": "请致电确认营业时间：{phone}。",
     },
     "ar": {
         "ask_need": "ماذا تحتاج؟ يمكنني المساعدة في إيجاد الطعام أو المأوى أو الاستحمام أو عيادة أو مكتبة أو مركز تبريد أو مساعدة قانونية.",
@@ -91,6 +122,11 @@ MESSAGES = {
         "bad_number": "يرجى الرد برقم من 1 إلى {count}.",
         "no_options": "ليس لدي أماكن لك بعد. ماذا تحتاج؟ مثلا: طعام أو مأوى أو عيادة.",
         "intro": "مرحبا، هذا HelpLine Houston. أخبرني ماذا تحتاج (طعام أو مأوى أو استحمام أو عيادة أو مكتبة أو مركز تبريد أو مساعدة قانونية) وأين أنت، وسأجد لك مكانا مجانيا مفتوحا الآن.",
+        "none_fit": "لا يوجد مكان مفتوح يناسب إجاباتك.",
+        "bus_hint": "أرسل كلمة حافلة للاتجاهات.",
+        "no_bus": "لا توجد حافلة مباشرة الآن. المكان {dist}.",
+        "bus_unavailable": "أوقات الحافلات غير متوفرة الآن. المكان {dist}.",
+        "confirm_hours": "اتصل للتأكد من ساعات العمل: {phone}.",
     },
 }
 
@@ -119,6 +155,14 @@ def new_session():
         "history": [],          # [{"role": "user"|"bot", "text": ...}], last 6
         "selected": 0,          # which option (1-based) the last reply was about
         "awaiting_location": False,  # True after we asked "what zip are you near?"
+        "answers": {},          # eligibility answers for the current search: {question_key: True|False|None}
+        "asked": 0,             # how many eligibility questions this search has asked
+        "awaiting_answer": None,     # the question key we just asked, or None
+        "pending": [],          # the open places this search is still deciding between
+        "search_text": "",      # the message that started this search
+        "zip": None,            # 5-digit zip of the person's location (typed, or from zips.json), if known
+        "unknown": [],          # nearest places in the need with no hours listed (fallback options)
+        "next_open": None,      # the place in the need that opens soonest, from the search
         "last_seen": time.time(),
     }
 
@@ -160,6 +204,8 @@ def public_options(options):
         item = {"n": number}
         for key in OPTION_KEYS:
             item[key] = match.get(key)
+        if match.get("hours_unknown"):
+            item["hours_unknown"] = True
         result.append(item)
     return result
 
@@ -171,7 +217,8 @@ def chosen_first(options, number):
     return [chosen] + others
 
 
-def make_result(session, reply, intent, need=None, unmet=False, ask_location=False):
+def make_result(session, reply, intent, need=None, unmet=False, ask_location=False,
+                asking=None, transit=None):
     """Build the /ask JSON shape from the session's current options."""
     return {
         "reply": reply,
@@ -182,6 +229,8 @@ def make_result(session, reply, intent, need=None, unmet=False, ask_location=Fal
         "selected": session["selected"],
         "unmet": unmet,
         "ask_location": ask_location,
+        "asking": asking,
+        "transit": transit,
     }
 
 
@@ -211,6 +260,23 @@ def find_location(channel, understood, text, lat, lng, session):
     return None, None
 
 
+def zip_for_coords(lat, lng):
+    """The zip code whose zips.json entry has these exact coordinates, or None."""
+    for code, entry in location.load_zip_table().items():
+        if entry.get("lat") == lat and entry.get("lng") == lng:
+            return code
+    return None
+
+
+def zip_from(understood, text, lat, lng):
+    """The zip for eligibility: a 5-digit zip the person wrote, else the zip of the resolved location."""
+    source = understood.get("location_text") or text or ""
+    match = ZIP_PATTERN.search(source)
+    if match:
+        return match.group(1)
+    return zip_for_coords(lat, lng)
+
+
 def log_request(channel, need, language, lat, lng, options, text):
     """Save an anonymous record of the search for the dashboard (no phone, no session id)."""
     db.log_request({
@@ -224,6 +290,96 @@ def log_request(channel, need, language, lat, lng, options, text):
         "place": options[0].get("name") if options else None,
         "text": (text or "")[:LOG_TEXT_LIMIT],
     })
+
+
+def bus_for(session, place):
+    """The METRO route from where the person is to `place`, or None (no coordinates, no ride, or an error)."""
+    origin_lat, origin_lng = session["lat"], session["lng"]
+    to_lat, to_lng = place.get("lat"), place.get("lng")
+    if None in (origin_lat, origin_lng, to_lat, to_lng):
+        return None
+    try:
+        return transit.directions(origin_lat, origin_lng, to_lat, to_lng)
+    except Exception:
+        log.exception("bus directions failed")
+        return None
+
+
+def compose(base, extras):
+    """The base reply with each extra sentence after it (empty extras are skipped)."""
+    return " ".join([base] + [extra for extra in extras if extra])
+
+
+def add_extras(session, base, place, channel):
+    """Add the notes, the call-to-confirm line and the bus line for `place` to the reply.
+
+    Returns (reply, transit dict or None). For SMS the reply stays within SMS_LIMIT: the bus
+    line is dropped first (replaced by "Reply BUS for directions"), then the notes.
+    """
+    language = session["language"]
+    found = bus_for(session, place)
+    notes = eligibility.notes_for(place, session["answers"], language, zip_code=session["zip"])
+    if needs_hours_call(place):
+        notes.append(message(language, "confirm_hours", phone=place["phone"]))
+    bus_text = transit.summary(found, language, channel) if found else None
+
+    if channel != "sms":
+        return compose(base, notes + [bus_text]), found
+
+    if bus_text is None:
+        attempts = [(notes, None), ([], None)]
+    else:
+        hint = message(language, "bus_hint")
+        attempts = [(notes, bus_text), (notes, hint), ([], hint)]
+    for note_list, tail in attempts:
+        text = compose(base, note_list + [tail])
+        if len(text) <= SMS_LIMIT:
+            return text, found
+    return clip_for_channel(base, "sms"), found
+
+
+def clip_for_channel(text, channel):
+    """SMS replies never go past SMS_LIMIT characters."""
+    if channel == "sms" and len(text) > SMS_LIMIT:
+        return text[:SMS_LIMIT - 3] + "..."
+    return text
+
+
+def _miles_value(session, place):
+    """The distance to the place in miles (a float)."""
+    if place.get("distance_mi") is not None:
+        return float(place["distance_mi"])
+    if session["lat"] is not None and place.get("lat") is not None:
+        return matching.haversine_miles(session["lat"], session["lng"], place["lat"], place["lng"])
+    return 0.0
+
+
+def distance_phrase(language, miles):
+    """'1 mile away' / '0.8 miles away' in the language, with the singular where it applies."""
+    value = float(miles)
+    one = round(value, 1) == 1.0
+    if language == "es":
+        return "a 1 milla" if one else f"a {value:.1f} millas"
+    if language == "vi":
+        return f"cách {value:.1f} dặm"
+    if language == "zh":
+        return f"距离{value:.1f}英里"
+    if language == "ar":
+        return "على بعد ميل واحد" if one else f"على بعد {value:.1f} ميل"
+    return "1 mile away" if one else f"{value:.1f} miles away"
+
+
+def bus_data_available():
+    """False when there is no bus data at all: no database and no local transit file."""
+    return db.enabled() or transit.LOCAL_PATH.exists()
+
+
+def needs_hours_call(place):
+    """True when the person should call to confirm hours: the hours are empty or the source quote is missing.
+    Places with hours_unknown already say "call first" in the reply, so they are skipped here."""
+    if place.get("hours_unknown") or not place.get("phone"):
+        return False
+    return matching.has_no_hours(place) or place.get("hours_quote") is None
 
 
 # ---------------------------------------------------------------------------
@@ -246,7 +402,28 @@ def handle_next_option(session, understood, text, channel):
     reply = brain.answer(text, language, session["need"], chosen_first(options, number),
                          channel, history=session["history"])
     session["selected"] = number
-    return make_result(session, reply, "next_option", need=session["need"])
+    reply, found = add_extras(session, reply, options[number - 1], channel)
+    return make_result(session, reply, "next_option", need=session["need"], transit=found)
+
+
+def handle_directions(session, channel):
+    """How to get to the selected place by bus."""
+    language = session["language"]
+    options = session["options"]
+    if not options:
+        return make_result(session, message(language, "no_options"), "directions", need=session["need"])
+    number = session["selected"] if 1 <= session["selected"] <= len(options) else 1
+    session["selected"] = number
+    place = options[number - 1]
+    found = bus_for(session, place)
+    if found is None:
+        key = "no_bus" if bus_data_available() else "bus_unavailable"
+        dist = distance_phrase(language, _miles_value(session, place))
+        reply = message(language, key, dist=dist)
+    else:
+        reply = transit.summary(found, language, channel)
+    reply = clip_for_channel(reply, channel)
+    return make_result(session, reply, "directions", need=session["need"], transit=found)
 
 
 def handle_followup(session, text, channel):
@@ -271,6 +448,63 @@ def handle_help(session):
     return make_result(session, reply, "help", need=session["need"])
 
 
+def search_step(session, channel):
+    """Ask the next eligibility question, or give the final answer for the search.
+
+    The open places still in play are the pending ones that no answer has ruled out. When fewer
+    than OPTIONS_SHOWN open places remain, the nearest places in the need with no listed hours
+    fill the gap (marked hours_unknown, never "open").
+    """
+    language = session["language"]
+    need = session["need"]
+    answers = session["answers"]
+    zip_code = session["zip"]
+    places = eligibility.filter_places(session["pending"], answers, zip_code)
+
+    question = eligibility.next_question(places, answers, zip_code, session["asked"])
+    if question is not None:
+        key, rule = question
+        session["asked"] += 1
+        session["awaiting_answer"] = key
+        session["options"] = places[:OPTIONS_SHOWN]
+        session["selected"] = 1 if places else 0
+        reply = eligibility.question_text(key, rule, language)
+        return make_result(session, reply, "find", need=need, asking=key)
+
+    session["awaiting_answer"] = None
+    fallback = eligibility.filter_places(session["unknown"], answers, zip_code)
+    options = (places + fallback)[:OPTIONS_SHOWN]
+    session["options"] = options
+
+    if not options:
+        session["selected"] = 0
+        if not session["pending"]:
+            # Nothing open for this need at all: say so, with the next place that opens.
+            reply = brain.answer(session["search_text"], language, need, [], channel,
+                                 unmet_next=session["next_open"], history=session["history"])
+        else:
+            # Open places were found, but the answers ruled them all out.
+            next_place = matching.next_open_for(need, session["lat"], session["lng"],
+                                                resources=db.get_resources())
+            fit = message(language, "none_fit")
+            if next_place is not None:
+                reply = fit + " " + brain.next_open_text(language, next_place, need)
+            else:
+                reply = fit + " " + message(language, "help")
+        reply = clip_for_channel(reply, channel)
+        return make_result(session, reply, "find", need=need, unmet=True)
+
+    ruled_out = bool(session["pending"]) and not places
+    open_offered = any(not match.get("hours_unknown") for match in options)
+    session["selected"] = 1
+    reply = brain.answer(session["search_text"], language, need, options, channel,
+                         history=session["history"])
+    if ruled_out:
+        reply = clip_for_channel(message(language, "none_fit") + " " + reply, channel)
+    reply, found = add_extras(session, reply, options[0], channel)
+    return make_result(session, reply, "find", need=need, unmet=not open_offered, transit=found)
+
+
 def handle_find(session, understood, text, channel, lat, lng):
     """Search for open places for the person's need near where they are."""
     language = session["language"]
@@ -286,6 +520,7 @@ def handle_find(session, understood, text, channel, lat, lng):
     if lat is None or lng is None:
         # Remember the need so a reply with just a zip finishes the search.
         session["awaiting_location"] = True
+        session["awaiting_answer"] = None
         session["options"] = []
         session["selected"] = 0
         return make_result(session, message(language, "ask_location"), "find",
@@ -293,18 +528,20 @@ def handle_find(session, understood, text, channel, lat, lng):
     session["awaiting_location"] = False
     session["lat"], session["lng"] = lat, lng
 
-    # Step 3: search, then let the brain write the reply.
-    found = matching.find_matches(need, lat, lng, resources=db.get_resources())
-    options = found.get("options") or []
-    unmet_next = found.get("next_open") if not options else None
-    reply = brain.answer(text, language, need, options, channel,
-                         unmet_next=unmet_next, history=session["history"])
+    # Step 3: find the open places (the top MATCH_LIMIT) and the no-hours fallback; log the search once.
+    resources = db.get_resources()
+    found = matching.find_matches(need, lat, lng, resources=resources, limit=MATCH_LIMIT)
+    candidates = found.get("options") or []
+    log_request(channel, need, language, lat, lng, candidates[:OPTIONS_SHOWN], text)
 
-    # Step 4: save and log.
-    session["options"] = options
-    session["selected"] = 1 if options else 0
-    log_request(channel, need, language, lat, lng, options, text)
-    return make_result(session, reply, "find", need=need, unmet=not options)
+    # Start a fresh search: no answers carried over from an earlier need.
+    session.update(awaiting_answer=None, answers={}, asked=0, pending=candidates,
+                   unknown=matching.find_unknown_hours(need, lat, lng, resources=resources, limit=MATCH_LIMIT),
+                   next_open=found.get("next_open"), search_text=text,
+                   zip=zip_from(understood, text, lat, lng))
+
+    # Step 4: ask eligibility questions, or answer right away.
+    return search_step(session, channel)
 
 
 def handle_other(session):
@@ -316,12 +553,31 @@ def handle_other(session):
 # The core: used by both /ask and /sms
 # ---------------------------------------------------------------------------
 
-def choose_intent(understood, session):
+WORD_PATTERN = re.compile(r"[^\W_]+")
+
+
+def looks_like_answer(text):
+    """A short message can be a yes/no/skip answer. A longer one only when every word is an answer word."""
+    words = WORD_PATTERN.findall(text or "")
+    if len(words) <= 3:
+        return True
+    return len(text or "") <= 12 and all(eligibility.parse_yes_no(word) != "unclear" for word in words)
+
+
+def is_bus_word(text):
+    """True if the whole message is one of the words that asks for bus directions."""
+    cleaned = (text or "").strip().strip("?!.¿¡。？！").strip().lower()
+    return cleaned in BUS_WORDS
+
+
+def choose_intent(understood, session, text):
     """Decide which handler to use, using the session to fill in gaps."""
     intent = understood.get("intent")
     need = understood.get("need")
-    if intent in ("next_option", "help"):
+    if intent in ("next_option", "help", "directions"):
         return intent
+    if not need and is_bus_word(text):
+        return "directions"
     # A new need always means a new search.
     if need and need != session["need"]:
         return "find"
@@ -340,21 +596,51 @@ def _handle_ask(channel, session_id, text, lang, lat, lng):
     """The real work behind handle_ask (without the safety net)."""
     # Step 1: find or start this person's conversation.
     session = get_session(session_id)
+    understood = None
 
-    # Step 2: let the brain read the message.
-    understood = brain.understand(text, session["history"], lang_hint=lang)
+    # Step 2: right after a yes/no question, a short yes/no/skip answers it. Anything else is a
+    # new message: a new need restarts the search, and other text ends the questions.
+    if session["awaiting_answer"] is not None:
+        value = eligibility.parse_yes_no(text) if looks_like_answer(text) else "unclear"
+        if value == "unclear":
+            understood = brain.understand(text, session["history"], lang_hint=lang)
+            if not understood.get("need") and not understood.get("location_text") \
+                    and understood.get("intent") not in ("next_option", "help", "directions"):
+                # Not a new request: "no I am not" still answers by its first word,
+                # and anything else gets the same question again.
+                words = WORD_PATTERN.findall(text or "")
+                value = eligibility.parse_yes_no(words[0]) if words else "unclear"
+                if value == "unclear":
+                    result = search_step(session, channel)
+                    remember_turn(session, text, result["reply"])
+                    return result
+        if value != "unclear":
+            if lang:
+                session["language"] = lang
+            session["answers"][session["awaiting_answer"]] = value
+            session["awaiting_answer"] = None
+            result = search_step(session, channel)
+            remember_turn(session, text, result["reply"])
+            return result
+        session["awaiting_answer"] = None
 
-    # Step 3: pick the language. When we are waiting for a zip, a bare "77004"
+    # Step 3: let the brain read the message.
+    if understood is None:
+        understood = brain.understand(text, session["history"], lang_hint=lang)
+
+    # Step 4: pick the language. When we are waiting for a zip, a bare "77004"
     # says nothing about language, so keep the one we were using.
     if lang:
         session["language"] = lang
     elif not (session["awaiting_location"] and not understood.get("need")):
         session["language"] = understood.get("language") or "en"
 
-    # Step 4: answer by intent.
-    intent = choose_intent(understood, session)
+    # Step 5: answer by intent.
+    intent = choose_intent(understood, session, text)
     if intent == "next_option":
         result = handle_next_option(session, understood, text, channel)
+    elif intent == "directions":
+        result = handle_directions(session, channel)
     elif intent == "followup":
         result = handle_followup(session, text, channel)
     elif intent == "help":
@@ -364,7 +650,7 @@ def _handle_ask(channel, session_id, text, lang, lat, lng):
     else:
         result = handle_other(session)
 
-    # Step 5: remember this turn.
+    # Step 6: remember this turn.
     remember_turn(session, text, result["reply"])
     return result
 
@@ -384,6 +670,8 @@ def handle_ask(channel, session_id, text, lang=None, lat=None, lng=None):
             "selected": 0,
             "unmet": False,
             "ask_location": False,
+            "asking": None,
+            "transit": None,
         }
 
 

@@ -1,0 +1,426 @@
+[
+ {
+  "id": "star-of-hope-mens-development-center",
+  "name": "Star of Hope Mission Men's Development Center",
+  "category": [
+   "shelter"
+  ],
+  "address": "1811 Ruiz St., Houston, TX",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-14:00"
+   ],
+   "tue": [
+    "08:00-14:00"
+   ],
+   "wed": [
+    "08:00-14:00"
+   ],
+   "thu": [
+    "08:00-14:00"
+   ],
+   "fri": [
+    "08:00-14:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "8:00am–2:00pm (M–F)",
+  "eligibility": [
+   {
+    "type": "note",
+    "source_quote": "Walk in with required documents."
+   },
+   {
+    "type": "note",
+    "source_quote": "Valid ID and Social Security card (if available)"
+   },
+   {
+    "type": "note",
+    "source_quote": "Aren’t sex offenders"
+   },
+   {
+    "type": "note",
+    "source_quote": "Don’t have ankle monitors"
+   }
+  ],
+  "services": "Emergency shelter: A clean bed, hot meals, clothing, and safety when you need it most.",
+  "languages": [],
+  "phone": "713-226-5414",
+  "notes": "Hours are intake hours (Mon-Fri). ZIP not on page. Page also mentions showers.",
+  "source_url": "https://www.sohmission.org/how-we-help/for-men/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "star-of-hope-women-family-center",
+  "name": "Star of Hope Women and Family Development Center at Cornerstone Community",
+  "category": [
+   "shelter"
+  ],
+  "address": "2575 Reed Rd., Houston, TX 77051",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "08:00-15:30"
+   ],
+   "tue": [
+    "08:00-15:30"
+   ],
+   "wed": [
+    "08:00-15:30"
+   ],
+   "thu": [
+    "08:00-15:30"
+   ],
+   "fri": [
+    "08:00-15:30"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "8:00am–3:30pm (M–F)",
+  "eligibility": [
+   {
+    "type": "note",
+    "source_quote": "Must be able to care for yourself and not be a harm to yourself or others."
+   }
+  ],
+  "services": "Emergency shelter for women and their children with meals, hygiene supplies, showers and support",
+  "languages": [],
+  "phone": "713-222-2220",
+  "notes": "Hours are intake hours (Mon-Fri). Exact wording of the care-for-yourself sentence is unverified; needs a script check.",
+  "source_url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "covenant-house-texas-houston",
+  "name": "Covenant House Texas",
+  "category": [
+   "shelter"
+  ],
+  "address": "1111 Lovett Blvd., Houston, TX 77006",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "00:00-24:00"
+   ],
+   "tue": [
+    "00:00-24:00"
+   ],
+   "wed": [
+    "00:00-24:00"
+   ],
+   "thu": [
+    "00:00-24:00"
+   ],
+   "fri": [
+    "00:00-24:00"
+   ],
+   "sat": [
+    "00:00-24:00"
+   ],
+   "sun": [
+    "00:00-24:00"
+   ]
+  },
+  "hours_quote": "Open 24/7",
+  "eligibility": [
+   {
+    "type": "age",
+    "source_quote": "Young people ages 18-24"
+   },
+   {
+    "type": "note",
+    "source_quote": "There are no fees or costs associated with residential services."
+   }
+  ],
+  "services": "Shelter and services for young people experiencing homelessness",
+  "languages": [],
+  "phone": "713-523-2231",
+  "notes": "Phone 713-523-2231 listed on page for emergency help; shelter campus line 713-630-5601.",
+  "source_url": "https://www.covenanthouse.org/homeless-shelters/houston-texas",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "mission-of-yahweh",
+  "name": "The Mission of Yahweh",
+  "category": [
+   "shelter"
+  ],
+  "address": "10247 Algiers Road, Houston, TX 77041",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "who",
+    "source_quote": "homeless women and children"
+   }
+  ],
+  "services": "Faith-based emergency and transitional shelter for women and children",
+  "languages": [],
+  "phone": "713-466-4785",
+  "notes": "Page has no hours; says to submit the online intake form.",
+  "source_url": "https://missionofyahweh.org/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "hope-center-houston",
+  "name": "Hope Center Houston",
+  "category": [
+   "hygiene"
+  ],
+  "address": "821 Peakwood Drive, Houston, TX 77090",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "09:00-13:00"
+   ],
+   "tue": [
+    "09:00-13:00"
+   ],
+   "wed": [
+    "09:00-13:00"
+   ],
+   "thu": [
+    "09:00-13:00"
+   ],
+   "fri": [
+    "09:00-13:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": "9:00am – 1:00pm We Welcome our Guests to Enter",
+  "eligibility": [],
+  "services": "Day center for individuals experiencing homelessness: breakfast and lunch, laundry, showers (Mon-Fri), clothing, medical and dental care",
+  "languages": [],
+  "phone": "832-965-5511",
+  "notes": "Page states no eligibility rules. Showers/laundry quote: We provide essential services Monday through Friday, including breakfast and lunch, laundry, showers",
+  "source_url": "https://hopecenterhouston.org/",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "the-beacon-day-center",
+  "name": "The Beacon Day Center",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1212 Prairie Street, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "07:00-12:00"
+   ],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "07:00-12:00"
+   ],
+   "fri": [
+    "07:00-12:00"
+   ],
+   "sat": [
+    "07:00-12:00"
+   ],
+   "sun": [
+    "07:00-12:00"
+   ]
+  },
+  "hours_quote": "Services offered Thursday–Monday.",
+  "eligibility": [
+   {
+    "type": "note",
+    "source_quote": "first come, first served"
+   }
+  ],
+  "services": "Five private showers and full-service laundry (intake starts 7 a.m.), breakfast and lunch",
+  "languages": [],
+  "phone": null,
+  "notes": "Source is Healthcare for the Homeless Resource Hub. Hours range is breakfast 7-9:30 to lunch ending 12 noon; showers/laundry intake from 7 a.m. Page lists no Beacon phone (HHH 713-286-6000). ZIP on page truncated; 77002 from clinic listing.",
+  "source_url": "https://www.homeless-healthcare.org/resourcehub",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-ecclesia",
+  "name": "Moving Waters Mobile Showers at Ecclesia",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1100 Elder St., Houston, TX 77007",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [
+    "10:00-14:00"
+   ],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-wheeler-ave-baptist",
+  "name": "Moving Waters Mobile Showers at Wheeler Avenue Baptist Church",
+  "category": [
+   "hygiene"
+  ],
+  "address": "3826 Wheeler Ave, Houston, TX 77004",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [
+    "09:00-13:00"
+   ],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-st-joseph",
+  "name": "Moving Waters Mobile Showers at St. Joseph Catholic Church",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1505 Kane Street, Houston, TX 77007",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [
+    "09:00-13:00"
+   ],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-emergency-aid-coalition",
+  "name": "Moving Waters Mobile Showers at Emergency Aid Coalition",
+  "category": [
+   "hygiene"
+  ],
+  "address": "5401 Fannin Street, Houston, TX 77004",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [
+    "10:00-13:00"
+   ],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "moving-waters-nam",
+  "name": "Moving Waters Mobile Showers at Northwest Assistance Ministries",
+  "category": [
+   "hygiene"
+  ],
+  "address": "15555 Kuykendahl Rd., Houston, TX 77090",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [
+    "10:00-14:00"
+   ],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Free mobile shower trailer visiting this host location weekly",
+  "languages": [],
+  "phone": null,
+  "notes": "Mobile trailer; page lists this host location and day. Page gives no phone and no eligibility rules.",
+  "source_url": "https://www.movingwaters-houston.org/showers",
+  "last_verified": null,
+  "needs_review": true
+ }
+]

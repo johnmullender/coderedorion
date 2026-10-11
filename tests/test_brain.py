@@ -174,7 +174,7 @@ def test_sms_spanish_template():
     reply = brain.answer("tengo hambre", "es", "food",
                          [make_match("Despensa"), make_match("Otra")], "sms")
     assert "Despensa" in reply
-    assert "Responda 2 o 3" in reply
+    assert "Responda 2 para otra opción." in reply
     assert len(reply) <= 300
 
 
@@ -278,6 +278,53 @@ def test_templates_without_gemini_use_the_persons_language(language, word, monke
     kiosk = brain.answer("food", language, "food", matches, "kiosk")
     sms = brain.answer("food", language, "food", matches, "sms")
     assert word in kiosk and "Sample Pantry" in kiosk
-    assert word in sms and brain.REPLY_HINTS[language] in sms
+    assert word in sms and brain.reply_hint(language, 2) in sms
     nothing = brain.answer("food", language, "food", [], "kiosk")
     assert "211" in nothing and "Please call" not in nothing
+
+
+# ---------------------------------------------------------------------------
+# understand(): directions (fallback only, no Gemini key)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def fallback_only(monkeypatch):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr(brain, "_client", None)
+
+
+@pytest.mark.parametrize("text", [
+    "how do I get there",
+    "how can I get there?",
+    "which bus should I take",
+    "¿cómo llego?",
+    "qué autobús tomo",
+    "đi bằng xe buýt nào",
+    "làm sao để đến đó",
+    "怎么去",
+    "坐哪路公交",
+    "كيف أصل",
+    "أي حافلة",
+])
+def test_directions_intent_in_every_language(text, fallback_only):
+    result = brain.understand(text, [])
+    assert result["intent"] == "directions"
+    assert result["need"] is None
+
+
+def test_where_can_i_get_food_is_find_not_directions(fallback_only):
+    result = brain.understand("where can I get food", [])
+    assert result["intent"] == "find"
+    assert result["need"] == "food"
+
+
+def test_directions_with_need_stays_find(fallback_only):
+    assert brain.understand("how do I get to the food pantry", [])["intent"] == "find"
+
+
+def test_directions_is_in_intents_list():
+    assert "directions" in brain.INTENTS
+
+
+def test_plain_followup_still_followup(fallback_only):
+    assert brain.understand("is it far?", [])["intent"] == "followup"

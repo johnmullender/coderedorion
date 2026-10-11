@@ -1,0 +1,181 @@
+[
+ {
+  "id": "magnificat-house-houston",
+  "name": "Magnificat House",
+  "category": [
+   "shelter"
+  ],
+  "address": "1410 Elgin St, Houston, TX 77004",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Emergency shelter (as listed)",
+  "languages": [],
+  "phone": "713-529-4231",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "salvation-army-center-of-hope-houston",
+  "name": "Salvation Army Center of Hope",
+  "category": [
+   "shelter"
+  ],
+  "address": "1500 Austin Street, Houston, TX 77002",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Emergency shelter (Help Card lists women and children; Salvation Army page southernusa.salvationarmy.org/houston/sns calls it a shelter for single men and veterans - conflict, verify)",
+  "languages": [],
+  "phone": "800-725-2769",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "salvation-army-jones-family-residence",
+  "name": "Salvation Army Jones Family Residence",
+  "category": [
+   "shelter"
+  ],
+  "address": "1603 McGowen St, Houston, TX 77004",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Housing navigation program for homeless women and families (per Salvation Army sns page); type not specified on Help Card",
+  "languages": [],
+  "phone": "713-650-6530",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Not confirmed to be walk-in emergency shelter.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "open-door-mission-houston",
+  "name": "Open Door Mission",
+  "category": [
+   "shelter"
+  ],
+  "address": "5803 Harrisburg Blvd, Houston, TX 77011",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Shelter/transitional housing (as listed)",
+  "languages": [],
+  "phone": "832-962-4256",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Official site not fetchable.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "bay-area-homeless-services",
+  "name": "Bay Area Homeless Services",
+  "category": [
+   "shelter"
+  ],
+  "address": "3406 Wisconsin St, Baytown, TX 77520",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [],
+  "services": "Emergency shelter (as listed)",
+  "languages": [],
+  "phone": "281-837-1654",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Baytown, Harris County.",
+  "source_url": "https://www.cfthhouston.org/gethelp",
+  "last_verified": null,
+  "needs_review": true
+ },
+ {
+  "id": "salvation-army-yarc",
+  "name": "Salvation Army Young Adult Resource Center",
+  "category": [
+   "hygiene"
+  ],
+  "address": "1621 McGowen St, Houston, TX 77004",
+  "lat": null,
+  "lng": null,
+  "coords_source": null,
+  "hours": {
+   "mon": [],
+   "tue": [],
+   "wed": [],
+   "thu": [],
+   "fri": [],
+   "sat": [],
+   "sun": []
+  },
+  "hours_quote": null,
+  "eligibility": [
+   {
+    "type": "age",
+    "source_quote": "Homeless Youths, 18 - 25 Years Of Age"
+   }
+  ],
+  "services": "Showers and lockers; laundry facilities; homeless youths 18-25",
+  "languages": [],
+  "phone": "713-752-0677",
+  "notes": "Address and phone come from the CFTH Help Card (https://www.cfthhouston.org/gethelp); the YARC page only shows the area command footer (2407 N Main St, 1-800-SAL-ARMY). No hours on either page.",
+  "source_url": "https://southernusa.salvationarmy.org/houston/yarc",
+  "last_verified": null,
+  "needs_review": true
+ }
+]

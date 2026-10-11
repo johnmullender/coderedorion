@@ -30,7 +30,7 @@ MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
 
 LANGUAGES = ["en", "es", "vi", "zh", "ar"]
 NEEDS = ["food", "shelter", "hygiene", "clinic", "library", "cooling", "legal"]
-INTENTS = ["find", "next_option", "followup", "help", "other"]
+INTENTS = ["find", "next_option", "followup", "help", "directions", "other"]
 
 LANGUAGE_NAMES = {
     "en": "English",
@@ -102,6 +102,16 @@ HELP_WORDS = [
     "مساعدة",
 ]
 
+# Phrases that ask how to get to a place or which bus to take (intent "directions").
+DIRECTIONS_WORDS = [
+    "how do i get there", "how can i get there", "how do i get to", "how can i get to",
+    "which bus", "what bus", "how far by bus", "by bus",
+    "cómo llego", "como llego", "qué autobús", "que autobus", "qué bus", "cuál autobús",
+    "làm sao để đến", "đi bằng xe buýt", "xe buýt nào", "đến đó",
+    "怎么去", "坐哪路公交", "怎么走", "公交",
+    "كيف أصل", "أي حافلة", "كيف أذهب", "حافلة",
+]
+
 # Vietnamese letters that Spanish does not use. Seeing one means Vietnamese.
 VIETNAMESE_CHARS = set(
     "ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ"
@@ -121,6 +131,23 @@ REPLY_HINTS = {
     "zh": "回复2或3查看其他选择。",
     "ar": "أرسل 2 أو 3 لخيارات أخرى.",
 }
+
+# The hint for two options (the SMS reply says "Reply 2", not "2 or 3").
+REPLY_HINT_TWO = {
+    "en": "Reply 2 for another option.",
+    "es": "Responda 2 para otra opción.",
+    "vi": "Trả lời 2 để xem chỗ khác.",
+    "zh": "回复2查看另一个选择。",
+    "ar": "أرسل 2 لخيار آخر.",
+}
+
+
+def reply_hint(language, count):
+    """The "reply with the option number" sentence for `count` options (matches the real count)."""
+    if count == 2:
+        return REPLY_HINT_TWO.get(language, REPLY_HINT_TWO["en"])
+    return REPLY_HINTS.get(language, REPLY_HINTS["en"])
+
 
 # Words for each need, used inside the templates.
 NEED_WORDS = {
@@ -143,7 +170,7 @@ NEED_WORDS = {
 
 # Only these fields of a match are shown to the model (no internal ids).
 FACT_FIELDS = ["name", "address", "distance_mi", "open_now", "closes_at",
-               "opens_at", "requirements", "phone", "notes", "hours"]
+               "opens_at", "requirements", "phone", "notes", "hours", "hours_unknown"]
 
 SMS_LIMIT = 300
 
@@ -249,6 +276,8 @@ Fields:
   - "next_option": the person picks one of the places already listed.
     Example: "2" -> next_option, option_number 2. "option 3" -> option_number 3.
     "the second one" -> option_number 2.
+  - "directions": the person asks how to get to a place, or which bus to take.
+    Example: "how do I get there?" -> directions. "which bus goes there?" -> directions.
   - "followup": a question about the places already given, not a new search.
     Example: "is it open tomorrow?" -> followup. "is it far?" -> followup.
   - "help": the person asks for a human, or 211. Example: "HELP" -> help.
@@ -386,6 +415,8 @@ def _understand_with_rules(text, history):
         intent = "help"
     elif need is not None:
         intent = "find"
+    elif any(_has_word(lowered, phrase) for phrase in DIRECTIONS_WORDS):
+        intent = "directions"
     elif "?" in clean_text:
         intent = "followup"
     else:
@@ -478,6 +509,9 @@ TEMPLATES = {
         "next_opens": ", opening {opens}", "next_at": ", at {address}.",
         "this_service": "this service",
         "not_found": "I could not find an open place right now. Please call 211 for help.",
+        "unknown_hours": "{name}, {mi} miles away, hours not listed, call {phone} first.",
+        "unknown_hours_nophone": "{name}, {mi} miles away, hours not listed.",
+        "next_after_fit": "The next one to open is {name}",
     },
     "es": {
         "sms_address": ". {address}.",
@@ -489,6 +523,9 @@ TEMPLATES = {
         "next_opens": ", abre {opens}", "next_at": ", en {address}.",
         "this_service": "este servicio",
         "not_found": "No encontré un lugar abierto ahora. Llame al 211 para ayuda.",
+        "unknown_hours": "{name}, a {mi} millas, horario no publicado, llame primero al {phone}.",
+        "unknown_hours_nophone": "{name}, a {mi} millas, horario no publicado.",
+        "next_after_fit": "El siguiente en abrir es {name}",
     },
     "vi": {
         "sms_address": ". {address}.",
@@ -500,6 +537,9 @@ TEMPLATES = {
         "next_opens": ", mở cửa {opens}", "next_at": ", tại {address}.",
         "this_service": "dịch vụ này",
         "not_found": "Hiện tôi không tìm thấy nơi nào đang mở cửa. Vui lòng gọi 211 để được giúp.",
+        "unknown_hours": "{name}, cách {mi} dặm, chưa có giờ mở cửa, hãy gọi {phone} trước.",
+        "unknown_hours_nophone": "{name}, cách {mi} dặm, chưa có giờ mở cửa.",
+        "next_after_fit": "Nơi tiếp theo mở cửa là {name}",
     },
     "zh": {
         "sms_address": "。{address}。",
@@ -511,6 +551,9 @@ TEMPLATES = {
         "next_opens": "，{opens}开门", "next_at": "，地址：{address}。",
         "this_service": "这项服务",
         "not_found": "现在找不到开放的地点。请拨打211寻求帮助。",
+        "unknown_hours": "{name}，距离{mi}英里，未列出营业时间，请先致电{phone}。",
+        "unknown_hours_nophone": "{name}，距离{mi}英里，未列出营业时间。",
+        "next_after_fit": "下一个开放的是{name}",
     },
     "ar": {
         "sms_address": ". {address}.",
@@ -522,13 +565,29 @@ TEMPLATES = {
         "next_opens": "، يفتح {opens}", "next_at": "، في {address}.",
         "this_service": "هذه الخدمة",
         "not_found": "لم أجد مكانا مفتوحا الآن. يرجى الاتصال بالرقم 211 للمساعدة.",
+        "unknown_hours": "{name}، على بعد {mi} ميل، ساعات العمل غير مدرجة، اتصل أولا بالرقم {phone}.",
+        "unknown_hours_nophone": "{name}، على بعد {mi} ميل، ساعات العمل غير مدرجة.",
+        "next_after_fit": "المكان التالي الذي يفتح هو {name}",
     },
 }
+
+
+def _unknown_text(language, first, name=None):
+    """'<name>, 0.8 miles away, hours not listed, call <phone> first.' (never says open)."""
+    words = TEMPLATES.get(language, TEMPLATES["en"])
+    phone = first.get("phone")
+    shown = name if name is not None else first.get("name", "")
+    if phone:
+        return words["unknown_hours"].format(name=shown, mi=_miles(first), phone=phone)
+    return words["unknown_hours_nophone"].format(name=shown, mi=_miles(first))
 
 
 def _template_sms(language, matches, unmet_next, need):
     """Plain sentences for SMS, in the person's language."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
+    if matches and matches[0].get("hours_unknown"):
+        return _fit_sms(lambda name_part, address_part: _unknown_text(language, matches[0], name_part),
+                        matches[0].get("name", ""), matches[0].get("address", ""))
     if matches:
         first = matches[0]
         name = first.get("name", "")
@@ -545,7 +604,7 @@ def _template_sms(language, matches, unmet_next, need):
             if phone:
                 text += words["phone"].format(phone=phone)
             if many:
-                text += " " + REPLY_HINTS.get(language, REPLY_HINTS["en"])
+                text += " " + reply_hint(language, len(matches))
             return text
 
         return _fit_sms(build, name, address)
@@ -559,7 +618,7 @@ def _template_sms(language, matches, unmet_next, need):
     return words["not_found"]
 
 
-def _next_open_text(language, next_place, need, name=None, address=None):
+def _next_open_text(language, next_place, need, name=None, address=None, fit=False):
     """'Nothing is open now; the next one is X, opening at Y, at Z.'
 
     name and address can be passed in shortened (for SMS); by default they
@@ -574,7 +633,10 @@ def _next_open_text(language, next_place, need, name=None, address=None):
     phone = next_place.get("phone")
     need_names = NEED_WORDS.get(language, NEED_WORDS["en"])
     needed = need_names.get(need, words["this_service"]) if need else words["this_service"]
-    text = words["next_none"].format(need=needed, name=name)
+    if fit:
+        text = words["next_after_fit"].format(name=name)
+    else:
+        text = words["next_none"].format(need=needed, name=name)
     if opens:
         text += words["next_opens"].format(opens=opens)
     text += words["next_at"].format(address=address)
@@ -583,9 +645,16 @@ def _next_open_text(language, next_place, need, name=None, address=None):
     return text
 
 
+def next_open_text(language, next_place, need):
+    """'The next one to open is X, opening Y, at Z.' for use after 'none of the open places fit'."""
+    return _next_open_text(language, next_place, need, fit=True)
+
+
 def _template_kiosk(language, matches, unmet_next, need):
     """One or two short spoken sentences. No links, no emoji."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
+    if matches and matches[0].get("hours_unknown"):
+        return _unknown_text(language, matches[0])
     if matches:
         first = matches[0]
         closes = _closes_text(first)
@@ -619,6 +688,8 @@ Rules:
   sentence in {language_name}: "{hint}"
 - If channel is "kiosk": one or two short sentences to be spoken aloud.
   No web addresses, no emoji, no lists.
+- If a place has hours_unknown true, its hours are not listed. Never say it is open.
+  Say its name, its distance, that its hours are not listed, and to call its phone first.
 - If options is empty and unmet_next is given: say nothing is open right now,
   and say the name, when and where the next one opens.
 - If options is empty and unmet_next is null: say nothing was found and suggest calling 211.
@@ -639,7 +710,7 @@ def _answer_with_gemini(client, question, language, need, matches, channel, unme
     }
     prompt = ANSWER_PROMPT.format(
         language_name=LANGUAGE_NAMES[language],
-        hint=REPLY_HINTS[language],
+        hint=reply_hint(language, len(matches)),
         facts=json.dumps(facts, ensure_ascii=False, indent=1, default=str),
     )
     config = types.GenerateContentConfig(temperature=0.2)
@@ -654,8 +725,9 @@ def _check_gemini_reply(reply, channel, matches, language):
     """Return the reply if it follows the channel rules, otherwise None."""
     if channel == "sms":
         # Add the "reply 2 or 3" hint if the model left it out.
-        if len(matches) > 1 and REPLY_HINTS[language] not in reply:
-            reply = reply + " " + REPLY_HINTS[language]
+        hint = reply_hint(language, len(matches))
+        if len(matches) > 1 and hint not in reply:
+            reply = reply + " " + hint
         if len(reply) > SMS_LIMIT:
             return None
         return reply
