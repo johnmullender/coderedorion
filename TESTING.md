@@ -312,11 +312,11 @@ Notes:
 
 ## 12. Real places: check the data (do this before the demo)
 
-`data/resources.json` now holds 99 real Houston places, gathered from official pages and a few directories. Every place has `needs_review: true` until someone on the team checks it. The 12 old sample places moved to `tests/fixtures/` and are used only by the tests.
+`data/resources.json` now holds 96 real Houston places, gathered from official pages and a few directories. Every place has `needs_review: true` until someone on the team checks it. The 12 old sample places moved to `tests/fixtures/` and are used only by the tests.
 
 Run these on your Mac (the cloud setup can't reach these sites):
 
-1. **Map locations:** `python scripts/geocode.py`. This re-checks every address with the US Census geocoder. Three places have no location yet (Avenue 360 Southwest, UH Law Immigration Clinic, Central Library). If the geocoder can't find them either, type their `lat`/`lng` in by hand and set `"coords_source": "manual"`. Places without a location are skipped by the app.
+1. **Map locations:** `python scripts/geocode.py`. This re-checks every address with the US Census geocoder. If you add a place the geocoder can't find, type their `lat`/`lng` in by hand and set `"coords_source": "manual"`. Places without a location are skipped by the app.
 2. **No made-up facts:** `python scripts/validate.py --check-sources`. This downloads every `source_url` and lists every hours or eligibility quote that isn't on that page. **Expect:** some quotes fail because the research tool shortened or reformatted them. For each one, open the page and fix the quote to the exact words, or delete the rule.
 3. **Spot check:** open each place's `source_url`, compare name, address, phone, hours and rules, then set `"needs_review": false` and `"last_verified": "2026-10-11"` (today's date). Start with the places near UH (zip 77004), since the demo station is there.
 4. Load into Tiger Data: `python seed_db.py`.

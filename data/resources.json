@@ -256,7 +256,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Monday through Friday, 8 a.m. to 5 p.m.",
+  "hours_quote": "Monday-Friday, 8 a.m.-5 p.m.",
   "eligibility": [],
   "services": "Harris Health community health center: adult and pediatric medical care and pharmacy",
   "languages": [],
@@ -295,7 +295,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Mon–Thu 8am–6pm; Fri 8am–5pm",
+  "hours_quote": "Monday-Thursday: 8am-6pm / Friday: 8am-5pm",
   "eligibility": [],
   "services": "Community health center (Avenue 360 Health & Wellness)",
   "languages": [],
@@ -334,7 +334,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Mon–Fri 9am–6pm",
+  "hours_quote": "Monday-Friday 9am-6pm",
   "eligibility": [],
   "services": "Community health center (Avenue 360 Health & Wellness)",
   "languages": [],
@@ -373,7 +373,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Mon–Fri 8am–5pm",
+  "hours_quote": "Monday-Friday: 8am-5pm",
   "eligibility": [],
   "services": "Community health center (Avenue 360 Health & Wellness)",
   "languages": [],
@@ -412,7 +412,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Mon–Fri 8am–5pm",
+  "hours_quote": "Monday-Friday: 8am-5pm",
   "eligibility": [],
   "services": "Community health center (Avenue 360 Health & Wellness)",
   "languages": [],
@@ -451,50 +451,11 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Mon 8am–7pm; Tue–Fri 8am–5pm",
+  "hours_quote": "Monday: 8am-7pm / Tuesday-Friday: 8am-5pm",
   "eligibility": [],
   "services": "Community health center (Avenue 360 Health & Wellness)",
   "languages": [],
   "phone": "713-827-8266",
-  "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
-  "source_url": "https://www.avenue360.org/locations",
-  "last_verified": null,
-  "needs_review": true
- },
- {
-  "id": "avenue-360-southwest",
-  "name": "Avenue 360 - Southwest",
-  "category": [
-   "clinic"
-  ],
-  "address": "14095 South Main St, Houston, TX 77035",
-  "lat": null,
-  "lng": null,
-  "coords_source": null,
-  "hours": {
-   "mon": [
-    "08:00-17:00"
-   ],
-   "tue": [
-    "08:00-17:00"
-   ],
-   "wed": [
-    "08:00-17:00"
-   ],
-   "thu": [
-    "08:00-17:00"
-   ],
-   "fri": [
-    "08:00-17:00"
-   ],
-   "sat": [],
-   "sun": []
-  },
-  "hours_quote": "Mon–Fri 8am–5pm",
-  "eligibility": [],
-  "services": "Community health center (Avenue 360 Health & Wellness)",
-  "languages": [],
-  "phone": "832-830-8345",
   "notes": "Hours text was reformatted by the fetch tool; verify hours_quote against page.",
   "source_url": "https://www.avenue360.org/locations",
   "last_verified": null,
@@ -817,35 +778,6 @@
   "phone": "713-313-7275",
   "notes": "Another page (hlrs.org) says family/wills/criminal clinics only accept Harris County cases and screen by Federal Poverty Guidelines.",
   "source_url": "https://tmslaw.libanswers.com/faq/413386",
-  "last_verified": null,
-  "needs_review": true
- },
- {
-  "id": "uh-law-immigration-clinic",
-  "name": "University of Houston Law Center - Immigration Clinic",
-  "category": [
-   "legal"
-  ],
-  "address": "4170 Martin Luther King Blvd, Houston, TX 77204",
-  "lat": null,
-  "lng": null,
-  "coords_source": null,
-  "hours": {
-   "mon": [],
-   "tue": [],
-   "wed": [],
-   "thu": [],
-   "fri": [],
-   "sat": [],
-   "sun": []
-  },
-  "hours_quote": null,
-  "eligibility": [],
-  "services": "Immigration Clinic representing immigrants who are victims of torture and persecution",
-  "languages": [],
-  "phone": "713-743-2094",
-  "notes": "No hours on page; phone is 'Legal Clinics' line.",
-  "source_url": "https://www.law.uh.edu/clinic/immi.asp",
   "last_verified": null,
   "needs_review": true
  },
@@ -1222,24 +1154,24 @@
   "coords_source": "census-webfetch",
   "hours": {
    "mon": [
-    "08:30-12:00"
+    "09:00-12:00"
    ],
    "tue": [
-    "08:30-12:00"
+    "09:00-12:00"
    ],
    "wed": [
-    "08:30-12:00"
+    "09:00-12:00"
    ],
    "thu": [
-    "08:30-12:00"
+    "09:00-12:00"
    ],
    "fri": [
-    "08:30-12:00"
+    "09:00-12:00"
    ],
    "sat": [],
    "sun": []
   },
-  "hours_quote": "You should arrive at 8:30 a.m. Monday-Friday to be served.",
+  "hours_quote": null,
   "eligibility": [
    {
     "type": "note",
@@ -1641,7 +1573,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Tuesday -Wednesday 9 am to 11 am. Thursday 1030 am to 1230 pm",
+  "hours_quote": null,
   "eligibility": [],
   "services": "Food pantry",
   "languages": [],
@@ -1708,10 +1640,12 @@
     "11:00-14:00"
    ],
    "fri": [],
-   "sat": [],
+   "sat": [
+    "10:00-12:00"
+   ],
    "sun": []
   },
-  "hours_quote": "Mondays, Tuesdays, and Thursdays from 11:00 AM to 2:00 PM",
+  "hours_quote": null,
   "eligibility": [
    {
     "type": "zip_in",
@@ -1874,7 +1808,9 @@
    "tue": [
     "10:00-14:00"
    ],
-   "wed": [],
+   "wed": [
+    "15:00-18:00"
+   ],
    "thu": [
     "10:00-14:00"
    ],
@@ -1882,7 +1818,7 @@
    "sat": [],
    "sun": []
   },
-  "hours_quote": "Mon./Tue and Thurs. 10:00 am – 2:00 pm (No Appointment Needed)",
+  "hours_quote": null,
   "eligibility": [],
   "services": "Food pantry",
   "languages": [],
@@ -1955,47 +1891,6 @@
   "source_url": "https://houstoncasemanagers.com/houston-food-pantries/",
   "last_verified": null,
   "needs_review": true
- },
- {
-  "lat": null,
-  "lng": null,
-  "coords_source": null,
-  "eligibility": [],
-  "languages": [],
-  "last_verified": null,
-  "needs_review": true,
-  "id": "hpl-central-library",
-  "name": "Houston Public Library - Central Library, Jesse H. Jones",
-  "category": [
-   "library"
-  ],
-  "address": "500 McKinney St., Houston, TX 77002",
-  "hours": {
-   "mon": [
-    "12:00-18:00"
-   ],
-   "tue": [
-    "09:00-18:00"
-   ],
-   "wed": [
-    "09:00-18:00"
-   ],
-   "thu": [
-    "09:00-18:00"
-   ],
-   "fri": [
-    "09:00-18:00"
-   ],
-   "sat": [
-    "10:00-18:00"
-   ],
-   "sun": []
-  },
-  "hours_quote": "12pm – 6pm",
-  "services": "Public library (free and open to the public)",
-  "phone": "832-393-1313",
-  "notes": "Hours are the week of Oct 4-10 on the HPL calendar and can vary by week; Sunday closed. Address and phone from houstonlibrary.org/all-locations. Check calendar.houstonlibrary.org/hours for current week.",
-  "source_url": "https://calendar.houstonlibrary.org/hours/"
  },
  {
   "lat": 29.72343,
@@ -3819,14 +3714,7 @@
    "sun": []
   },
   "hours_quote": null,
-  "eligibility": [
-   {
-    "type": "age",
-    "source_quote": "Homeless Youths, 18 - 25 Years Of Age",
-    "min": 18,
-    "max": 25
-   }
-  ],
+  "eligibility": [],
   "services": "Showers and lockers; laundry facilities; homeless youths 18-25",
   "languages": [],
   "phone": "713-752-0677",
