@@ -753,6 +753,8 @@ def _handle_ask(channel, session_id, text, lang, lat, lng):
 
     # Step 5: answer by intent.
     intent = choose_intent(understood, session, text)
+    if intent == "other" and session["need"] and lat is not None and lng is not None:
+        intent = "find"   # a shared location (e.g. on Telegram) answers "where are you?"
     if intent == "next_option":
         result = handle_next_option(session, understood, text, channel)
     elif intent == "directions":
