@@ -3,6 +3,8 @@ replaced with None, so no network or API key is needed."""
 
 import os
 import sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -434,3 +436,59 @@ def test_gemini_answer_prompt_carries_the_offers_rule(monkeypatch):
                                                        "open_now": True, "closes_at": None}], "kiosk")
     assert text == "Test Place is open now, 0.2 miles away."
     assert "Describe a place only with the offers listed" in " ".join(client.prompts[0].split())
+
+
+# ---------------------------------------------------------------- opening times: day names, today, tomorrow
+
+def houston(year, month, day, hour, minute):
+    return datetime(year, month, day, hour, minute, tzinfo=ZoneInfo("America/Chicago"))
+
+
+MONDAY_10AM = houston(2026, 10, 12, 10, 0)  # 2026-10-12 is a Monday
+
+
+def test_opening_day_names_are_translated():
+    assert brain._opens_text("Wed 09:00", "es", now=MONDAY_10AM) == "Mié 9 AM"
+    assert brain._opens_text("Fri 13:00", "vi", now=MONDAY_10AM) == "T6 1 PM"
+    assert brain._opens_text("Sun 09:00", "zh", now=MONDAY_10AM) == "周日 9 AM"
+    assert brain._opens_text("Sat 09:00", "ar", now=MONDAY_10AM) == "السبت 9 AM"
+    assert brain._opens_text("Wed 09:00", "en", now=MONDAY_10AM) == "Wed 9 AM"
+
+
+def test_today_and_tomorrow_are_said_in_the_language():
+    assert brain._opens_text("Mon 14:00", "en", now=MONDAY_10AM) == "today 2 PM"  # later today
+    assert brain._opens_text("Tue 09:00", "en", now=MONDAY_10AM) == "tomorrow 9 AM"
+    assert brain._opens_text("Mon 14:00", "es", now=MONDAY_10AM) == "hoy 2 PM"
+    assert brain._opens_text("Tue 09:00", "es", now=MONDAY_10AM) == "mañana 9 AM"
+    assert brain._opens_text("Tue 09:00", "vi", now=MONDAY_10AM) == "ngày mai 9 AM"
+    assert brain._opens_text("Mon 14:00", "zh", now=MONDAY_10AM) == "今天 2 PM"
+    assert brain._opens_text("Tue 09:00", "ar", now=MONDAY_10AM) == "غدا 9 AM"
+
+
+def test_monday_morning_already_passed_is_not_today():
+    # Monday 09:00 when it is already 10 AM on Monday: the next one is a week away, so use the day name.
+    assert brain._opens_text("Mon 09:00", "en", now=MONDAY_10AM) == "Mon 9 AM"
+    assert brain._opens_text("Mon 09:00", "es", now=MONDAY_10AM) == "Lun 9 AM"
+
+
+def test_opening_text_uses_houston_time_when_no_time_is_given():
+    text = brain._opens_text("Mon 09:00", "en")
+    assert text.endswith(" 9 AM") and text.split(" ")[0] in ("today", "tomorrow", "Mon", "Tue", "Wed", "Thu",
+                                                             "Fri", "Sat", "Sun")
+
+
+def test_next_open_text_is_translated_and_says_tomorrow():
+    place = {"name": "Later Place", "address": "2 Main St", "opens_at": "Tue 09:00", "phone": "713-555-0100"}
+    text = brain._next_open_text("es", place, "food")
+    assert "Tue" not in text  # translated: hoy, mañana, or Mar
+    assert "abre" in text
+
+
+def test_next_open_place_is_never_described_as_open_now():
+    place = {"name": "Later Place", "address": "2 Main St", "distance_mi": 0.7, "open_now": False,
+             "closes_at": None, "opens_at": "Tue 09:00", "phone": "713-555-0100"}
+    sms = brain.answer("food", "en", "food", [place], "sms")
+    kiosk = brain.answer("food", "en", "food", [place], "kiosk")
+    for text in (sms, kiosk):
+        assert "The next one to open is Later Place" in text
+        assert "open now" not in text.lower()

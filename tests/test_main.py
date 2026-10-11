@@ -140,8 +140,8 @@ def test_unmet_path(client, monkeypatch):
                         lambda *a, **k: {"options": [], "next_open": dict(NEXT_OPEN)})
     data = ask(client, "I need food", channel="kiosk")
     assert data["unmet"] is True
-    assert data["options"] == []
-    assert data["selected"] == 0
+    assert [option["id"] for option in data["options"]] == [NEXT_OPEN["id"]]  # the next place is option 1
+    assert data["selected"] == 1
     rows = client.get("/api/requests").json()
     assert rows["unmet_counts"] == {"food": 1}
     assert rows["requests"][-1]["matched"] is False

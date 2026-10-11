@@ -12,6 +12,8 @@ Neither function ever raises an error to the caller.
 import json
 import os
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 
@@ -465,14 +467,49 @@ def _to_12h(hhmm):
     return f"{hour12}:{minute:02d} {suffix}"
 
 
-def _opens_text(opens_at):
-    """'Mon 09:00' -> 'Mon 9 AM'."""
+HOUSTON = ZoneInfo("America/Chicago")
+
+# The day abbreviations the data uses, in weekday order (Monday first), and their translations.
+DAY_NAMES_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+DAY_NAMES = {
+    "en": DAY_NAMES_EN,
+    "es": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    "vi": ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
+    "zh": ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+    "ar": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+}
+# "today" and "tomorrow" in each language (used when the opening is that day, Houston time).
+RELATIVE_DAYS = {
+    "en": ("today", "tomorrow"), "es": ("hoy", "mañana"), "vi": ("hôm nay", "ngày mai"),
+    "zh": ("今天", "明天"), "ar": ("اليوم", "غدا"),
+}
+
+
+def _opens_text(opens_at, language="en", now=None):
+    """'Mon 09:00' -> 'Mon 9 AM' (in the language: 'hoy 9 AM', 'mañana 9 AM', 'Lun 9 AM' ...).
+
+    'today' is used only when the opening is later today, and 'tomorrow' for the next day.
+    `now` is for tests; it defaults to the current time in Houston.
+    """
     if not opens_at:
         return ""
     parts = opens_at.split(" ")
-    if len(parts) == 2:
-        return f"{parts[0]} {_to_12h(parts[1])}"
-    return _to_12h(opens_at)
+    if len(parts) != 2 or parts[0] not in DAY_NAMES_EN:
+        return _to_12h(opens_at)
+    day_index = DAY_NAMES_EN.index(parts[0])
+    hhmm = parts[1]
+    lang = language if language in DAY_NAMES else "en"
+    now = now or datetime.now(HOUSTON)
+    today = now.weekday()
+    open_minutes = int(hhmm[:2]) * 60 + int(hhmm[3:5])
+    today_word, tomorrow_word = RELATIVE_DAYS[lang]
+    if day_index == today and open_minutes > now.hour * 60 + now.minute:
+        label = today_word
+    elif day_index == (today + 1) % 7:
+        label = tomorrow_word
+    else:
+        label = DAY_NAMES[lang][day_index]
+    return f"{label} {_to_12h(hhmm)}"
 
 
 def _closes_text(match):
@@ -685,12 +722,22 @@ def _unknown_text(language, first, name=None):
     return words["unknown_hours_nophone"].format(name=shown, mi=_miles(first))
 
 
+def _is_next_place(match):
+    """True for a place that is closed now and opens later (the next place to open, from the search)."""
+    return bool(match.get("opens_at")) and not match.get("open_now") and not match.get("hours_unknown")
+
+
 def _template_sms(language, matches, unmet_next, need):
     """Plain sentences for SMS, in the person's language."""
     words = TEMPLATES.get(language, TEMPLATES["en"])
     if matches and matches[0].get("hours_unknown"):
         return _fit_sms(lambda name_part, address_part: _unknown_text(language, matches[0], name_part),
                         matches[0].get("name", ""), matches[0].get("address", ""))
+    if matches and _is_next_place(matches[0]):
+        first = matches[0]
+        return _fit_sms(lambda name_part, address_part: _next_open_text(
+                            language, first, need, name_part, address_part, fit=True),
+                        first.get("name", ""), first.get("address", ""))
     if matches:
         first = matches[0]
         name = first.get("name", "")
@@ -732,7 +779,7 @@ def _next_open_text(language, next_place, need, name=None, address=None, fit=Fal
         name = next_place.get("name", "")
     if address is None:
         address = next_place.get("address", "")
-    opens = _opens_text(next_place.get("opens_at"))
+    opens = _opens_text(next_place.get("opens_at"), language)
     phone = next_place.get("phone")
     need_names = NEED_WORDS.get(language, NEED_WORDS["en"])
     needed = need_names.get(need, words["this_service"]) if need else words["this_service"]
@@ -758,6 +805,8 @@ def _template_kiosk(language, matches, unmet_next, need):
     words = TEMPLATES.get(language, TEMPLATES["en"])
     if matches and matches[0].get("hours_unknown"):
         return _unknown_text(language, matches[0])
+    if matches and _is_next_place(matches[0]):
+        return _next_open_text(language, matches[0], need, fit=True)
     if matches:
         first = matches[0]
         closes = _closes_text(first)
@@ -800,6 +849,7 @@ Rules:
 - If options is empty and unmet_next is given: say nothing is open right now,
   and say the name, when and where the next one opens.
 - If options is empty and unmet_next is null: say nothing was found and suggest calling 211.
+- If open_now is false and opens_at is given, say the place is not open now and when it opens.
 - Describe a place only with the offers listed in its "offers" field. Never suggest a
   service (beds, meals, etc.) that is not listed or not what the person asked for.
 

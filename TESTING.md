@@ -54,7 +54,7 @@ If you already cloned the repo before, run `git pull` inside `coderedorion` to g
 ```bash
 python -m pytest -q
 ```
-**Expect:** `528 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
+**Expect:** `536 passed, 8 skipped`. The 8 skipped tests need a local Postgres, so that's fine.
 
 ## 2. Start the server
 
@@ -110,7 +110,7 @@ curl -s -X POST localhost:8000/sms -d From=+15550003 --data-urlencode "Body=2"
 ```bash
 curl -s -X POST localhost:8000/sms -d From=+15550004 --data-urlencode "Body=I need a lawyer near 77004"
 ```
-**Expect:** "Nothing nearby is open right now." then "The next one to open is …", with its opening time and address. Places with no hours listed come after it, marked "hours not listed, call first" (never "open"). This shows up as a red **unmet** pin in step 4.
+**Expect:** "Nothing nearby is open right now." then "The next one to open is …", with its opening time and address. That place is option 1 (its distance, offers and bus line follow). Then "Reply 2 for a nearby place with no listed hours." (kiosk: "Turn the knob to option 2 …"); option 2 is described as "hours not listed, call first" (never "open") when chosen. This shows up as a red **unmet** pin in step 4.
 
 **3h. Other languages.** Without Gemini, Vietnamese, Chinese and Arabic messages are understood, but the replies come back in English. Step 6 fixes that.
 ```bash

@@ -73,6 +73,9 @@ MESSAGES = {
         "none_fit": "None of the open places fit your answers.",
         "bus_hint": "Reply BUS for directions.",
         "nothing_open": "Nothing nearby is open right now.",
+        "next_distance": "It is {dist}.",
+        "no_hours_hint_sms": "Reply 2 for a nearby place with no listed hours.",
+        "no_hours_hint_kiosk": "Turn the knob to option 2 for a nearby place with no listed hours.",
         "no_bus": "No direct bus or transfer found to {name} ({dist}).",
         "no_bus_stops": "No direct bus or transfer found to {name} ({dist}). Nearest stop to you: {start}. Nearest stop to {name}: {end}.",
         "bus_unavailable": "Bus times aren't available right now. {name} is {dist}.",
@@ -91,6 +94,9 @@ MESSAGES = {
         "none_fit": "Ninguno de los lugares abiertos le corresponde según sus respuestas.",
         "bus_hint": "Responda AUTOBÚS para la ruta.",
         "nothing_open": "Nada cercano está abierto ahora.",
+        "next_distance": "Está {dist}.",
+        "no_hours_hint_sms": "Responda 2 para un lugar cercano sin horario publicado.",
+        "no_hours_hint_kiosk": "Gire la perilla a la opción 2 para un lugar cercano sin horario publicado.",
         "no_bus": "No encontré autobús directo ni con transbordo a {name} ({dist}).",
         "no_bus_stops": "No encontré autobús directo ni con transbordo a {name} ({dist}). Parada más cercana a usted: {start}. Parada más cercana a {name}: {end}.",
         "bus_unavailable": "Los horarios del autobús no están disponibles ahora. {name} está {dist}.",
@@ -109,6 +115,9 @@ MESSAGES = {
         "none_fit": "Không có địa điểm nào đang mở phù hợp với câu trả lời của bạn.",
         "bus_hint": "Trả lời XE BUÝT để xem đường đi.",
         "nothing_open": "Hiện không có nơi nào gần đây đang mở cửa.",
+        "next_distance": "Địa điểm {dist}.",
+        "no_hours_hint_sms": "Trả lời 2 cho nơi gần đó chưa có giờ mở cửa.",
+        "no_hours_hint_kiosk": "Vặn núm đến lựa chọn 2 để xem nơi gần đó chưa có giờ mở cửa.",
         "no_bus": "Không tìm thấy xe buýt trực tiếp hoặc có đổi tuyến đến {name} ({dist}).",
         "no_bus_stops": "Không tìm thấy xe buýt trực tiếp hoặc có đổi tuyến đến {name} ({dist}). Trạm gần bạn nhất: {start}. Trạm gần {name} nhất: {end}.",
         "bus_unavailable": "Hiện chưa có giờ xe buýt. {name} {dist}.",
@@ -127,6 +136,9 @@ MESSAGES = {
         "none_fit": "开放的地点都不符合您的情况。",
         "bus_hint": "回复公交查看路线。",
         "nothing_open": "附近现在没有开放的地点。",
+        "next_distance": "地点{dist}。",
+        "no_hours_hint_sms": "回复2查看附近一个未列出营业时间的地点。",
+        "no_hours_hint_kiosk": "把旋钮转到选项2，查看附近一个未列出营业时间的地点。",
         "no_bus": "找不到到{name}的直达或换乘公交（{dist}）。",
         "no_bus_stops": "找不到到{name}的直达或换乘公交（{dist}）。离您最近的站：{start}。离{name}最近的站：{end}。",
         "bus_unavailable": "现在无法获取公交时间。{name}{dist}。",
@@ -145,6 +157,9 @@ MESSAGES = {
         "none_fit": "لا يوجد مكان مفتوح يناسب إجاباتك.",
         "bus_hint": "أرسل كلمة حافلة للاتجاهات.",
         "nothing_open": "لا يوجد شيء قريب مفتوح الآن.",
+        "next_distance": "المكان {dist}.",
+        "no_hours_hint_sms": "أرسل 2 لمكان قريب ساعاته غير مدرجة.",
+        "no_hours_hint_kiosk": "أدر المؤشر إلى الخيار 2 لمكان قريب ساعاته غير مدرجة.",
         "no_bus": "لم أجد حافلة مباشرة أو مع تبديل إلى {name} ({dist}).",
         "no_bus_stops": "لم أجد حافلة مباشرة أو مع تبديل إلى {name} ({dist}). أقرب موقف إليك: {start}. أقرب موقف إلى {name}: {end}.",
         "bus_unavailable": "أوقات الحافلات غير متوفرة الآن. {name} {dist}.",
@@ -362,12 +377,13 @@ def compose(base, extras):
     return " ".join([base] + [extra for extra in extras if extra])
 
 
-def add_extras(session, base, place, channel):
+def add_extras(session, base, place, channel, tail=None):
     """Add the offers line, the notes, the call-to-confirm line and the bus line for `place` to the reply.
 
-    Returns (reply, transit dict or None). The main line stays first. For SMS the reply stays within
-    SMS_LIMIT: the bus line is replaced by "Reply BUS for directions" first, then the notes are dropped,
-    then the offers line. The "Reply 2 or 3" sentence of the main line always stays last.
+    `tail` is an optional last sentence (the "Reply 2 for ..." hint). Returns (reply, transit dict or None).
+    The main line stays first. For SMS the reply stays within SMS_LIMIT. The drop order is: the bus line
+    (replaced by "Reply BUS for directions"), then the tail sentence, then the notes, then the offers line.
+    The "Reply 2 or 3" sentence of the main line always stays last.
     """
     language = session["language"]
     found = bus_for(session, place)
@@ -378,16 +394,18 @@ def add_extras(session, base, place, channel):
     offers = brain.offers_line(place, language)
 
     if channel != "sms":
-        return compose(base, [offers] + notes + [bus_text]), found
+        return compose(base, [offers] + notes + [bus_text, tail]), found
 
     main_line, own_hint = brain.split_hint(base)
     hint = message(language, "bus_hint")
-    if bus_text is None:
-        attempts = [(offers, notes, None), (offers, [], None), ([], [], None)]
+    no_bus = hint if bus_text else None
+    if bus_text:
+        first = [(offers, notes, bus_text, tail), (offers, notes, hint, tail)]
     else:
-        attempts = [(offers, notes, bus_text), (offers, notes, hint), (offers, [], hint), ([], [], hint)]
-    for offer_line, note_list, tail in attempts:
-        text = compose(main_line, [offer_line] + note_list + [tail, own_hint])
+        first = [(offers, notes, None, tail)]
+    attempts = first + [(offers, notes, no_bus, None), (offers, [], no_bus, None), ([], [], no_bus, None)]
+    for offer_line, note_list, bus_part, tail_line in attempts:
+        text = compose(main_line, [offer_line] + note_list + [bus_part, tail_line, own_hint])
         if len(text) <= SMS_LIMIT:
             return text, found
     return clip_for_channel(base, "sms"), found
@@ -577,37 +595,45 @@ def search_step(session, channel):
 
 
 def nothing_open_step(session, fallback, channel):
-    """No place is open for this need: "Nothing nearby is open right now", the place that opens next,
-    then the nearest places with no hours listed (never called open).
+    """No place is open for this need: "Nothing nearby is open right now", then the place that opens next.
 
-    With no next place and no no-hours places, the reply points to 211.
+    With a next place, it is option 1 (the reply is about it, with its distance, offers and bus line), and
+    the nearest places with no hours listed are options 2 and 3, named with one hint sentence.
+    Without a next place, the no-hours places are described as before. With neither, the reply points to 211.
     """
     language = session["language"]
     need = session["need"]
     next_open = session["next_open"]
-    options = fallback[:OPTIONS_SHOWN]
-    session["options"] = options
-    session["selected"] = 1 if options else 0
 
-    if next_open is None and not options:
-        reply = brain.answer(session["search_text"], language, need, [], channel,
-                             unmet_next=None, history=session["history"])
-        return make_result(session, clip_for_channel(reply, channel), "find", need=need, unmet=True)
-
-    lead = message(language, "nothing_open")
-    if next_open is not None:
-        lead = lead + " " + brain.next_open_text(language, next_open, need)
-    reply = lead
-    if options:
+    if next_open is None:
+        options = fallback[:OPTIONS_SHOWN]
+        session["options"] = options
+        session["selected"] = 1 if options else 0
+        if not options:
+            reply = brain.answer(session["search_text"], language, need, [], channel,
+                                 unmet_next=None, history=session["history"])
+            return make_result(session, clip_for_channel(reply, channel), "find", need=need, unmet=True)
         rest = brain.answer(session["search_text"], language, need, options, channel,
                             history=session["history"])
-        reply = compose(lead, [rest])
+        reply = compose(message(language, "nothing_open"), [rest])
         if channel == "sms" and len(reply) > SMS_LIMIT:
             # The places with no hours listed do not fit: keep the lead, and drop them.
-            reply = lead
+            reply = message(language, "nothing_open")
             session["options"] = []
             session["selected"] = 0
-    return make_result(session, clip_for_channel(reply, channel), "find", need=need, unmet=True)
+        return make_result(session, clip_for_channel(reply, channel), "find", need=need, unmet=True)
+
+    options = ([next_open] + fallback)[:OPTIONS_SHOWN]
+    session["options"] = options
+    session["selected"] = 1
+    lead = message(language, "nothing_open") + " " + brain.next_open_text(language, next_open, need)
+    distance = distance_phrase(language, _miles_value(session, next_open))
+    base = compose(lead, [message(language, "next_distance", dist=distance)])
+    tail = None
+    if len(options) > 1:
+        tail = message(language, "no_hours_hint_sms" if channel == "sms" else "no_hours_hint_kiosk")
+    reply, found = add_extras(session, base, next_open, channel, tail=tail)
+    return make_result(session, clip_for_channel(reply, channel), "find", need=need, unmet=True, transit=found)
 
 
 def handle_find(session, understood, text, channel, lat, lng):

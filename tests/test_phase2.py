@@ -704,8 +704,9 @@ def test_nothing_open_leads_with_the_next_place_to_open(client, world):
     data = ask(client, "I need food", channel="kiosk")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert "The next one to open is Later Place" in data["reply"]
+    assert "It is " in data["reply"] and "miles away." in data["reply"]  # its distance
     assert data["unmet"] is True
-    assert data["options"] == [] and data["selected"] == 0
+    assert ids(data) == ["later"] and data["selected"] == 1
 
 
 def test_nothing_open_then_places_with_no_hours_listed(client, world):
@@ -715,11 +716,10 @@ def test_nothing_open_then_places_with_no_hours_listed(client, world):
     data = ask(client, "I need food", channel="kiosk")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert "The next one to open is Later Place" in data["reply"]
-    assert "Unknown Place" in data["reply"] and "hours not listed" in data["reply"]
-    assert "call 713-555-0111 first" in data["reply"]
-    assert ids(data) == ["u1"]
+    assert "Turn the knob to option 2 for a nearby place with no listed hours." in data["reply"]
+    assert "Unknown Place" not in data["reply"]  # option 2 is described only when it is chosen
+    assert ids(data) == ["later", "u1"]
     assert data["unmet"] is True
-    assert data["reply"].index("Later Place") < data["reply"].index("Unknown Place")
     assert "open now" not in data["reply"].lower()
 
 
@@ -729,19 +729,43 @@ def test_nothing_open_sms_keeps_the_lead_and_fits(client, world):
     data = ask(client, "I need food 77004", channel="sms")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert "The next one to open is Later Place" in data["reply"]
+    assert data["reply"].endswith("Reply 2 for a nearby place with no listed hours.")
     assert len(data["reply"]) <= 300
 
 
-def test_nothing_open_sms_drops_no_hours_places_when_they_do_not_fit(client, world):
+def test_nothing_open_sms_drops_the_hint_first_when_long(client, world):
     long_name = "Later Place " + "Community Clinic and Services " * 5
     world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name=long_name,
-                                     address="1 Long Road " * 6),
+                                     address="1 Long Road " * 6, offers=offers("showers", "wifi")),
                           make_place("u1", 2, hours={d: [] for d in DAYS}, name="Unknown Place")]
     data = ask(client, "I need food 77004", channel="sms")
     assert data["reply"].startswith("Nothing nearby is open right now.")
     assert len(data["reply"]) <= 300
-    assert "Unknown Place" not in data["reply"]
-    assert data["options"] == []
+    assert "Reply 2 for a nearby place" not in data["reply"]
+    assert ids(data) == ["later", "u1"]
+
+
+def test_choosing_option_one_after_nothing_open_describes_the_next_place(client, world):
+    world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name="Later Place"),
+                          make_place("u1", 2, hours={d: [] for d in DAYS}, name="Unknown Place")]
+    ask(client, "I need food", channel="kiosk")
+    data = ask(client, "1", channel="kiosk")
+    assert data["selected"] == 1
+    assert "The next one to open is Later Place" in data["reply"]
+    assert "open now" not in data["reply"].lower()
+    data = ask(client, "how do I get there?", channel="kiosk")
+    assert data["intent"] == "directions" and "Later Place" in data["reply"]
+
+
+def test_choosing_option_two_describes_the_place_with_no_hours(client, world):
+    world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name="Later Place"),
+                          make_place("u1", 2, hours={d: [] for d in DAYS}, name="Unknown Place",
+                                     phone="713-555-0111")]
+    ask(client, "I need food", channel="kiosk")
+    data = ask(client, "2", channel="kiosk")
+    assert data["selected"] == 2
+    assert "Unknown Place" in data["reply"] and "hours not listed" in data["reply"]
+    assert "open now" not in data["reply"].lower()
 
 
 def test_nothing_open_and_nothing_listed_points_to_211(client, world):
