@@ -25,6 +25,13 @@ NEEDS = ("food", "shelter", "hygiene", "clinic", "library", "cooling", "legal")
 DAY_KEYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 RULE_TYPES = ("id_required", "age", "serves", "zip_in", "residency", "income_limit", "note")
 SERVE_GROUPS = ("women", "men", "families", "youth", "veterans", "seniors")
+# Must match OFFER_KEYS in brain.py (tests check that the two lists are the same).
+OFFER_KEYS = (
+    "food_pantry", "hot_meals", "shelter_beds", "showers", "laundry", "restrooms", "clothing",
+    "wifi", "computers", "phone_charging", "mail", "id_help", "medical_care", "dental_care",
+    "pharmacy", "mental_health", "legal_aid", "immigration_help", "case_management", "job_help",
+    "cooling", "heating", "hygiene_items", "baby_supplies",
+)
 LAT_BOUNDS = (29.4, 30.2)
 LNG_BOUNDS = (-95.9, -94.9)
 
@@ -282,6 +289,28 @@ def _check_eligibility(rules, errors):
                 errors.append(f"{where} ({rtype_label}): {problem}")
 
 
+def _check_offers(offers, errors):
+    """Optional offers: a list of {"key", "quote", "url"}. The key comes from OFFER_KEYS, the quote is
+    copied from the page at url, and url is an http(s) link."""
+    if offers is None:
+        return
+    if not isinstance(offers, list):
+        errors.append("offers must be a list (use [] when the place lists none)")
+        return
+    for i, offer in enumerate(offers):
+        where = f"offers[{i}]"
+        if not isinstance(offer, dict):
+            errors.append(f"{where} is not an object")
+            continue
+        key = offer.get("key")
+        if not (isinstance(key, str) and key in OFFER_KEYS):
+            errors.append(f"{where} has unknown key {key!r}; allowed: {', '.join(OFFER_KEYS)}")
+        if not _nonempty(offer.get("quote")):
+            errors.append(f"{where} ({key}) has no quote")
+        if not _valid_http_url(offer.get("url")):
+            errors.append(f"{where} ({key}) url must be an http(s) URL")
+
+
 def validate_place(place):
     """Check one place record. Returns (errors, warnings), two lists of strings."""
     if not isinstance(place, dict):
@@ -295,6 +324,7 @@ def validate_place(place):
     _check_hours(place.get("hours"), errors, warnings)
     _check_source_url(place.get("source_url"), errors)
     _check_eligibility(place.get("eligibility"), errors)
+    _check_offers(place.get("offers"), errors)
     if place.get("needs_review") is True:
         warnings.append("needs_review is true: no human has checked this place yet")
     return errors, warnings
@@ -336,42 +366,64 @@ def _short(text):
 
 
 def _quotes_for(place):
-    """(kind, quote) pairs to look for on the source page."""
+    """(kind, quote, url) triples to look for on source pages.
+
+    Rules and hours are looked for on the place's source_url; each offer is looked for on its own url.
+    """
+    source = place.get("source_url")
     quotes = []
     for rule in place.get("eligibility") or []:
         if isinstance(rule, dict) and _nonempty(rule.get("source_quote")):
-            quotes.append(("source_quote", rule["source_quote"]))
+            quotes.append(("source_quote", rule["source_quote"], source))
     if _nonempty(place.get("hours_quote")):
-        quotes.append(("hours_quote", place["hours_quote"]))
+        quotes.append(("hours_quote", place["hours_quote"], source))
+    for offer in place.get("offers") or []:
+        if isinstance(offer, dict) and _nonempty(offer.get("quote")):
+            quotes.append(("offer quote", offer["quote"], offer.get("url")))
     return quotes
+
+
+def _page_for(url, pages, fetch):
+    """(page text or None, problem or None) for a url, downloaded once."""
+    if url not in pages:
+        try:
+            pages[url] = (html_to_text(fetch(url)), None)
+        except Exception as exc:  # any failure is a warning, not a crash
+            pages[url] = (None, str(exc) or type(exc).__name__)
+    return pages[url]
 
 
 def check_sources(places, downloader=None):
     """Look for every quote on its source page.
 
-    Each distinct source_url is downloaded once. Returns {index: (errors, warnings)}
-    for the places that have a valid source_url.
+    Each distinct url is downloaded once. Returns {index: (errors, warnings)} for the places that
+    have a valid source_url or an offer with a valid url.
     """
     fetch = downloader or download_page
     pages = {}  # url -> (page text or None, problem or None)
     results = {}
     for index, place in enumerate(places):
-        if not isinstance(place, dict) or not _valid_http_url(place.get("source_url")):
+        if not isinstance(place, dict):
             continue
-        url = place["source_url"].strip()
-        if url not in pages:
-            try:
-                pages[url] = (html_to_text(fetch(url)), None)
-            except Exception as exc:  # any failure is a warning, not a crash
-                pages[url] = (None, str(exc) or type(exc).__name__)
-        text, problem = pages[url]
+        source = place.get("source_url")
+        has_source = _valid_http_url(source)
+        checks = [(kind, quote, url.strip()) for kind, quote, url in _quotes_for(place)
+                  if _valid_http_url(url)]
+        if not has_source and not checks:
+            continue
         errors, warnings = [], []
-        if problem is not None:
-            warnings.append(f"could not download source_url {url} ({problem}); quotes not checked")
-        else:
-            for kind, quote in _quotes_for(place):
-                if not quote_in_page(quote, text):
-                    errors.append(f'{kind} not found on {url}: "{_short(quote)}"')
+        if has_source:
+            _text, problem = _page_for(source.strip(), pages, fetch)
+            if problem is not None:
+                warnings.append(f"could not download source_url {source.strip()} ({problem}); quotes not checked")
+        for kind, quote, url in checks:
+            text, problem = _page_for(url, pages, fetch)
+            if problem is not None:
+                warning = f"could not download source_url {url} ({problem}); quotes not checked"
+                if warning not in warnings:
+                    warnings.append(warning)
+            elif not quote_in_page(quote, text):
+                errors.append(f'{kind} not found on {url}: "{_short(quote)}"')
         results[index] = (errors, warnings)
     return results
 

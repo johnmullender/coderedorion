@@ -30,6 +30,8 @@ UTC = timezone.utc
 WALK_MPH = 3.0
 MAX_WALK_MI = 0.5
 MAX_WAIT_MIN = 90
+LATER_WAIT_MIN = 24 * 60  # when nothing leaves within MAX_WAIT_MIN, look this far ahead for a ride
+NEAREST_STOP_MILES = 2.0  # how far to look for the stop nearest a point, when no ride is found
 TRANSFER_MIN_MIN = 2  # minutes needed between getting off one bus and boarding the next
 MAX_DEPARTURES = 40  # per search: the earliest this many trips (one entry per trip) are considered
 DOWN_SECONDS = 30  # after a connection failure, skip the database this long
@@ -458,14 +460,14 @@ class _Search:
         return unique
 
 
-def _board_departures(search, board, now):
-    """Usable departures from the boarding stops: reachable on foot in time, leaving within MAX_WAIT_MIN."""
+def _board_departures(search, board, now, wait_min=MAX_WAIT_MIN):
+    """Usable departures from the boarding stops: reachable on foot in time, leaving within wait_min."""
     earliest = now + timedelta(minutes=min(s["walk_min"] for s in board.values()))
-    latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + MAX_WAIT_MIN)
+    latest = now + timedelta(minutes=max(s["walk_min"] for s in board.values()) + wait_min)
     usable = []
     for dep in search.departures(list(board), earliest, latest):
         reach = now + timedelta(minutes=board[dep["stop_id"]]["walk_min"])
-        if reach <= dep["dep_dt"] <= reach + timedelta(minutes=MAX_WAIT_MIN):
+        if reach <= dep["dep_dt"] <= reach + timedelta(minutes=wait_min):
             usable.append(dep)
     search.load_trips(d["trip_id"] for d in usable)
     return usable
@@ -484,10 +486,10 @@ def _leg(dep, board_name, alight_name, arrive, rides):
     }
 
 
-def _direct(search, board, alight, now):
+def _direct(search, board, alight, now, wait_min=MAX_WAIT_MIN):
     """The direct ride with the earliest arrival (final walk included), or None."""
     best = None
-    for dep in _board_departures(search, board, now):
+    for dep in _board_departures(search, board, now, wait_min):
         if best is not None and dep["dep_dt"] >= best["total"]:
             break  # later departures cannot arrive before the best one
         for rides, stop in search.riding(dep):
@@ -516,15 +518,16 @@ def _direct(search, board, alight, now):
     }
 
 
-def _one_transfer(search, board, alight, now):
+def _one_transfer(search, board, alight, now, wait_min=MAX_WAIT_MIN):
     """The best route with exactly one transfer, or None.
 
-    Only the first buses that are usable (capped) are expanded. For each stop they reach,
-    keep the earliest arrival. Then find the second bus that leaves at least
+    The first bus may leave within wait_min; the second bus must leave within MAX_WAIT_MIN
+    of the connection. Only the first buses that are usable (capped) are expanded. For each
+    stop they reach, keep the earliest arrival. Then find the second bus that leaves at least
     TRANSFER_MIN_MIN later and reaches the destination.
     """
     firsts = {}
-    for dep in _board_departures(search, board, now):
+    for dep in _board_departures(search, board, now, wait_min):
         for rides, stop in search.riding(dep):
             if not stop["drop_off"]:
                 continue
@@ -588,8 +591,9 @@ def directions(from_lat, from_lng, to_lat, to_lng, when=None, source=None):
     """The soonest-arriving bus route between two points, direct rides first.
 
     Returns {"legs": [...], "walk_to_min", "walk_from_min", "arrive_by"} or None when no
-    ride is found. `source` is any GtfsSource; by default the database or the local file.
-    The source is closed when the search ends.
+    ride is found. When nothing leaves within MAX_WAIT_MIN, the first ride in the next
+    LATER_WAIT_MIN is returned instead, with "later": True. `source` is any GtfsSource; by
+    default the database or the local file. The source is closed when the search ends.
     """
     if source is None:
         source = _default_source()
@@ -605,9 +609,51 @@ def directions(from_lat, from_lng, to_lat, to_lng, when=None, source=None):
         direct = _direct(search, board, alight, now)
         if direct is not None:
             return direct
-        return _one_transfer(search, board, alight, now)
+        transfer = _one_transfer(search, board, alight, now)
+        if transfer is not None:
+            return transfer
+        # Nothing leaves within the wait limit (late at night, say): the first ride in the next 24 hours.
+        later = _direct(search, board, alight, now, LATER_WAIT_MIN)
+        if later is None:
+            later = _one_transfer(search, board, alight, now, LATER_WAIT_MIN)
+        if later is not None:
+            later["later"] = True
+        return later
     except Exception as problem:
         print(f"Transit directions failed: {problem}")
+        return None
+    finally:
+        source.close()
+
+
+def _nearest_stop(source, lat, lng):
+    """The stop closest to a point (within NEAREST_STOP_MILES), or None."""
+    stops = source.stops_near(lat, lng, NEAREST_STOP_MILES) or []
+    if not stops:
+        return None
+    return min(stops, key=lambda s: haversine_miles(lat, lng, s["lat"], s["lng"]))
+
+
+def closest_stops(from_lat, from_lng, to_lat, to_lng, language, channel, source=None):
+    """The names of the stops nearest the start and nearest the destination, for a reply with no ride.
+
+    Returns (start stop name, destination stop name), formatted for the channel, or None when either
+    point has no stop nearby or there is no schedule. Never raises.
+    """
+    if source is None:
+        source = _default_source()
+    if source is None:
+        return None
+    lang = language if language in _AT else "en"
+    sms = channel == "sms"
+    try:
+        start = _nearest_stop(source, from_lat, from_lng)
+        end = _nearest_stop(source, to_lat, to_lng)
+        if start is None or end is None:
+            return None
+        return _stop_name(start["name"], lang, sms), _stop_name(end["name"], lang, sms)
+    except Exception as problem:
+        print(f"Nearest bus stops failed: {problem}")
         return None
     finally:
         source.close()
@@ -686,6 +732,15 @@ _NO_BUS = {
 }
 
 _AT = {"en": "at", "es": "en", "vi": "tại", "zh": "和", "ar": "عند"}
+
+# Said before a ride that is not in the next 90 minutes ("later": True).
+_LATER = {
+    "en": "No buses are running now. The first one:",
+    "es": "No hay autobuses ahora. El primero:",
+    "vi": "Hiện không có xe buýt chạy. Chuyến đầu tiên:",
+    "zh": "现在没有公交车运行。第一班车：",
+    "ar": "لا توجد حافلات تعمل الآن. الأولى:",
+}
 
 
 def _stops_phrase(language, count):
@@ -833,6 +888,7 @@ def summary(d, language, channel):
     sms = channel == "sms"
     if not d or not d.get("legs"):
         return _NO_BUS[lang]["sms" if sms else "kiosk"]
-    if sms:
-        return _sms_summary(d, lang)
-    return _kiosk_summary(d, lang)
+    text = _sms_summary(d, lang) if sms else _kiosk_summary(d, lang)
+    if d.get("later"):
+        text = _LATER[lang] + ("" if lang == "zh" else " ") + text
+    return text

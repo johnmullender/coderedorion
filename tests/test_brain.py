@@ -328,3 +328,109 @@ def test_directions_is_in_intents_list():
 
 def test_plain_followup_still_followup(fallback_only):
     assert brain.understand("is it far?", [])["intent"] == "followup"
+
+
+# ---------------------------------------------------------------- offers: labels, line, Gemini facts
+
+LANGS = ["en", "es", "vi", "zh", "ar"]
+
+
+def place_with_offers(*keys):
+    """A place whose offers are the given keys (quotes and urls are placeholders)."""
+    return {"name": "Test Place", "offers": [
+        {"key": key, "quote": "a quote", "url": "https://example.org/offers"} for key in keys]}
+
+
+def test_every_offer_key_has_a_label_in_every_language():
+    for language in LANGS:
+        labels = brain.OFFER_LABELS[language]
+        assert set(labels) == set(brain.OFFER_KEYS), language
+        assert all(label.strip() for label in labels.values()), language
+    assert len(brain.OFFER_KEYS) == len(set(brain.OFFER_KEYS)) == 24
+
+
+def test_every_language_has_an_offers_lead_word():
+    for language in LANGS:
+        assert "{items}" in brain.TEMPLATES[language]["offers"], language
+        assert brain.TEMPLATES[language]["offers_sep"].strip(), language
+
+
+def test_offers_line_examples():
+    place = place_with_offers("showers", "wifi", "food_pantry")
+    assert brain.offers_line(place, "en") == "Offers: showers, Wi-Fi, food pantry."
+    assert brain.offers_line(place, "es") == "Ofrece: duchas, Wi-Fi, despensa de comida."
+    assert brain.offers_line(place, "zh") == "提供：洗澡、无线网络、食品库。"
+    assert brain.offers_line(place, "ar").startswith("تقدم: ")
+
+
+def test_offers_line_keeps_four_in_data_order_and_skips_bad_entries():
+    place = place_with_offers("laundry", "bogus", "mail", "showers", "wifi", "restrooms")
+    place["offers"].append("not an object")
+    assert brain.offers_line(place, "en") == "Offers: laundry, mail, showers, Wi-Fi."
+
+
+def test_offers_line_is_none_without_offers():
+    assert brain.offers_line({"name": "x"}, "en") is None
+    assert brain.offers_line({"offers": []}, "en") is None
+    assert brain.offers_line(place_with_offers("bogus"), "en") is None
+
+
+def test_split_hint_takes_off_the_reply_sentence():
+    assert brain.split_hint("Pantry is open. Reply 2 or 3 for other options.") == (
+        "Pantry is open.", "Reply 2 or 3 for other options.")
+    assert brain.split_hint("Pantry is open.") == ("Pantry is open.", "")
+
+
+def test_facts_send_offer_labels_but_not_notes_or_links():
+    match = dict(place_with_offers("showers", "wifi"), name="Test Place", notes="Internal remark",
+                 address="1 Main", distance_mi=0.2, open_now=True, phone="713-555-0100")
+    facts = brain._facts_for(match, 1, "es")
+    assert facts["offers"] == ["duchas", "Wi-Fi"]
+    assert "notes" not in facts
+    assert "Internal remark" not in str(facts)
+    assert "example.org" not in str(facts) and "a quote" not in str(facts)
+
+
+def test_notes_are_not_a_fact_and_prompt_forbids_unlisted_services():
+    assert "notes" not in brain.FACT_FIELDS
+    assert "offers" in brain.FACT_FIELDS
+    prompt = " ".join(brain.ANSWER_PROMPT.split())  # the rule is wrapped over two lines in the source
+    assert 'Describe a place only with the offers listed in its "offers" field.' in prompt
+    assert "Never suggest a service (beds, meals, etc.) that is not listed" in prompt
+
+
+class FakeGemini:
+    """Stands in for the Gemini client: records the prompt and returns a fixed reply."""
+
+    def __init__(self, reply="Pantry is open now."):
+        self.prompts = []
+        self.reply = reply
+        self.models = self
+
+    def generate_content(self, model, contents, config):
+        self.prompts.append(contents)
+
+        class Reply:
+            text = self.reply
+        return Reply()
+
+
+def test_gemini_prompt_gets_offer_labels_and_no_notes():
+    client = FakeGemini()
+    match = dict(place_with_offers("hot_meals", "shelter_beds"), name="Test Place", notes="Call to see if you can get a bed",
+                 address="1 Main", distance_mi=0.2, open_now=True, phone="713-555-0100")
+    reply = brain._answer_with_gemini(client, "I need food", "en", "food", [match], "kiosk", None, [])
+    assert reply == "Pantry is open now."
+    prompt = client.prompts[0]
+    assert '"free meals"' in prompt and '"shelter beds"' in prompt
+    assert "Call to see if you can get a bed" not in prompt
+    assert "example.org" not in prompt
+
+
+def test_gemini_answer_prompt_carries_the_offers_rule(monkeypatch):
+    client = FakeGemini(reply="Test Place is open now, 0.2 miles away.")
+    monkeypatch.setattr(brain, "_get_client", lambda: client)
+    text = brain.answer("I need food", "en", "food", [{"name": "Test Place", "distance_mi": 0.2,
+                                                       "open_now": True, "closes_at": None}], "kiosk")
+    assert text == "Test Place is open now, 0.2 miles away."
+    assert "Describe a place only with the offers listed" in " ".join(client.prompts[0].split())

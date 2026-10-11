@@ -84,7 +84,7 @@ def answer(question: str, language: str, need: str | None, matches: list[dict],
 - `followup` = a question about the places already given ("is it open tomorrow?", "is it far?"), not a new search.
 - If `lang_hint` is given (the kiosk knob), `language` must equal it.
 
-`answer` writes the reply in `language` using ONLY facts present in `matches` / `unmet_next` (name, address, distance_mi, closes_at, opens_at, requirements, phone, notes, hours). The first match is the one being recommended. For `channel == "sms"`: ≤ 300 characters, includes name, distance, closing time, address, and ends with a hint to reply 2/3 for other options (when more than one match). For `channel == "kiosk"`: 1–2 short spoken sentences, no URLs, no emoji. With no matches and `unmet_next`, say nothing is open now and when/where the next one opens. With no matches and no `unmet_next`, say nothing was found and suggest calling 211.
+`answer` writes the reply in `language` using ONLY facts present in `matches` / `unmet_next` (name, address, distance_mi, closes_at, opens_at, requirements, phone, offers as labels only, hours). `notes` is never sent to Gemini (internal research remarks). The first match is the one being recommended. For `channel == "sms"`: ≤ 300 characters, includes name, distance, closing time, address, and ends with a hint to reply 2/3 for other options (when more than one match). For `channel == "kiosk"`: 1–2 short spoken sentences, no URLs, no emoji. With no matches and `unmet_next`, say nothing is open now and when/where the next one opens. With no matches and no `unmet_next`, say nothing was found and suggest calling 211.
 
 Gemini: `google-genai` client, key from env `GEMINI_API_KEY`, model from env `GEMINI_MODEL` (default `"gemini-2.5-flash"`), load `.env` with python-dotenv. `understand` must use structured JSON output (response schema). **Both functions must work with no key or on any API error** via a rule-based fallback (keyword lists in all 5 languages for needs/help, digit detection for option_number, simple template replies in all 5 languages). Never raise to the caller.
 
@@ -204,6 +204,7 @@ Knob → language when idle (5 equal bands: EN, ES, VI, ZH, AR, same as `hardwar
   "hours_quote": "Mon-Thu 10 AM - 6 PM ...",       // exact text copied from source_url, or null
   "eligibility": [ /* rules, see below; [] when the source states none */ ],
   "services": "Free wifi, computers, printing",   // one short line, from the source
+  "offers": [{"key": "wifi", "quote": "Free wifi", "url": "https://..."}],  // optional, see "Offers"
   "languages": ["en", "es"],
   "phone": "832-393-1313",
   "notes": "",
@@ -214,6 +215,21 @@ Knob → language when idle (5 equal bands: EN, ES, VI, ZH, AR, same as `hardwar
 ```
 - The old `requirements` object stays readable (old sample data) but new data uses `eligibility`.
 - `hours` may be all-empty when the source gives no hours; such a place is never "open now" and is only shown as a fallback with "call to confirm".
+
+## Offers (`offers` list, optional)
+
+What a place offers, each item copied from a page:
+```json
+{"key": "showers", "quote": "Showers are available Tuesdays 8 AM to noon.", "url": "https://..."}
+```
+- `key` is one of: food_pantry, hot_meals, shelter_beds, showers, laundry, restrooms, clothing, wifi, computers,
+  phone_charging, mail, id_help, medical_care, dental_care, pharmacy, mental_health, legal_aid, immigration_help,
+  case_management, job_help, cooling, heating, hygiene_items, baby_supplies (`brain.OFFER_KEYS`).
+- `quote` is the exact text from `url`; `url` is an http(s) link. A place with no offers has `[]` or no field.
+- Replies: an "Offers: ..." line follows the main line (up to 4 labels, in data order, translated via
+  `brain.OFFER_LABELS`). On SMS it is dropped after the notes, and only after them.
+- Gemini gets the labels only, and its prompt says to describe a place only with its listed offers.
+- `scripts/validate.py` checks the key, quote and url; `--check-sources` looks for each offer quote on its own `url`.
 
 ## Eligibility rule format (`eligibility` list items)
 
@@ -280,15 +296,22 @@ MAX_WAIT_MIN = 90
 
 def directions(from_lat, from_lng, to_lat, to_lng, when: datetime | None = None, source=None) -> dict | None
     # source: an object with the GTFS query methods below (default: DB-backed, or local-file-backed); tests pass a fake
-    # Returns the soonest-arriving option, direct first; one transfer only if no direct ride within MAX_WAIT_MIN:
+    # Returns the soonest-arriving option, direct first; one transfer only if no direct ride within MAX_WAIT_MIN.
+    # If neither leaves within MAX_WAIT_MIN (late at night), the first ride in the next LATER_WAIT_MIN (24 h)
+    # is returned with "later": True. A transfer's second bus always leaves within MAX_WAIT_MIN of the connection.
     {"legs": [{"route": "54", "headsign": "Downtown", "board_stop": "Scott @ Holman",
                "alight_stop": "Main @ Gray", "departs": "16:12", "arrives": "16:31", "stops": 6}],
      "walk_to_min": 3, "walk_from_min": 2, "arrive_by": "16:33"}
-    # None when no ride is found (caller then says "no direct bus" + walking distance)
+    # None when no ride is found (caller then names the nearest stops and, on SMS, sends a Google Maps transit link)
+
+def closest_stops(from_lat, from_lng, to_lat, to_lng, language, channel, source=None) -> tuple[str, str] | None
+    # (stop nearest the start, stop nearest the destination), named for the channel ("Scott@Holman" on SMS,
+    # "Scott at Holman" in speech); None when a point has no stop within NEAREST_STOP_MILES or there is no schedule
 
 def summary(d: dict, language: str, channel: str) -> str
     # kiosk: one spoken sentence per leg; sms: compact "Bus 54 from Scott@Holman 4:12PM, 6 stops to Main@Gray, walk 2 min."
     # times in 12-hour style; all 5 languages via fixed templates (no Gemini)
+    # "later": True puts "No buses are running now. The first one:" (translated) in front
 
 class GtfsSource:   # interface used by directions(); DbSource and LocalSource implement it
     def stops_near(self, lat, lng, miles) -> list[dict]          # {"stop_id","name","lat","lng"}

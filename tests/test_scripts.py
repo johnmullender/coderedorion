@@ -226,6 +226,102 @@ def test_main_check_sources_fails_on_missing_quote(tmp_path, monkeypatch, capsys
     assert "not found on https://example.org/pantry" in capsys.readouterr().out
 
 
+# ---------------------------------------------------------------- validate: offers
+
+def good_offer(**overrides):
+    """An offer that passes every check."""
+    offer = {"key": "showers", "quote": "Showers available", "url": "https://example.org/services"}
+    offer.update(overrides)
+    return offer
+
+
+def offer_errors(offers):
+    errors, _warnings = validate.validate_place(good_place(offers=offers))
+    return errors
+
+
+def test_offers_are_optional_and_good_ones_pass():
+    assert validate.validate_place(good_place()) == ([], [])
+    assert offer_errors([]) == []
+    assert offer_errors([good_offer(), good_offer(key="wifi", quote="Free Wi-Fi")]) == []
+
+
+def test_offer_key_must_come_from_the_fixed_list():
+    errors = offer_errors([good_offer(key="beds")])
+    assert len(errors) == 1 and "unknown key 'beds'" in errors[0]
+
+
+@pytest.mark.parametrize("override, expected", [
+    ({"quote": ""}, "has no quote"),
+    ({"quote": "   "}, "has no quote"),
+    ({"url": "ftp://example.org/x"}, "url must be an http(s) URL"),
+    ({"url": ""}, "url must be an http(s) URL"),
+])
+def test_offer_needs_a_quote_and_an_http_url(override, expected):
+    errors = offer_errors([good_offer(**override)])
+    assert len(errors) == 1 and expected in errors[0]
+
+
+def test_offers_must_be_a_list_of_objects():
+    assert "offers must be a list" in offer_errors("showers")[0]
+    assert "is not an object" in offer_errors(["showers"])[0]
+
+
+def test_offer_keys_match_the_list_in_brain():
+    import brain
+    assert list(validate.OFFER_KEYS) == brain.OFFER_KEYS
+
+
+def test_check_sources_looks_for_offer_quotes_on_the_offer_url():
+    pages = {
+        "https://example.org/pantry": "<p>Please bring a photo ID.</p>",
+        "https://example.org/services": "<p>Free showers on Tuesdays.</p>",
+    }
+    place = good_place(hours_quote=None, offers=[good_offer(quote="Free showers on Tuesdays.")])
+    errors, warnings = validate.check_sources([place], downloader=lambda url: pages[url])[0]
+    assert errors == [] and warnings == []
+
+
+def test_offer_quote_on_the_source_page_is_not_enough():
+    pages = {
+        "https://example.org/pantry": "<p>Please bring a photo ID. Free showers on Tuesdays.</p>",
+        "https://example.org/services": "<p>Showers.</p>",
+    }
+    place = good_place(hours_quote=None, offers=[good_offer(quote="Free showers on Tuesdays.")])
+    errors, _warnings = validate.check_sources([place], downloader=lambda url: pages[url])[0]
+    assert len(errors) == 1
+    assert "offer quote not found on https://example.org/services" in errors[0]
+
+
+def test_offer_pages_are_downloaded_once_per_url():
+    calls = []
+
+    def fake(url):
+        calls.append(url)
+        return "<p>Please bring a photo ID. Free showers.</p>"
+
+    places = [good_place(id="a", offers=[good_offer(), good_offer(key="wifi", quote="Free showers.")]),
+              good_place(id="b", offers=[good_offer()])]
+    validate.check_sources(places, downloader=fake)
+    assert sorted(calls) == ["https://example.org/pantry", "https://example.org/services"]
+
+
+def test_offer_download_failure_is_a_warning_and_offers_only_place_still_checked():
+    def broken(url):
+        raise httpx.ConnectError("no route to host")
+
+    place = good_place(source_url="not a url", eligibility=[], hours_quote=None,
+                       offers=[good_offer()])
+    errors, warnings = validate.check_sources([place], downloader=broken)[0]
+    assert errors == []
+    assert any("https://example.org/services" in w for w in warnings)
+
+
+def test_place_with_no_checkable_source_gets_no_entry():
+    place = good_place(source_url="", eligibility=[], hours_quote=None)
+    assert validate.check_sources([place], downloader=lambda url: "") == {}
+
+
 # ---------------------------------------------------------------- geocode
 
 @pytest.fixture

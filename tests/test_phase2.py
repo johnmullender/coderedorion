@@ -598,3 +598,267 @@ def test_all_ruled_out_without_next_place_points_to_211(client, world):
     assert data["reply"].startswith("None of the open places fit your answers.")
     assert "211" in data["reply"]
     assert "could not find" not in data["reply"]
+
+
+# ---------------------------------------------------------------------------
+# Offers line (kiosk and SMS)
+# ---------------------------------------------------------------------------
+
+def offers(*keys):
+    """The offers list a place has: each key with a placeholder quote and url."""
+    return [{"key": key, "quote": "Some quote", "url": "https://example.org/offers"} for key in keys]
+
+
+def test_offers_line_comes_after_the_main_line(client, world):
+    world["resources"] = [make_place("a", 0, offers=offers("showers", "wifi", "food_pantry"))]
+    data = ask(client, "I need food", channel="kiosk")
+    assert "Offers: showers, Wi-Fi, food pantry." in data["reply"]
+    assert data["reply"].index("Offers:") > data["reply"].index("Place A")
+
+
+def test_offers_line_lists_at_most_four(client, world):
+    keys = ["laundry", "mail", "showers", "wifi", "restrooms", "clothing"]
+    world["resources"] = [make_place("a", 0, offers=offers(*keys))]
+    data = ask(client, "I need food", channel="kiosk")
+    assert "Offers: laundry, mail, showers, Wi-Fi." in data["reply"]
+    assert "restrooms" not in data["reply"] and "clothing" not in data["reply"]
+
+
+def test_offers_line_in_spanish(client, world):
+    world["resources"] = [make_place("a", 0, offers=offers("showers", "wifi"))]
+    data = ask(client, "necesito comida", channel="kiosk", lang="es")
+    assert "Ofrece: duchas, Wi-Fi." in data["reply"]
+
+
+def test_offers_line_is_not_in_the_reply_for_places_without_offers(client, world):
+    world["resources"] = [make_place("a", 0)]
+    data = ask(client, "I need food", channel="kiosk")
+    assert "Offers" not in data["reply"]
+
+
+def test_sms_notes_are_dropped_before_the_offers_line(client, world):
+    # About 200 characters of notes: with the offers line the reply is over 300, so the notes go
+    # and the offers line stays. Without the offers line the notes would have fitted.
+    note = ("Bring a bag and a copy of any mail you have, and ask the front desk staff for help "
+            "with the intake forms before you go home today. Ask for Maria at the desk. "
+            "Bring a friend if you can, and a snack for the trip.")
+    assert 190 < len(note) < 215
+    world["resources"] = [make_place("a", 0, [{"type": "note", "text": note, "source_quote": "x"}],
+                                     offers=offers("showers", "wifi"))]
+    data = ask(client, "I need food 77004", channel="sms")
+    assert len(data["reply"]) <= 300
+    assert "Offers: showers, Wi-Fi." in data["reply"]
+    assert "Bring a bag and a copy" not in data["reply"]
+    world["resources"] = [make_place("a", 0, [{"type": "note", "text": note, "source_quote": "x"}])]
+    data = ask(client, "I need food 77004", channel="sms", session_id="s2")
+    assert "Bring a bag and a copy" in data["reply"]  # no offers: the notes fit
+
+
+def test_sms_offers_line_kept_with_short_notes(client, world):
+    world["resources"] = [make_place("a", 0, [{"type": "note", "text": "Bring a bag.", "source_quote": "x"}],
+                                     offers=offers("showers", "wifi"))]
+    data = ask(client, "I need food 77004", channel="sms")
+    assert "Offers: showers, Wi-Fi." in data["reply"]
+    assert "Bring a bag." in data["reply"]
+    assert len(data["reply"]) <= 300
+
+
+def test_sms_reply_hint_stays_last_after_the_offers_line(client, world):
+    world["resources"] = [make_place("a", 0, offers=offers("showers")), make_place("b", 1, offers=offers("wifi"))]
+    data = ask(client, "I need food 77004", channel="sms")  # place B is nearer, so it is the one described
+    assert data["reply"].endswith("Reply 2 for another option.")
+    assert data["reply"].index("Offers: Wi-Fi.") < data["reply"].index("Reply 2 for another option.")
+    assert len(data["reply"]) <= 300
+
+
+def test_sms_offers_line_dropped_when_the_main_line_is_long(client, world):
+    long_name = "Houston Community Services and Family Support Center for Adults " * 3
+    world["resources"] = [make_place("a", 0, offers=offers("showers", "wifi"), name=long_name)]
+    data = ask(client, "I need food 77004", channel="sms")
+    assert len(data["reply"]) <= 300
+    assert data["reply"]  # never empty, never over the limit
+
+
+def test_offers_on_next_option_reply(client, world):
+    world["resources"] = [make_place("a", 0), make_place("b", 1, offers=offers("hot_meals"))]
+    ask(client, "I need food")
+    data = ask(client, "2")
+    assert data["selected"] == 2
+    assert "Offers: free meals." in data["reply"]
+
+
+# ---------------------------------------------------------------------------
+# Nothing open right now
+# ---------------------------------------------------------------------------
+
+def tomorrow_only_hours():
+    """Open all day tomorrow and never today, so the place is closed now and opens soonest."""
+    tomorrow = DAYS[(datetime.now(ZoneInfo("America/Chicago")).weekday() + 1) % 7]
+    hours = {day: [] for day in DAYS}
+    hours[tomorrow] = ["00:00-24:00"]
+    return hours
+
+
+def test_nothing_open_leads_with_the_next_place_to_open(client, world):
+    world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name="Later Place")]
+    data = ask(client, "I need food", channel="kiosk")
+    assert data["reply"].startswith("Nothing nearby is open right now.")
+    assert "The next one to open is Later Place" in data["reply"]
+    assert data["unmet"] is True
+    assert data["options"] == [] and data["selected"] == 0
+
+
+def test_nothing_open_then_places_with_no_hours_listed(client, world):
+    world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name="Later Place"),
+                          make_place("u1", 2, hours={d: [] for d in DAYS}, name="Unknown Place",
+                                     phone="713-555-0111")]
+    data = ask(client, "I need food", channel="kiosk")
+    assert data["reply"].startswith("Nothing nearby is open right now.")
+    assert "The next one to open is Later Place" in data["reply"]
+    assert "Unknown Place" in data["reply"] and "hours not listed" in data["reply"]
+    assert "call 713-555-0111 first" in data["reply"]
+    assert ids(data) == ["u1"]
+    assert data["unmet"] is True
+    assert data["reply"].index("Later Place") < data["reply"].index("Unknown Place")
+    assert "open now" not in data["reply"].lower()
+
+
+def test_nothing_open_sms_keeps_the_lead_and_fits(client, world):
+    world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name="Later Place"),
+                          make_place("u1", 2, hours={d: [] for d in DAYS}, name="Unknown Place")]
+    data = ask(client, "I need food 77004", channel="sms")
+    assert data["reply"].startswith("Nothing nearby is open right now.")
+    assert "The next one to open is Later Place" in data["reply"]
+    assert len(data["reply"]) <= 300
+
+
+def test_nothing_open_sms_drops_no_hours_places_when_they_do_not_fit(client, world):
+    long_name = "Later Place " + "Community Clinic and Services " * 5
+    world["resources"] = [make_place("later", 1, hours=tomorrow_only_hours(), name=long_name,
+                                     address="1 Long Road " * 6),
+                          make_place("u1", 2, hours={d: [] for d in DAYS}, name="Unknown Place")]
+    data = ask(client, "I need food 77004", channel="sms")
+    assert data["reply"].startswith("Nothing nearby is open right now.")
+    assert len(data["reply"]) <= 300
+    assert "Unknown Place" not in data["reply"]
+    assert data["options"] == []
+
+
+def test_nothing_open_and_nothing_listed_points_to_211(client, world):
+    world["resources"] = []
+    data = ask(client, "I need food", channel="kiosk")
+    assert "211" in data["reply"]
+    assert data["unmet"] is True
+    assert "Nothing nearby" not in data["reply"]
+
+
+# ---------------------------------------------------------------------------
+# Bus directions: the place name, the nearest stops, the Maps link, the next day's bus
+# ---------------------------------------------------------------------------
+
+ROUTE_LATER = dict(ROUTE, later=True)
+
+
+def stops_fake(monkeypatch, names=("Scott@Holman", "Main@Gray")):
+    """Pretend the schedule knows the stops: returns the names for every call (or None when names is None)."""
+    calls = []
+
+    def fake_closest(from_lat, from_lng, to_lat, to_lng, language, channel, source=None):
+        calls.append((from_lat, from_lng, to_lat, to_lng, language, channel))
+        return names
+
+    monkeypatch.setattr(transit, "closest_stops", fake_closest)
+    return calls
+
+
+def test_directions_reply_names_the_place(client, world):
+    world["resources"] = [make_place("a", 0, name="Sample Pantry")]
+    world["bus"] = ROUTE
+    ask(client, "I need food")
+    data = ask(client, "how do I get there?")
+    assert data["reply"].startswith("To Sample Pantry: ")
+
+
+def test_later_bus_is_said_to_be_the_first_one(client, world):
+    world["resources"] = [make_place("a", 0, name="Sample Pantry")]
+    world["bus"] = ROUTE_LATER
+    ask(client, "I need food")
+    data = ask(client, "how do I get there?")
+    assert data["reply"].startswith("To Sample Pantry: No buses are running now. The first one:")
+    assert data["transit"]["later"] is True
+
+
+def test_no_route_says_nearest_stops_by_name_on_sms_with_map_link(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: True)
+    calls = stops_fake(monkeypatch)
+    world["resources"] = [make_place("a", 0, name="Sample Pantry", lat=29.7300, lng=-95.3500)]
+    world["bus"] = None
+    ask(client, "I need food 77004", channel="sms")
+    data = ask(client, "how do I get there?", channel="sms")
+    assert data["transit"] is None
+    assert "No direct bus or transfer found to Sample Pantry" in data["reply"]
+    assert "Nearest stop to you: Scott@Holman." in data["reply"]
+    assert "Nearest stop to Sample Pantry: Main@Gray." in data["reply"]
+    link = data["reply"].split("Google Maps transit route: ")[1]
+    origin = calls[-1]
+    assert link.startswith("https://www.google.com/maps/dir/?api=1&origin=")
+    assert link == (f"https://www.google.com/maps/dir/?api=1&origin={origin[0]:.6f},{origin[1]:.6f}"
+                    f"&destination=29.730000,-95.350000&travelmode=transit")
+    assert len(data["reply"]) <= 300
+
+
+def test_no_route_on_kiosk_names_stops_without_a_link(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: True)
+    stops_fake(monkeypatch)
+    world["resources"] = [make_place("a", 0, name="Sample Pantry")]
+    world["bus"] = None
+    ask(client, "I need food")
+    data = ask(client, "how do I get there?", channel="kiosk")
+    assert "Nearest stop to you: Scott@Holman." in data["reply"]
+    assert "http" not in data["reply"]
+
+
+def test_no_route_without_stops_still_names_the_place(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: True)
+    stops_fake(monkeypatch, names=None)
+    world["resources"] = [make_place("a", 0, name="Sample Pantry")]
+    world["bus"] = None
+    ask(client, "I need food")
+    data = ask(client, "how do I get there?", channel="kiosk")
+    assert "No direct bus or transfer found to Sample Pantry" in data["reply"]
+    assert "Nearest stop" not in data["reply"]
+
+
+def test_bus_times_unavailable_names_the_place_and_links_on_sms(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: False)
+    world["resources"] = [make_place("a", 0, name="Sample Pantry")]
+    world["bus"] = None
+    ask(client, "I need food 77004", channel="sms")
+    data = ask(client, "how do I get there?", channel="sms")
+    assert data["reply"].startswith("Bus times aren't available right now. Sample Pantry is ")
+    assert "https://www.google.com/maps/dir/?api=1&origin=" in data["reply"]
+    assert len(data["reply"]) <= 300
+    ask(client, "I need food", channel="kiosk", session_id="k9")
+    kiosk = ask(client, "how do I get there?", channel="kiosk", session_id="k9")
+    assert "Bus times aren't available right now. Sample Pantry is " in kiosk["reply"]
+    assert "http" not in kiosk["reply"]
+
+
+def test_long_place_name_keeps_the_map_link_inside_sms_limit(client, world, monkeypatch):
+    monkeypatch.setattr(main, "bus_data_available", lambda: True)
+    stops_fake(monkeypatch, names=("A very long stop name " * 4, "Another long stop name " * 4))
+    world["resources"] = [make_place("a", 0, name="Name " * 60)]
+    world["bus"] = None
+    ask(client, "I need food 77004", channel="sms")
+    data = ask(client, "how do I get there?", channel="sms")
+    assert len(data["reply"]) <= 300
+    assert data["reply"].endswith("travelmode=transit")
+
+
+def test_no_route_message_wording_in_every_language(monkeypatch):
+    monkeypatch.setattr(brain, "_client", None)
+    for language in ["en", "es", "vi", "zh", "ar"]:
+        for key in ["no_bus", "no_bus_stops", "bus_unavailable", "to_place", "map_link", "nothing_open"]:
+            text = main.message(language, key, name="Pantry", dist="0.2 miles away", start="A", end="B",
+                                text="Bus", link="https://example.org")
+            assert "{" not in text and text.strip(), (language, key)

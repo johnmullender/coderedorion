@@ -169,8 +169,10 @@ NEED_WORDS = {
 }
 
 # Only these fields of a match are shown to the model (no internal ids).
+# "notes" is left out on purpose: it holds internal research remarks, and the model
+# used them to suggest services the person did not ask for. "offers" is sent as labels only.
 FACT_FIELDS = ["name", "address", "distance_mi", "open_now", "closes_at",
-               "opens_at", "requirements", "phone", "notes", "hours", "hours_unknown"]
+               "opens_at", "requirements", "phone", "offers", "hours", "hours_unknown"]
 
 SMS_LIMIT = 300
 
@@ -512,6 +514,7 @@ TEMPLATES = {
         "unknown_hours": "{name}, {mi} miles away, hours not listed, call {phone} first.",
         "unknown_hours_nophone": "{name}, {mi} miles away, hours not listed.",
         "next_after_fit": "The next one to open is {name}",
+        "offers": "Offers: {items}.", "offers_sep": ", ",
     },
     "es": {
         "sms_address": ". {address}.",
@@ -526,6 +529,7 @@ TEMPLATES = {
         "unknown_hours": "{name}, a {mi} millas, horario no publicado, llame primero al {phone}.",
         "unknown_hours_nophone": "{name}, a {mi} millas, horario no publicado.",
         "next_after_fit": "El siguiente en abrir es {name}",
+        "offers": "Ofrece: {items}.", "offers_sep": ", ",
     },
     "vi": {
         "sms_address": ". {address}.",
@@ -540,6 +544,7 @@ TEMPLATES = {
         "unknown_hours": "{name}, cách {mi} dặm, chưa có giờ mở cửa, hãy gọi {phone} trước.",
         "unknown_hours_nophone": "{name}, cách {mi} dặm, chưa có giờ mở cửa.",
         "next_after_fit": "Nơi tiếp theo mở cửa là {name}",
+        "offers": "Dịch vụ: {items}.", "offers_sep": ", ",
     },
     "zh": {
         "sms_address": "。{address}。",
@@ -554,6 +559,7 @@ TEMPLATES = {
         "unknown_hours": "{name}，距离{mi}英里，未列出营业时间，请先致电{phone}。",
         "unknown_hours_nophone": "{name}，距离{mi}英里，未列出营业时间。",
         "next_after_fit": "下一个开放的是{name}",
+        "offers": "提供：{items}。", "offers_sep": "、",
     },
     "ar": {
         "sms_address": ". {address}.",
@@ -568,8 +574,105 @@ TEMPLATES = {
         "unknown_hours": "{name}، على بعد {mi} ميل، ساعات العمل غير مدرجة، اتصل أولا بالرقم {phone}.",
         "unknown_hours_nophone": "{name}، على بعد {mi} ميل، ساعات العمل غير مدرجة.",
         "next_after_fit": "المكان التالي الذي يفتح هو {name}",
+        "offers": "تقدم: {items}.", "offers_sep": "، ",
     },
 }
+
+# The fixed list of offers a place can have (the "offers" field in data/resources.json).
+# scripts/validate.py has its own copy; tests check that the two lists match.
+OFFER_KEYS = [
+    "food_pantry", "hot_meals", "shelter_beds", "showers", "laundry", "restrooms", "clothing",
+    "wifi", "computers", "phone_charging", "mail", "id_help", "medical_care", "dental_care",
+    "pharmacy", "mental_health", "legal_aid", "immigration_help", "case_management", "job_help",
+    "cooling", "heating", "hygiene_items", "baby_supplies",
+]
+
+# Short labels for each offer, one set per language (used in the "Offers: ..." line and for Gemini).
+OFFER_LABELS = {
+    "en": {
+        "food_pantry": "food pantry", "hot_meals": "free meals", "shelter_beds": "shelter beds",
+        "showers": "showers", "laundry": "laundry", "restrooms": "restrooms", "clothing": "clothing",
+        "wifi": "Wi-Fi", "computers": "computers", "phone_charging": "phone charging", "mail": "mail",
+        "id_help": "ID help", "medical_care": "medical care", "dental_care": "dental care",
+        "pharmacy": "pharmacy", "mental_health": "mental health", "legal_aid": "legal aid",
+        "immigration_help": "immigration help", "case_management": "case management",
+        "job_help": "job help", "cooling": "cooling center", "heating": "heating",
+        "hygiene_items": "hygiene items", "baby_supplies": "baby supplies",
+    },
+    "es": {
+        "food_pantry": "despensa de comida", "hot_meals": "comidas gratis", "shelter_beds": "camas de refugio",
+        "showers": "duchas", "laundry": "lavandería", "restrooms": "baños", "clothing": "ropa",
+        "wifi": "Wi-Fi", "computers": "computadoras", "phone_charging": "cargar el teléfono", "mail": "correo",
+        "id_help": "ayuda con identificación", "medical_care": "atención médica", "dental_care": "dentista",
+        "pharmacy": "farmacia", "mental_health": "salud mental", "legal_aid": "ayuda legal",
+        "immigration_help": "ayuda de inmigración", "case_management": "manejo de casos",
+        "job_help": "ayuda para empleo", "cooling": "centro de enfriamiento", "heating": "calefacción",
+        "hygiene_items": "artículos de higiene", "baby_supplies": "artículos para bebés",
+    },
+    "vi": {
+        "food_pantry": "kho lương thực", "hot_meals": "bữa ăn miễn phí", "shelter_beds": "giường ngủ",
+        "showers": "chỗ tắm", "laundry": "giặt ủi", "restrooms": "nhà vệ sinh", "clothing": "quần áo",
+        "wifi": "Wi-Fi", "computers": "máy tính", "phone_charging": "sạc điện thoại", "mail": "thư từ",
+        "id_help": "hỗ trợ giấy tờ", "medical_care": "chăm sóc y tế", "dental_care": "nha khoa",
+        "pharmacy": "nhà thuốc", "mental_health": "sức khỏe tâm thần", "legal_aid": "trợ giúp pháp lý",
+        "immigration_help": "hỗ trợ nhập cư", "case_management": "quản lý hồ sơ",
+        "job_help": "hỗ trợ việc làm", "cooling": "nơi tránh nóng", "heating": "sưởi ấm",
+        "hygiene_items": "đồ vệ sinh", "baby_supplies": "đồ dùng cho bé",
+    },
+    "zh": {
+        "food_pantry": "食品库", "hot_meals": "免费热餐", "shelter_beds": "床位",
+        "showers": "洗澡", "laundry": "洗衣", "restrooms": "洗手间", "clothing": "衣物",
+        "wifi": "无线网络", "computers": "电脑", "phone_charging": "手机充电", "mail": "邮件",
+        "id_help": "证件帮助", "medical_care": "医疗服务", "dental_care": "牙科",
+        "pharmacy": "药房", "mental_health": "心理健康", "legal_aid": "法律援助",
+        "immigration_help": "移民帮助", "case_management": "个案管理", "job_help": "求职帮助",
+        "cooling": "避暑中心", "heating": "取暖", "hygiene_items": "卫生用品", "baby_supplies": "婴儿用品",
+    },
+    "ar": {
+        "food_pantry": "بنك طعام", "hot_meals": "وجبات ساخنة مجانية", "shelter_beds": "أسرّة إيواء",
+        "showers": "الاستحمام", "laundry": "غسيل الملابس", "restrooms": "دورات المياه", "clothing": "ملابس",
+        "wifi": "واي فاي", "computers": "حواسيب", "phone_charging": "شحن الهاتف", "mail": "البريد",
+        "id_help": "المساعدة في الهوية", "medical_care": "رعاية طبية", "dental_care": "رعاية الأسنان",
+        "pharmacy": "صيدلية", "mental_health": "الصحة النفسية", "legal_aid": "مساعدة قانونية",
+        "immigration_help": "مساعدة الهجرة", "case_management": "إدارة الحالات",
+        "job_help": "مساعدة في العمل", "cooling": "مركز تبريد", "heating": "تدفئة",
+        "hygiene_items": "مستلزمات النظافة", "baby_supplies": "مستلزمات الأطفال",
+    },
+}
+
+# The "Offers" line lists at most this many offers.
+OFFERS_ON_LINE = 4
+
+
+def offer_labels(place, language):
+    """The labels of a place's offers in this language, in the data's order, without repeats.
+
+    Unknown keys and bad entries are skipped. Returns [] when the place lists no offers.
+    """
+    labels = OFFER_LABELS.get(language, OFFER_LABELS["en"])
+    names = []
+    for offer in place.get("offers") or []:
+        key = offer.get("key") if isinstance(offer, dict) else None
+        if key in labels and labels[key] not in names:
+            names.append(labels[key])
+    return names
+
+
+def offers_line(place, language):
+    """'Offers: food pantry, showers, Wi-Fi.' with up to OFFERS_ON_LINE offers, or None if there are none."""
+    names = offer_labels(place, language)[:OFFERS_ON_LINE]
+    if not names:
+        return None
+    words = TEMPLATES.get(language, TEMPLATES["en"])
+    return words["offers"].format(items=words["offers_sep"].join(names))
+
+
+def split_hint(text):
+    """(the reply without its 'Reply 2 or 3' sentence, that sentence or ""), so an extra line can go before it."""
+    for sentence in list(REPLY_HINTS.values()) + list(REPLY_HINT_TWO.values()):
+        if text.endswith(sentence):
+            return text[:-len(sentence)].rstrip(), sentence
+    return text, ""
 
 
 def _unknown_text(language, first, name=None):
@@ -667,10 +770,14 @@ def _template_kiosk(language, matches, unmet_next, need):
     return words["not_found"]
 
 
-def _facts_for(match, number):
+def _facts_for(match, number, language):
     facts = {"option": number}
     for field in FACT_FIELDS:
-        if field in match:
+        if field not in match:
+            continue
+        if field == "offers":
+            facts[field] = offer_labels(match, language)  # labels only, never the quotes or links
+        else:
             facts[field] = match[field]
     return facts
 
@@ -693,6 +800,8 @@ Rules:
 - If options is empty and unmet_next is given: say nothing is open right now,
   and say the name, when and where the next one opens.
 - If options is empty and unmet_next is null: say nothing was found and suggest calling 211.
+- Describe a place only with the offers listed in its "offers" field. Never suggest a
+  service (beds, meals, etc.) that is not listed or not what the person asked for.
 
 Facts:
 {facts}
@@ -705,8 +814,8 @@ def _answer_with_gemini(client, question, language, need, matches, channel, unme
         "need": need,
         "question": question,
         "recent_chat": _recent(history),
-        "options": [_facts_for(m, i + 1) for i, m in enumerate(matches)],
-        "unmet_next": _facts_for(unmet_next, 0) if unmet_next else None,
+        "options": [_facts_for(m, i + 1, language) for i, m in enumerate(matches)],
+        "unmet_next": _facts_for(unmet_next, 0, language) if unmet_next else None,
     }
     prompt = ANSWER_PROMPT.format(
         language_name=LANGUAGE_NAMES[language],
