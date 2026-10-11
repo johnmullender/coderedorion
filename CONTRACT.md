@@ -185,3 +185,139 @@ Text sent to the LCD is plain ASCII (the kiosk strips accents and non-ASCII befo
 
 ## Kiosk behaviour (`static/kiosk.html`, Chrome on the hidden laptop)
 Knob → language when idle (5 equal bands: EN, ES, VI, ZH, AR, same as `hardware-test.ino`), → option 1/2/3 after an answer. Short press → `BEEP:1`, LCD1 "Listening...", record the mic with MediaRecorder and send it to `POST /stt` (ElevenLabs Scribe, no language sent so it detects the spoken language); press again or 8 s ends recording; if /stt fails, fall back to Chrome speech recognition in the chosen language (`en-US`, `es-US`, `vi-VN`, `zh-CN`, `ar-SA`); LCD1 "Thinking...", `POST /ask` (channel "kiosk", session id random per visit, `lang` = language Scribe heard, else knob language; typed debug questions send `null` so the server detects it; the kiosk then switches to the reply's language) → speak `reply` (ElevenLabs via `POST /tts`, falling back to `speechSynthesis` if it returns non-200 or fails), `BEEP:2`, LCD1 `Option 1/3 0.9mi`, `SCROLL2:<name> - <address>`. Long press → speak all options (or, when idle, the list of things you can ask about). 60 s idle (or the debug "New person" button) → reset to LCD1 "Press for help", LCD2 = language, new session id.
+
+---
+
+# Phase 2: real data, eligibility questions, bus directions
+
+## Resource record, new fields (all places in `data/resources.json`)
+
+```json
+{
+  "id": "hpl-central-library",
+  "name": "Houston Public Library - Central Library",
+  "category": ["library"],
+  "address": "500 McKinney St, Houston, TX 77002",
+  "lat": 29.7604, "lng": -95.3698,
+  "coords_source": "census" | "nominatim" | "manual" | null,
+  "hours": {"mon": ["10:00-18:00"], "...": []},
+  "hours_quote": "Mon-Thu 10 AM - 6 PM ...",       // exact text copied from source_url, or null
+  "eligibility": [ /* rules, see below; [] when the source states none */ ],
+  "services": "Free wifi, computers, printing",   // one short line, from the source
+  "languages": ["en", "es"],
+  "phone": "832-393-1313",
+  "notes": "",
+  "source_url": "https://...",                     // required, the page the facts came from
+  "last_verified": "2026-10-11" | null,            // set by a human spot check
+  "needs_review": true                             // true until a human checked it
+}
+```
+- The old `requirements` object stays readable (old sample data) but new data uses `eligibility`.
+- `hours` may be all-empty when the source gives no hours; such a place is never "open now" and is only shown as a fallback with "call to confirm".
+
+## Eligibility rule format (`eligibility` list items)
+
+Every rule MUST carry `source_quote`: the exact sentence copied from `source_url` that states it. A place with no stated rules has `"eligibility": []`. Rules are never invented.
+
+```json
+{"type": "id_required",   "source_quote": "Please bring a photo ID."}
+{"type": "age",           "min": 18, "max": 24, "source_quote": "..."}      // min or max may be null
+{"type": "serves",        "group": "women" | "men" | "families" | "youth" | "veterans" | "seniors", "source_quote": "..."}
+{"type": "zip_in",        "zips": ["77004", "77021"], "source_quote": "..."}
+{"type": "residency",     "area": "Harris County", "source_quote": "..."}
+{"type": "income_limit",  "question": "Is your household income under $2,600 a month?", "source_quote": "..."}
+{"type": "note",          "text": "Appointment needed", "source_quote": "..."}   // never asked, only told
+```
+
+## `eligibility.py` (pure functions, no network, no Gemini)
+
+```python
+RULE_TYPES = ["id_required", "age", "serves", "zip_in", "residency", "income_limit", "note"]
+MAX_QUESTIONS = 3
+
+def question_key(rule: dict) -> str | None
+    # stable key for the question a rule asks: "id", "age:18-24", "serves:women", "zip", "residency:Harris County",
+    # "income:<question text>"; None for "note" (never asked) and for zip_in (checked silently from the location)
+
+def question_text(key: str, rule: dict, language: str) -> str
+    # the yes/no question in `language` (all 5), e.g. "Do you have a photo ID with you?"
+    # income_limit uses rule["question"] (English) for en; other languages: a fixed translation template where possible,
+    # otherwise the English text (brain may translate later)
+
+def check(rule: dict, answers: dict, zip_code: str | None) -> bool | None
+    # True = passes, False = ruled out, None = unknown yet (needs a question)
+    # answers: {question_key: True | False | None(skip/not sure)}; skip counts as pass (True)
+    # zip_in: True if zip_code in rule["zips"], False if zip_code known and not in it, None→True (don't block)
+
+def filter_places(places: list[dict], answers: dict, zip_code: str | None) -> list[dict]
+    # drop places with any rule where check(...) is False; keep order
+
+def next_question(places: list[dict], answers: dict, zip_code: str | None, asked: int) -> tuple[str, dict] | None
+    # among the first 3 places of `places`, collect unanswered askable rules; return (key, rule) of the one that
+    # appears in the most of those places (tie: order of first appearance), or None if none or asked >= MAX_QUESTIONS
+
+def parse_yes_no(text: str) -> bool | None | str
+    # True for yes words, False for no words, None for "not sure"/"skip"/"don't know", "unclear" otherwise.
+    # All 5 languages: yes/yeah/yep/y/si/sí/claro/có/vâng/dạ/是/对/有/نعم/أجل ; no/nope/n/no tengo/không/没有/不/لا ;
+    # skip: skip/not sure/don't know/no sé/omitir/không biết/不知道/跳过/لا أعرف. Case- and accent-insensitive, whole words.
+
+def notes_for(place: dict) -> list[str]
+    # texts of "note" rules, plus for each rule answered None (skipped): a reminder ("Bring a photo ID if you have one")
+```
+
+## `transit.py` (METRO bus directions from GTFS)
+
+Data lives in Tiger Data tables loaded by `scripts/load_gtfs.py` (`gtfs_stops`, `gtfs_routes`, `gtfs_trips`,
+`gtfs_stop_times`, `gtfs_calendar`, `gtfs_calendar_dates`), columns as in the GTFS spec, times kept as seconds after
+midnight (ints; may exceed 86400). Without `DATABASE_URL`, transit uses `data/transit_local.json` if present
+(written by `load_gtfs.py --local LAT LNG`, the stops within 0.5 mi of that point and every trip serving them),
+else returns None.
+
+```python
+WALK_MPH = 3.0
+MAX_WALK_MI = 0.5
+MAX_WAIT_MIN = 90
+
+def directions(from_lat, from_lng, to_lat, to_lng, when: datetime | None = None, source=None) -> dict | None
+    # source: an object with the GTFS query methods below (default: DB-backed, or local-file-backed); tests pass a fake
+    # Returns the soonest-arriving option, direct first; one transfer only if no direct ride within MAX_WAIT_MIN:
+    {"legs": [{"route": "54", "headsign": "Downtown", "board_stop": "Scott @ Holman",
+               "alight_stop": "Main @ Gray", "departs": "16:12", "arrives": "16:31", "stops": 6}],
+     "walk_to_min": 3, "walk_from_min": 2, "arrive_by": "16:33"}
+    # None when no ride is found (caller then says "no direct bus" + walking distance)
+
+def summary(d: dict, language: str, channel: str) -> str
+    # kiosk: one spoken sentence per leg; sms: compact "Bus 54 from Scott@Holman 4:12PM, 6 stops to Main@Gray, walk 2 min."
+    # times in 12-hour style; all 5 languages via fixed templates (no Gemini)
+
+class GtfsSource:   # interface used by directions(); DbSource and LocalSource implement it
+    def stops_near(self, lat, lng, miles) -> list[dict]          # {"stop_id","name","lat","lng"}
+    def service_ids(self, day: date) -> set[str]
+    def departures(self, stop_ids: list[str], after_sec: int, before_sec: int, service_ids: set[str]) -> list[dict]
+        # {"trip_id","route","headsign","stop_id","stop_sequence","dep_sec"}
+    def trip_stops_after(self, trip_id: str, stop_sequence: int) -> list[dict]
+        # {"stop_id","name","stop_sequence","arr_sec","lat","lng"} in order
+```
+
+## `main.py` changes (phase 2)
+
+- Matching keeps the top 8 open places; eligibility filters them (`eligibility.filter_places`), then the reply uses the top 3.
+- Session gains `answers` (dict), `asked` (int), `awaiting_answer` (question key or None), `pending` (the candidate list).
+- After a `find` with candidates: `q = eligibility.next_question(...)`; if q, reply with `question_text` and set
+  `awaiting_answer` (response field `"asking": "<key>"`). The next message is first tried with `parse_yes_no`;
+  "unclear" → fall through to normal understanding (a new need ends the questions).
+- When no more questions: answer as before, plus `notes_for` the chosen place, plus the bus line from
+  `transit.directions(origin, chosen place)` when found (`"transit": {...}` in the /ask JSON, `null` otherwise).
+- New intent `"directions"` from `brain.understand` ("how do I get there", "¿cómo llego?", "đi bằng xe buýt nào", "怎么去", "كيف أصل"):
+  replies with `transit.summary` for the selected option, or "no direct bus" + distance.
+- Kiosk: short press while a question is pending = yes, long press = no (the kiosk sends text "yes"/"no").
+- Eligibility answers are never logged to the DB.
+
+## Data scripts (`scripts/`, run on a machine with internet)
+
+- `scripts/geocode.py`: fills/repairs `lat`/`lng` for every place via the US Census geocoder (then Nominatim), sets `coords_source`.
+- `scripts/validate.py`: schema check, Houston-area bounds (lat 29.4–30.2, lng −95.9 to −94.9), unique ids, valid hours,
+  every eligibility rule has a non-empty `source_quote`; with `--check-sources`, downloads each `source_url` and
+  reports every `source_quote` / `hours_quote` not found in the page text (whitespace- and case-insensitive). Exit code 1 on errors.
+- `scripts/load_gtfs.py`: downloads METRO GTFS (`https://metro.resourcespace.com/pages/download.php?ref=4835&ext=zip`, or a local zip path)
+  into Tiger Data; `--local LAT LNG` writes `data/transit_local.json` instead.
