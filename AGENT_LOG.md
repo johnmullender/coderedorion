@@ -65,3 +65,9 @@ Times are Houston time, Sat Oct 10. Entries before 6:52 PM were backfilled from 
 | 7:15 PM | kiosk.html | Haiku #5 | Finished | Web Serial + ElevenLabs voice/listening with Chrome fallbacks; `node --check` passes. Work: 90k tokens, 235 s |
 | 7:15 PM | kiosk.html | Sonnet R9 | Review started | Includes a headless Chrome run against the live server |
 | 7:15 PM | — | Opus | End-to-end check | Server started; SMS in Spanish, kiosk in Vietnamese, /api/requests and /dashboard all respond |
+| 7:20 PM | kiosk.html | Sonnet R9 | **CHANGES REQUIRED** | 3 fixes from a headless Chrome run: 2 LCD lines over 16 chars; if ElevenLabs listening fails the person had to speak twice. Opus added a 4th: blank LCD row for Chinese/Arabic replies |
+| 7:20 PM | kiosk.html | Haiku #5 | Fix round 1 | Started |
+| 7:24 PM | kiosk.html | Haiku #5 | Fix round 1 done | All 4 applied; `node --check` passes |
+| 7:24 PM | kiosk.html | Sonnet R9 | Re-review | Started |
+| 7:27 PM | kiosk.html | Sonnet R9 | **APPROVED** | Headless Chrome with a fake mic: press, speak once, ElevenLabs down, Chrome fallback, answer and LCD all correct |
+| 7:28 PM | — | Opus | Done | All 10 pieces approved and pushed to PR #1. Totals: 10 Haiku coders, 9 Sonnet reviewers, 6 tasks sent back for fixes (1 round each) |

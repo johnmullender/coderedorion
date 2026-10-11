@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HelpLine Kiosk</title>
+<!--
+  HelpLine Houston: kiosk page.
+
+  This page runs in Chrome on the laptop hidden inside the help station box.
+  The person in front of the box only sees the 16x2 LCD, the button and the knob.
+  Everything on this screen is for us (debugging).
+
+  How it talks to the Arduino: Web Serial (Chrome only), 9600 baud, one text line
+  per message. See CONTRACT.md "Arduino <-> kiosk serial protocol".
+
+  How it talks to the server (same origin):
+    POST /stt  -> speech to text (ElevenLabs Scribe)
+    POST /ask  -> the answer + options
+    POST /tts  -> text to speech (ElevenLabs), MP3 audio
+  If /stt fails we use Chrome's SpeechRecognition; if /tts fails we use speechSynthesis.
+-->
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --text: #1d2330; --muted: #5d6677;
+    --accent: #1f6feb; --ok: #1a7f37; --bad: #cf222e; --border: #d8dce3;
+    --lcd-bg: #9bbc0f; --lcd-text: #0f380f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --panel: #1b2029; --text: #e6e9ef; --muted: #9aa3b2;
+      --accent: #4c8dff; --ok: #3fb950; --bad: #f85149; --border: #2d3442;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 16px; background: var(--bg); color: var(--text);
+    font: 18px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 26px; margin: 0 0 12px; }
+  h2 { font-size: 18px; margin: 0 0 8px; color: var(--muted); font-weight: 600; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  button {
+    font: inherit; font-size: 20px; padding: 12px 20px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--panel); color: var(--text);
+  }
+  button.big { font-size: 28px; padding: 20px 32px; background: var(--accent); color: #fff; border: none; width: 100%; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  input[type=range] { width: 100%; }
+  input[type=text] { font: inherit; padding: 10px; flex: 1; min-width: 0; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+  #status { margin-top: 10px; font-weight: 600; }
+  #status.ok { color: var(--ok); } #status.bad { color: var(--bad); }
+  .lcd {
+    font: 24px/1.2 ui-monospace, Menlo, Consolas, monospace; background: var(--lcd-bg); color: var(--lcd-text);
+    padding: 12px; border-radius: 6px; white-space: pre; overflow: hidden; display: inline-block; max-width: 100%;
+  }
+  dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; }
+  dt { color: var(--muted); } dd { margin: 0; word-break: break-word; }
+  .state { font-size: 24px; font-weight: 700; }
+  ol { margin: 0; padding-left: 24px; } li.sel { font-weight: 700; color: var(--accent); }
+  #log {
+    font: 14px/1.4 ui-monospace, Menlo, Consolas, monospace; height: 260px; overflow-y: auto;
+    background: var(--bg); border-radius: 6px; padding: 8px; white-space: pre-wrap; word-break: break-all;
+  }
+  .in { color: var(--ok); } .out { color: var(--accent); } .info { color: var(--muted); } .err { color: var(--bad); }
+</style>
+</head>
+<body>
+<h1>HelpLine Houston kiosk</h1>
+
+<div class="grid">
+  <!-- Connection -->
+  <div class="panel">
+    <h2>Station</h2>
+    <button id="connectBtn" class="big">Connect station</button>
+    <div id="status">Not connected</div>
+    <div class="row">
+      <div class="lcd" id="lcdMirror">
+                </div>
+    </div>
+  </div>
+
+  <!-- Debug controls: they feed the same handlers as the Arduino lines -->
+  <div class="panel">
+    <h2>Debug controls (no Arduino needed)</h2>
+    <div class="row">
+      <button id="shortBtn">Short press</button>
+      <button id="longBtn">Long press</button>
+    </div>
+    <div class="row">
+      <label for="knob">Knob: <span id="knobValue">0</span></label>
+      <input id="knob" type="range" min="0" max="1023" value="0">
+    </div>
+    <div class="row">
+      <input id="typed" type="text" placeholder="Type a question (skips the mic)">
+      <button id="typedBtn">Ask</button>
+    </div>
+  </div>
+
+  <!-- What the kiosk is doing -->
+  <div class="panel">
+    <h2>Now</h2>
+    <dl>
+      <dt>State</dt><dd class="state" id="stateText">idle</dd>
+      <dt>Language</dt><dd id="langText">English</dd>
+      <dt>Session</dt><dd id="sessionText"></dd>
+      <dt>You said</dt><dd id="transcriptText" dir="auto">-</dd>
+      <dt>Reply</dt><dd id="replyText" dir="auto">-</dd>
+    </dl>
+  </div>
+
+  <div class="panel">
+    <h2>Options</h2>
+    <ol id="optionsList"><li class="info">No options yet</li></ol>
+  </div>
+
+  <div class="panel" style="grid-column: 1 / -1;">
+    <h2>Serial log (in = from Arduino, out = to Arduino)</h2>
+    <div id="log"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   1. SETTINGS AND TEXT FOR EACH LANGUAGE
+   ===================================================================== */
+
+// The 5 languages, in knob order (left to right on the knob).
+// name   = shown on the LCD (ASCII only)
+// speech = code used by Chrome speech recognition and speechSynthesis
+const LANGS = {
+  en: { name: "English",    speech: "en-US" },
+  es: { name: "Espanol",    speech: "es-US" },
+  vi: { name: "Tieng Viet", speech: "vi-VN" },
+  zh: { name: "Zhongwen",   speech: "zh-CN" },
+  ar: { name: "Arabic",     speech: "ar-SA" },
+};
+const LANG_ORDER = ["en", "es", "vi", "zh", "ar"];
+
+// Spoken on a long press while idle: what you can ask about.
+const HELP_TEXT = {
+  en: "You can ask me where to find food, a place to sleep, showers, a clinic, a library, a cool place to rest, or legal help. Press the button and ask your question.",
+  es: "Puede preguntarme dónde encontrar comida, un lugar para dormir, duchas, una clínica, una biblioteca, un lugar fresco para descansar o ayuda legal. Presione el botón y haga su pregunta.",
+  vi: "Bạn có thể hỏi tôi nơi tìm thức ăn, chỗ ngủ, nhà tắm, phòng khám, thư viện, nơi mát để nghỉ, hoặc trợ giúp pháp lý. Hãy nhấn nút và đặt câu hỏi.",
+  zh: "您可以问我哪里有食物、住宿、淋浴、诊所、图书馆、避暑的地方或法律帮助。请按按钮，然后说出您的问题。",
+  ar: "يمكنك أن تسألني عن أماكن الطعام، والمبيت، والاستحمام، والعيادات، والمكتبات، وأماكن التبريد، والمساعدة القانونية. اضغط على الزر واطرح سؤالك.",
+};
+
+// Spoken when we could not hear / understand the person.
+const SORRY_TEXT = {
+  en: "Sorry, I didn't catch that. Please press the button and try again.",
+  es: "Lo siento, no le entendí. Presione el botón e inténtelo de nuevo.",
+  vi: "Xin lỗi, tôi không nghe rõ. Vui lòng nhấn nút và thử lại.",
+  zh: "对不起，我没听清楚。请按按钮再试一次。",
+  ar: "عذرًا، لم أفهم ذلك. اضغط على الزر وحاول مرة أخرى.",
+};
+
+const IDLE_RESET_MS = 60 * 1000;   // 60 s with no input -> start over
+const RECORD_MAX_MS = 8 * 1000;    // stop listening after 8 s
+const ASK_TIMEOUT_MS = 25 * 1000;  // give up on /ask after this
+const STT_TIMEOUT_MS = 20 * 1000;  // give up on /stt after this
+const TTS_TIMEOUT_MS = 15 * 1000;  // give up on /tts after this
+
+/* =====================================================================
+   2. KIOSK STATE (everything the state machine remembers)
+   ===================================================================== */
+
+// state is one of: "idle", "listening", "thinking", "answered"
+let state = "idle";
+let lang = "en";                 // English until the first KNOB arrives
+let sessionId = newSessionId();
+let sessionUsed = false;         // true once this session has asked something
+let options = [];                // options from the last /ask answer
+let selected = 0;                // which option is shown (1-based, 0 = none)
+let lastReply = "";              // last reply text from /ask
+let lastReplyLang = "en";
+let lastTranscript = "";
+let lastKnob = null;             // last raw knob value (0-1023)
+let optionBand = null;           // knob band (1..N) when the answer arrived
+let prevState = "idle";          // where to go back to if listening fails
+let lastActivity = Date.now();   // time of the last button/knob input
+
+// What the LCD should show (remembered so we can re-send it after a reconnect)
+let lcdRow1 = "";
+let lcdRow2 = "";
+let lcdRow2Scroll = false;
+
+/* =====================================================================
+   3. SMALL HELPERS
+   ===================================================================== */
+
+// Make text safe for the LCD: remove accents, then anything that is not plain ASCII.
+function toAscii(s) {
+  return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\x20-\x7E]/g, "");
+}
+
+function newSessionId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return "kiosk-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+}
+
+// Which language band (0..4) a knob value falls in: 5 equal bands over 0-1023.
+function langFromKnob(value) {
+  const band = Math.min(4, Math.floor(value * 5 / 1024));
+  return LANG_ORDER[band];
+}
+
+// Which option (1..count) a knob value falls in: count equal bands over 0-1023.
+function optionFromKnob(value, count) {
+  return Math.min(count, Math.floor(value * count / 1024) + 1);
+}
+
+// "18:00" -> "6 PM", "18:30" -> "6:30 PM"
+function to12h(hhmm) {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm || "");
+  if (!m) return hhmm || "";
+  const h24 = Number(m[1]) % 24;
+  const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+  const ampm = h24 < 12 ? "AM" : "PM";
+  return m[2] === "00" ? h12 + " " + ampm : h12 + ":" + m[2] + " " + ampm;
+}
+
+// fetch() that gives up after `ms` milliseconds.
+async function fetchWithTimeout(url, opts, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, Object.assign({}, opts, { signal: ctrl.signal }));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// Remember that someone just touched the station (resets the 60 s timer).
+function touch() {
+  lastActivity = Date.now();
+}
+
+/* =====================================================================
+   4. LOG PANEL
+   ===================================================================== */
+
+const logEl = document.getElementById("log");
+
+// kind: "in", "out", "info" or "err"
+function log(kind, text) {
+  const line = document.createElement("div");
+  line.className = kind;
+  const time = new Date().toLocaleTimeString();
+  const arrow = kind === "in" ? "<- " : kind === "out" ? "-> " : "   ";
+  line.textContent = time + "  " + arrow + text;
+  logEl.appendChild(line);
+  while (logEl.childNodes.length > 200) logEl.removeChild(logEl.firstChild);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+/* =====================================================================
+   5. WEB SERIAL (connect, read lines, write lines)
+   ===================================================================== */
+
+let port = null;
+let reader = null;
+let writer = null;
+let readPipeDone = null;              // promise for the readable -> TextDecoderStream pipe
+let writeChain = Promise.resolve();   // keeps written lines in order
+const encoder = new TextEncoder();
+
+const connectBtn = document.getElementById("connectBtn");
+const statusEl = document.getElementById("status");
+
+function setStatus(text, kind) {
+  statusEl.textContent = text;
+  statusEl.className = kind || "";
+}
+
+async function connectStation() {
+  if (!("serial" in navigator)) {
+    setStatus("Use Chrome (Web Serial is missing in this browser)", "bad");
+    return;
+  }
+  try {
+    port = await navigator.serial.requestPort();   // Chrome shows a port picker
+    await port.open({ baudRate: 9600 });
+  } catch (e) {
+    setStatus("Could not open the port: " + e.message, "bad");
+    port = null;
+    return;
+  }
+  writer = port.writable.getWriter();
+  setStatus("Connected", "ok");
+  connectBtn.textContent = "Connected";
+  connectBtn.disabled = true;
+  log("info", "Serial connected");
+  // Do not wait for READY: the board may have booted long ago. Show our screen now.
+  resendLcd();
+  readLoop();   // runs until the port closes
+}
+
+// Read text from the Arduino and split it into lines.
+async function readLoop() {
+  const decoder = new TextDecoderStream();
+  readPipeDone = port.readable.pipeTo(decoder.writable).catch(() => {});
+  reader = decoder.readable.getReader();
+  let buffer = "";
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += value;
+      let nl;
+      while ((nl = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, nl).replace(/\r$/, "").trim();
+        buffer = buffer.slice(nl + 1);
+        if (line) handleSerialLine(line);
+      }
+    }
+  } catch (e) {
+    log("err", "Serial read stopped: " + e.message);
+  }
+  await disconnectStation();
+}
+
+// Clean up after the cable is pulled or the port fails, so the button can reconnect.
+async function disconnectStation() {
+  if (!port) return;
+  const oldPort = port;
+  port = null;
+  try { if (reader) await reader.cancel(); } catch (e) { /* already closed */ }
+  try { if (readPipeDone) await readPipeDone; } catch (e) { /* ignore */ }
+  try { if (writer) { writer.releaseLock(); } } catch (e) { /* ignore */ }
+  try { await oldPort.close(); } catch (e) { /* ignore */ }
+  reader = null; writer = null; readPipeDone = null;
+  setStatus("Disconnected - press Connect station again", "bad");
+  connectBtn.textContent = "Connect station";
+  connectBtn.disabled = false;
+  log("err", "Serial disconnected");
+}
+
+// Send one line to the Arduino (also works with no Arduino: it is just logged).
+function sendLine(line) {
+  line = String(line).slice(0, 120);   // protocol: lines are at most 120 chars
+  log("out", line);
+  if (!writer) return;
+  const w = writer;
+  writeChain = writeChain
+    .then(() => w.write(encoder.encode(line + "\n")))
+    .catch((e) => log("err", "Write failed: " + e.message));
+}
+
+// One line arrived from the Arduino.
+function handleSerialLine(line) {
+  log("in", line);
+  if (line === "BTN") {
+    onShortPress();
+  } else if (line === "HOLD") {
+    onLongPress();
+  } else if (line.startsWith("KNOB:")) {
+    const value = parseInt(line.slice(5), 10);
+    if (!isNaN(value)) {
+      knobSlider.value = value;   // keep the debug slider in step
+      onKnob(value);
+    }
+  } else if (line === "READY") {
+    resendLcd();                  // the board restarted: put our text back
+  }
+}
+
+/* =====================================================================
+   6. LCD + BUZZER COMMANDS
+   ===================================================================== */
+
+const lcdMirror = document.getElementById("lcdMirror");
+
+function pad16(s) {
+  return (s + " ".repeat(16)).slice(0, 16);
+}
+
+// Draw a copy of the LCD on screen (row 2 shows the start of scrolling text).
+function drawLcdMirror() {
+  lcdMirror.textContent = pad16(lcdRow1) + "\n" + pad16(lcdRow2) + (lcdRow2Scroll && lcdRow2.length > 16 ? " ..." : "");
+}
+
+function lcd1(text) {
+  lcdRow1 = toAscii(text).slice(0, 16);
+  sendLine("LCD1:" + lcdRow1);
+  drawLcdMirror();
+}
+
+function lcd2(text) {
+  lcdRow2 = toAscii(text).slice(0, 16);
+  lcdRow2Scroll = false;
+  sendLine("LCD2:" + lcdRow2);
+  drawLcdMirror();
+}
+
+// Scrolling row 2; the whole serial line must fit in 120 chars.
+function scroll2(text) {
+  lcdRow2 = toAscii(text).trim().slice(0, 120 - "SCROLL2:".length);
+  // Chinese/Arabic text has no ASCII left after stripping: show a hint instead of a blank row.
+  if (!lcdRow2) lcdRow2 = "Press button to ask again";
+  lcdRow2Scroll = true;
+  sendLine("SCROLL2:" + lcdRow2);
+  drawLcdMirror();
+}
+
+function beep(n) { sendLine("BEEP:" + n); }
+function errTone() { sendLine("ERR"); }
+
+// Re-send what the LCD should be showing (after connect / Arduino reboot).
+function resendLcd() {
+  lcd1(lcdRow1);
+  if (lcdRow2Scroll) scroll2(lcdRow2); else lcd2(lcdRow2);
+}
+
+// The idle screen: "Press for help" + the language name.
+function showIdleLcd() {
+  lcd1("Press for help");
+  lcd2(LANGS[lang].name);
+}
+
+// The answered screen for the selected option: "Option 1/3 0.9mi" + scrolling name/address.
+function showOptionLcd() {
+  const opt = options[selected - 1];
+  if (!opt) return;
+  let row1 = "Option " + selected + "/" + options.length;
+  if (opt.distance_mi !== null && opt.distance_mi !== undefined) {
+    // 10 mi or more: whole miles, so "Option 1/3 12mi" still fits in 16 chars.
+    const d = Number(opt.distance_mi);
+    row1 += " " + (d >= 10 ? Math.round(d) : d.toFixed(1)) + "mi";
+  }
+  lcd1(row1);
+  scroll2((opt.name || "") + " - " + (opt.address || ""));
+}
+
+// The answered screen when there are no options (nothing open / just a reply).
+function showReplyOnlyLcd(unmet) {
+  lcd1(unmet ? "Nothing open now" : "Press to ask");
+  scroll2(lastReply);
+}
+
+/* =====================================================================
+   7. SPEAKING (ElevenLabs via POST /tts, fallback: speechSynthesis)
+   ===================================================================== */
+
+let speakToken = 0;        // goes up every time speech is started or stopped
+let currentAudio = null;   // the <audio> playing right now, if any
+let finishCurrent = null;  // call this to resolve the promise of the current speech
+let voices = [];
+
+function loadVoices() {
+  if (window.speechSynthesis) voices = speechSynthesis.getVoices();
+}
+if (window.speechSynthesis) {
+  loadVoices();
+  speechSynthesis.addEventListener("voiceschanged", loadVoices);
+}
+
+// Stop whatever is being said right now.
+function stopSpeaking() {
+  speakToken++;
+  if (currentAudio) currentAudio.pause();
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  if (finishCurrent) {
+    const f = finishCurrent;
+    finishCurrent = null;
+    f();
+  }
+}
+
+// Say `text` in language `code` ("en", "es", ...). Resolves when speaking ends.
+async function speak(text, code) {
+  stopSpeaking();
+  const token = speakToken;
+  if (!text) return;
+  log("info", "Speak (" + code + "): " + text);
+
+  // 1) Try the server voice (ElevenLabs).
+  let blob = null;
+  try {
+    const res = await fetchWithTimeout("/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text, lang: code }),
+    }, TTS_TIMEOUT_MS);
+    if (res.ok) blob = await res.blob();
+    else log("info", "/tts returned " + res.status + ", using browser voice");
+  } catch (e) {
+    log("info", "/tts failed (" + e.message + "), using browser voice");
+  }
+  if (token !== speakToken) return;   // something else started or stopped speech meanwhile
+
+  if (blob && blob.size > 0) {
+    const played = await playAudioBlob(blob);
+    if (played || token !== speakToken) { touch(); return; }
+    log("info", "Audio playback failed, using browser voice");
+  }
+
+  // 2) Fallback: the browser's built-in voice.
+  await speakWithBrowser(text, code);
+  touch();
+}
+
+// Play an MP3 blob. Resolves true when it ended (or was stopped), false if it could not play.
+function playAudioBlob(blob) {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    let done = false;
+    const finish = (ok) => {
+      if (done) return;
+      done = true;
+      URL.revokeObjectURL(url);
+      if (currentAudio === audio) currentAudio = null;
+      if (finishCurrent === stopped) finishCurrent = null;
+      resolve(ok);
+    };
+    const stopped = () => finish(true);
+    currentAudio = audio;
+    finishCurrent = stopped;
+    audio.onended = () => finish(true);
+    audio.onerror = () => finish(false);
+    audio.play().catch(() => finish(false));
+  });
+}
+
+// Pick a browser voice for the language, best match first.
+function pickVoice(code) {
+  const full = LANGS[code] ? LANGS[code].speech.toLowerCase() : code;
+  return voices.find((v) => v.lang.toLowerCase().replace("_", "-") === full)
+      || voices.find((v) => v.lang.toLowerCase().startsWith(code))
+      || null;
+}
+
+// speechSynthesis version of speak. Resolves when done.
+function speakWithBrowser(text, code) {
+  return new Promise((resolve) => {
+    if (!window.speechSynthesis) { resolve(); return; }
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = LANGS[code] ? LANGS[code].speech : code;
+    const voice = pickVoice(code);
+    if (voice) u.voice = voice;
+    let done = false;
+    // Chrome sometimes never fires "end", so also give up after a generous time.
+    const safety = setTimeout(() => finish(), 5000 + text.length * 150);
+    function finish() {
+      if (done) return;
+      done = true;
+      clearTimeout(safety);
+      if (finishCurrent === finish) finishCurrent = null;
+      resolve();
+    }
+    finishCurrent = finish;
+    u.onend = finish;
+    u.onerror = finish;
+    speechSynthesis.speak(u);
+  });
+}
+
+/* =====================================================================
+   8. LISTENING (MediaRecorder -> POST /stt, fallback: SpeechRecognition)
+   ===================================================================== */
+
+let micStream = null;        // kept after the first grant
+let recorder = null;         // the MediaRecorder while recording
+let recognition = null;      // the SpeechRecognition while it is running
+let listenTimer = null;      // 8 s limit for the recorder
+let recogTimer = null;       // 8 s limit for Chrome recognition
+
+// Get the microphone. Re-use the stream we already have if it is still live.
+async function getMicStream() {
+  const live = micStream && micStream.getAudioTracks().some((t) => t.readyState === "live");
+  if (!live) {
+    // After the first "Allow", Chrome remembers the permission for this site and does not ask again.
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  }
+  return micStream;
+}
+
+// Turn the mic off (the red recording dot goes away).
+function stopMicTracks() {
+  if (micStream) micStream.getTracks().forEach((t) => t.stop());
+}
+
+// Record up to 8 s (or until the next short press). Resolves with a Blob, or null if the mic failed.
+async function recordAudio() {
+  let stream;
+  try {
+    stream = await getMicStream();
+  } catch (e) {
+    log("err", "Microphone not available: " + e.message);
+    return null;
+  }
+  return new Promise((resolve) => {
+    const chunks = [];
+    const type = window.MediaRecorder && MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "";
+    try {
+      recorder = type ? new MediaRecorder(stream, { mimeType: type }) : new MediaRecorder(stream);
+    } catch (e) {
+      log("err", "MediaRecorder failed: " + e.message);
+      recorder = null;
+      resolve(null);
+      return;
+    }
+    recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size > 0) chunks.push(ev.data); };
+    recorder.onstop = () => {
+      clearTimeout(listenTimer);
+      recorder = null;
+      stopMicTracks();
+      resolve(new Blob(chunks, { type: type || "audio/webm" }));
+    };
+    recorder.start();
+    listenTimer = setTimeout(stopListening, RECORD_MAX_MS);
+  });
+}
+
+// Send the recording to the server. Resolves { ok: true, text } or { ok: false }.
+async function transcribe(blob) {
+  try {
+    const form = new FormData();
+    form.append("file", blob, "speech.webm");
+    form.append("lang", lang);
+    const res = await fetchWithTimeout("/stt", { method: "POST", body: form }, STT_TIMEOUT_MS);
+    if (!res.ok) {
+      log("info", "/stt returned " + res.status);
+      return { ok: false };
+    }
+    const data = await res.json();
+    if (typeof data.text !== "string") return { ok: false };
+    return { ok: true, text: data.text.trim() };
+  } catch (e) {
+    log("info", "/stt failed: " + e.message);
+    return { ok: false };
+  }
+}
+
+// Chrome's own speech recognition. Resolves with the text, or null on no speech / error.
+function recognizeWithChrome() {
+  return new Promise((resolve) => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      log("err", "No SpeechRecognition in this browser");
+      resolve(null);
+      return;
+    }
+    let text = null;
+    const rec = new SR();
+    recognition = rec;
+    rec.lang = LANGS[lang].speech;
+    rec.interimResults = false;
+    rec.continuous = false;   // ends by itself on silence
+    rec.maxAlternatives = 1;
+    rec.onresult = (ev) => {
+      if (ev.results.length && ev.results[0].length) text = ev.results[0][0].transcript;
+    };
+    rec.onerror = (ev) => log("info", "Speech recognition: " + ev.error);
+    rec.onend = () => {
+      clearTimeout(recogTimer);
+      if (recognition === rec) recognition = null;
+      resolve(text && text.trim() ? text.trim() : null);
+    };
+    try {
+      rec.start();
+    } catch (e) {
+      recognition = null;
+      resolve(null);
+      return;
+    }
+    recogTimer = setTimeout(stopListening, RECORD_MAX_MS);
+  });
+}
+
+// End listening early (second short press, or either 8 s timer). Ends BOTH the recorder and recognition.
+function stopListening() {
+  clearTimeout(listenTimer);
+  clearTimeout(recogTimer);
+  if (recorder && recorder.state !== "inactive") recorder.stop();
+  if (recognition) recognition.stop();
+}
+
+/* =====================================================================
+   9. THE STATE MACHINE
+   ===================================================================== */
+
+function setState(newState) {
+  state = newState;
+  render();
+}
+
+// Short press: start a question (idle or answered), or stop listening early.
+function onShortPress() {
+  touch();
+  if (state === "listening") {
+    stopListening();
+  } else if (state === "idle" || state === "answered") {
+    askQuestion();
+  }
+  // while "thinking" we ignore the button
+}
+
+// Long press: idle -> say what you can ask about; answered -> read all options.
+function onLongPress() {
+  touch();
+  if (state === "idle") {
+    speak(HELP_TEXT[lang], lang);
+  } else if (state === "answered") {
+    if (options.length) speak(allOptionsSentence(), optionSpeechLang());
+    else speak(lastReply, lastReplyLang);
+  }
+}
+
+// Knob: idle -> language; answered -> browse options.
+function onKnob(value) {
+  touch();
+  lastKnob = value;
+  document.getElementById("knobValue").textContent = value;
+  if (state === "idle") {
+    const newLang = langFromKnob(value);
+    if (newLang !== lang) {
+      lang = newLang;
+      lcd2(LANGS[lang].name);
+      render();
+    }
+  } else if (state === "answered" && options.length > 1) {
+    const band = optionFromKnob(value, options.length);
+    if (band !== optionBand) {   // only react when the knob moved into another band
+      optionBand = band;
+      if (band !== selected) {
+        selected = band;
+        showOptionLcd();
+        render();
+        speak(optionSentence(options[selected - 1], selected), optionSpeechLang());
+      }
+    }
+  }
+}
+
+// Listen -> transcribe -> ask. Used for the first question and for follow-ups.
+async function askQuestion() {
+  prevState = state;          // "idle" or "answered"
+  stopSpeaking();             // do not record our own voice
+  setState("listening");
+  beep(1);
+  lcd1("Listening...");
+
+  // Run Chrome recognition at the same time as the recorder, so if /stt fails
+  // we already have a backup transcript and the person never has to speak twice.
+  // (recognizeWithChrome resolves null right away if the browser has no SpeechRecognition.)
+  const srPromise = recognizeWithChrome();
+
+  let text = null;
+  let sttOk = false;
+  const blob = await recordAudio();
+  if (blob && blob.size > 0) {
+    setState("thinking");
+    lcd1("Thinking...");
+    const result = await transcribe(blob);
+    if (result.ok) { sttOk = true; text = result.text; }
+  }
+
+  if (sttOk) {
+    // The server transcript wins: throw away Chrome's result.
+    if (recognition) recognition.abort();
+  } else {
+    // Server speech-to-text failed: use what Chrome heard during the same recording.
+    log("info", "Using Chrome speech recognition result");
+    if (state !== "thinking") { setState("thinking"); lcd1("Thinking..."); }
+    stopListening();          // make sure recognition is finishing
+    text = await srPromise;
+  }
+
+  touch();
+  if (!text) {
+    await didNotCatch();
+    return;
+  }
+  await sendToServer(text);
+}
+
+// No speech / error: ERR tone, go back to where we were, say sorry.
+async function didNotCatch() {
+  errTone();
+  backToPrevState();
+  await speak(SORRY_TEXT[lang], lang);
+}
+
+function backToPrevState() {
+  if (prevState === "answered") {
+    setState("answered");
+    if (options.length) showOptionLcd(); else showReplyOnlyLcd(false);
+  } else {
+    setState("idle");
+    showIdleLcd();
+  }
+}
+
+// POST /ask and show + speak the answer.
+async function sendToServer(text) {
+  lastTranscript = text;
+  setState("thinking");
+  lcd1("Thinking...");
+  sessionUsed = true;
+
+  let data;
+  try {
+    const res = await fetchWithTimeout("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ channel: "kiosk", session_id: sessionId, text: text, lang: lang, lat: null, lng: null }),
+    }, ASK_TIMEOUT_MS);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    data = await res.json();
+  } catch (e) {
+    log("err", "/ask failed: " + e.message);
+    errTone();
+    backToPrevState();
+    lcd1("Error, try again");
+    return;
+  }
+  showAnswer(data);
+}
+
+// We have an answer: update the LCD, beep twice, then speak it.
+function showAnswer(data) {
+  touch();
+  lastReply = data.reply || "";
+  lastReplyLang = LANGS[data.language] ? data.language : lang;
+  options = Array.isArray(data.options) ? data.options : [];
+  selected = options.length ? Math.min(Math.max(data.selected || 1, 1), options.length) : 0;
+  // Remember where the knob is now, so only a real turn changes the option.
+  optionBand = (lastKnob !== null && options.length) ? optionFromKnob(lastKnob, options.length) : null;
+
+  setState("answered");
+  beep(2);
+  if (options.length) showOptionLcd();
+  else showReplyOnlyLcd(Boolean(data.unmet));
+  speak(lastReply, lastReplyLang);
+}
+
+// 60 s with no input: back to the start screen with a new session.
+function resetKiosk() {
+  log("info", "Idle for 60 s: reset");
+  stopSpeaking();
+  stopMicTracks();
+  sessionId = newSessionId();
+  sessionUsed = false;
+  options = [];
+  selected = 0;
+  optionBand = null;
+  lastReply = "";
+  lastTranscript = "";
+  setState("idle");
+  showIdleLcd();
+}
+
+// Checked every second.
+function checkIdle() {
+  if (state === "listening" || state === "thinking") { touch(); return; }  // busy, not idle
+  if (currentAudio || (window.speechSynthesis && speechSynthesis.speaking)) { touch(); return; }
+  if (Date.now() - lastActivity < IDLE_RESET_MS) return;
+  if (state !== "idle" || sessionUsed) resetKiosk();
+  else touch();
+}
+
+/* =====================================================================
+   10. SENTENCES FOR SPEAKING OPTIONS
+   ===================================================================== */
+
+// Option sentences exist in English and Spanish; other languages hear English.
+function optionSpeechLang() {
+  return lang === "es" ? "es" : "en";
+}
+
+function optionSentence(opt, n) {
+  const es = optionSpeechLang() === "es";
+  const parts = [(es ? "Opción " : "Option ") + n + ": " + (opt.name || "")];
+  if (opt.distance_mi !== null && opt.distance_mi !== undefined) {
+    const d = Number(opt.distance_mi).toFixed(1);
+    parts.push(es ? "a " + d + " millas" : d + " miles away");
+  }
+  if (opt.open_now && opt.closes_at) {
+    const t = to12h(opt.closes_at);
+    const article = /^1(:| )/.test(t) ? "la " : "las ";
+    parts.push(es ? "abierto hasta " + article + t : "open until " + t);
+  } else if (opt.open_now) {
+    parts.push(es ? "abierto todo el día" : "open all day");
+  } else if (opt.opens_at) {
+    parts.push(es ? "abre " + opt.opens_at : "opens " + opt.opens_at);
+  }
+  return parts.join(", ") + ".";
+}
+
+function allOptionsSentence() {
+  return options.map((opt, i) => optionSentence(opt, i + 1)).join(" ");
+}
+
+/* =====================================================================
+   11. ON-SCREEN DEBUG VIEW
+   ===================================================================== */
+
+function render() {
+  document.getElementById("stateText").textContent = state;
+  document.getElementById("langText").textContent = LANGS[lang].name + " (" + lang + ")";
+  document.getElementById("sessionText").textContent = sessionId;
+  document.getElementById("transcriptText").textContent = lastTranscript || "-";
+  document.getElementById("replyText").textContent = lastReply || "-";
+
+  const list = document.getElementById("optionsList");
+  list.innerHTML = "";
+  if (!options.length) {
+    const li = document.createElement("li");
+    li.className = "info";
+    li.textContent = "No options yet";
+    list.appendChild(li);
+  }
+  options.forEach((opt, i) => {
+    const li = document.createElement("li");
+    if (i + 1 === selected) li.className = "sel";
+    const dist = opt.distance_mi !== null && opt.distance_mi !== undefined ? Number(opt.distance_mi).toFixed(1) + " mi" : "";
+    const until = opt.closes_at ? "until " + to12h(opt.closes_at) : (opt.open_now ? "open all day" : (opt.opens_at ? "opens " + opt.opens_at : ""));
+    li.textContent = [opt.name, dist, until, opt.address].filter(Boolean).join(" | ");
+    list.appendChild(li);
+  });
+}
+
+/* =====================================================================
+   12. START UP: wire the buttons and show the idle screen
+   ===================================================================== */
+
+const knobSlider = document.getElementById("knob");
+
+function setup() {
+  if (!("serial" in navigator)) {
+    setStatus("Use Chrome (Web Serial is missing in this browser). Debug controls still work.", "bad");
+    connectBtn.disabled = true;
+  } else {
+    connectBtn.addEventListener("click", connectStation);
+    // Fires when the USB cable is pulled.
+    navigator.serial.addEventListener("disconnect", (ev) => {
+      if (port && ev.target === port) disconnectStation();
+    });
+  }
+
+  document.getElementById("shortBtn").addEventListener("click", () => { log("info", "debug: BTN"); onShortPress(); });
+  document.getElementById("longBtn").addEventListener("click", () => { log("info", "debug: HOLD"); onLongPress(); });
+  knobSlider.addEventListener("input", () => onKnob(Number(knobSlider.value)));
+
+  // Typed question: skips the microphone, handy when testing /ask.
+  const typed = document.getElementById("typed");
+  const sendTyped = () => {
+    const text = typed.value.trim();
+    if (!text || state === "listening" || state === "thinking") return;
+    typed.value = "";
+    touch();
+    prevState = state;
+    stopSpeaking();
+    sendToServer(text);
+  };
+  document.getElementById("typedBtn").addEventListener("click", sendTyped);
+  typed.addEventListener("keydown", (ev) => { if (ev.key === "Enter") sendTyped(); });
+
+  showIdleLcd();
+  render();
+  setInterval(checkIdle, 1000);
+}
+
+setup();
+</script>
+</body>
+</html>
