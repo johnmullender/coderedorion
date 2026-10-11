@@ -72,6 +72,7 @@ MESSAGES = {
         "no_options": "I don't have any places for you yet. What do you need? For example: food, shelter, or a clinic.",
         "intro": "Hi, this is HelpLine Houston. Tell me what you need (food, shelter, showers, a clinic, a library, a cooling center, or legal help) and where you are, and I'll find a free place open now.",
         "none_fit": "None of the open places fit your answers.",
+        "eligible": "Based on your answers, you're eligible for:",
         "nothing_open": "Nothing nearby is open right now.",
         "no_bus": "No direct bus or transfer found to {name} ({dist}).",
         "bus_unavailable": "Bus times aren't available right now. {name} is {dist}.",
@@ -87,6 +88,7 @@ MESSAGES = {
         "no_options": "Todavía no tengo lugares para usted. ¿Qué necesita? Por ejemplo: comida, refugio o una clínica.",
         "intro": "Hola, esta es HelpLine Houston. Dígame qué necesita (comida, refugio, duchas, una clínica, una biblioteca, un centro de enfriamiento o ayuda legal) y dónde está, y le busco un lugar gratis abierto ahora.",
         "none_fit": "Ninguno de los lugares abiertos le corresponde según sus respuestas.",
+        "eligible": "Según sus respuestas, usted califica para:",
         "nothing_open": "Nada cercano está abierto ahora.",
         "no_bus": "No encontré autobús directo ni con transbordo a {name} ({dist}).",
         "bus_unavailable": "Los horarios del autobús no están disponibles ahora. {name} está {dist}.",
@@ -102,6 +104,7 @@ MESSAGES = {
         "no_options": "Tôi chưa có địa điểm nào cho bạn. Bạn cần gì? Ví dụ: thức ăn, chỗ ngủ hoặc phòng khám.",
         "intro": "Xin chào, đây là HelpLine Houston. Hãy cho tôi biết bạn cần gì (thức ăn, chỗ ngủ, chỗ tắm, phòng khám, thư viện, nơi tránh nóng hoặc trợ giúp pháp lý) và bạn đang ở đâu, tôi sẽ tìm một nơi miễn phí đang mở cửa.",
         "none_fit": "Không có địa điểm nào đang mở phù hợp với câu trả lời của bạn.",
+        "eligible": "Dựa trên câu trả lời của bạn, bạn đủ điều kiện cho:",
         "nothing_open": "Hiện không có nơi nào gần đây đang mở cửa.",
         "no_bus": "Không tìm thấy xe buýt trực tiếp hoặc có đổi tuyến đến {name} ({dist}).",
         "bus_unavailable": "Hiện chưa có giờ xe buýt. {name} {dist}.",
@@ -117,6 +120,7 @@ MESSAGES = {
         "no_options": "我还没有为您找到地点。您需要什么？例如：食物、住宿或诊所。",
         "intro": "您好，这里是HelpLine Houston。请告诉我您需要什么（食物、住宿、洗浴、诊所、图书馆、避暑中心或法律援助）以及您在哪里，我会为您找一个现在开放的免费地点。",
         "none_fit": "开放的地点都不符合您的情况。",
+        "eligible": "根据您的回答，您符合以下地点的条件：",
         "nothing_open": "附近现在没有开放的地点。",
         "no_bus": "找不到到{name}的直达或换乘公交（{dist}）。",
         "bus_unavailable": "现在无法获取公交时间。{name}{dist}。",
@@ -132,6 +136,7 @@ MESSAGES = {
         "no_options": "ليس لدي أماكن لك بعد. ماذا تحتاج؟ مثلا: طعام أو مأوى أو عيادة.",
         "intro": "مرحبا، هذا HelpLine Houston. أخبرني ماذا تحتاج (طعام أو مأوى أو استحمام أو عيادة أو مكتبة أو مركز تبريد أو مساعدة قانونية) وأين أنت، وسأجد لك مكانا مجانيا مفتوحا الآن.",
         "none_fit": "لا يوجد مكان مفتوح يناسب إجاباتك.",
+        "eligible": "بناءً على إجاباتك، أنت مؤهل لـ:",
         "nothing_open": "لا يوجد شيء قريب مفتوح الآن.",
         "no_bus": "لم أجد حافلة مباشرة أو مع تبديل إلى {name} ({dist}).",
         "bus_unavailable": "أوقات الحافلات غير متوفرة الآن. {name} {dist}.",
@@ -538,8 +543,17 @@ def search_step(session, channel):
                          history=session["history"])
     if ruled_out:
         reply = clip_for_channel(message(language, "none_fit") + " " + reply, channel)
+    elif options[0] in places and passed_a_question(options[0], answers):
+        # We asked questions and this place fits: say so, so the questions make sense.
+        reply = clip_for_channel(message(language, "eligible") + " " + reply, channel)
     reply = add_extras(session, reply, options[0], channel)
     return make_result(session, reply, "find", need=need, unmet=not open_offered)
+
+
+def passed_a_question(place, answers):
+    """True when the person answered yes to at least one question this place asks."""
+    return any(answers.get(eligibility.question_key(rule)) is True
+               for rule in eligibility.rules_to_check(place) if eligibility.question_key(rule))
 
 
 def nothing_open_step(session, fallback, channel):

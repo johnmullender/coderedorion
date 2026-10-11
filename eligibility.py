@@ -251,11 +251,25 @@ def check(rule, answers, zip_code):
     return bool(answers[key])
 
 
+# A "serves youth/seniors" rule says the same thing as the place's age rule, so only the age is asked.
+AGE_GROUPS = {"youth", "seniors"}
+
+
+def rules_to_check(place):
+    """The place's rules, minus a youth or seniors rule when the place also has an age rule."""
+    rules = place.get("eligibility", [])
+    has_age = any(rule.get("type") == "age" and question_key(rule) for rule in rules)
+    if not has_age:
+        return rules
+    return [rule for rule in rules
+            if not (rule.get("type") == "serves" and rule.get("group") in AGE_GROUPS)]
+
+
 def filter_places(places, answers, zip_code):
     """The places whose rules have not ruled them out, in the same order."""
     return [
         place for place in places
-        if all(check(rule, answers, zip_code) is not False for rule in place.get("eligibility", []))
+        if all(check(rule, answers, zip_code) is not False for rule in rules_to_check(place))
     ]
 
 
@@ -271,7 +285,7 @@ def next_question(places, answers, zip_code, asked):
     first_rule = {}
     for place in places[:3]:
         seen = set()
-        for rule in place.get("eligibility", []):
+        for rule in rules_to_check(place):
             key = question_key(rule)
             if key is None or key in seen or check(rule, answers, zip_code) is not None:
                 continue

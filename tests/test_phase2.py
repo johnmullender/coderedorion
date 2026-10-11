@@ -881,3 +881,24 @@ def test_hours_unknown_keeps_the_phone_and_drops_the_address(client, world):
     sms = ask(client, "I need food 77004", channel="sms", session_id="unknown-sms")
     assert "hours not listed, call 713-555-0111 first." in sms["reply"]
     assert "Main St" not in sms["reply"]
+
+
+def test_yes_answer_says_the_person_is_eligible(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "I need food")
+    data = ask(client, "yes")
+    assert data["reply"].startswith("Based on your answers, you're eligible for:")
+
+
+def test_no_eligible_lead_when_the_first_place_asked_nothing(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "I need food")
+    data = ask(client, "no")  # "a" is ruled out; "b" has no rules
+    assert "eligible" not in data["reply"]
+
+
+def test_eligible_lead_in_spanish(client, world):
+    world["resources"] = [make_place("a", 0, [ID_RULE]), make_place("b", 1)]
+    ask(client, "necesito comida", lang="es")
+    data = ask(client, "sí", lang="es")
+    assert data["reply"].startswith("Según sus respuestas, usted califica para:")
