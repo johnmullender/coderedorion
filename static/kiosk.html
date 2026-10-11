@@ -89,6 +89,7 @@
     <div class="row">
       <button id="shortBtn">Short press</button>
       <button id="longBtn">Long press</button>
+      <button id="resetBtn">New person</button>
     </div>
     <div class="row">
       <label for="knob">Knob: <span id="knobValue">0</span></label>
@@ -618,12 +619,12 @@ async function recordAudio() {
   });
 }
 
-// Send the recording to the server. Resolves { ok: true, text } or { ok: false }.
+// Send the recording to the server. Resolves { ok: true, text, language } or { ok: false }.
+// No language is sent, so ElevenLabs hears which language the person spoke.
 async function transcribe(blob) {
   try {
     const form = new FormData();
     form.append("file", blob, "speech.webm");
-    form.append("lang", lang);
     const res = await fetchWithTimeout("/stt", { method: "POST", body: form }, STT_TIMEOUT_MS);
     if (!res.ok) {
       log("info", "/stt returned " + res.status);
@@ -631,7 +632,7 @@ async function transcribe(blob) {
     }
     const data = await res.json();
     if (typeof data.text !== "string") return { ok: false };
-    return { ok: true, text: data.text.trim() };
+    return { ok: true, text: data.text.trim(), language: data.language };
   } catch (e) {
     log("info", "/stt failed: " + e.message);
     return { ok: false };
@@ -754,12 +755,18 @@ async function askQuestion() {
 
   let text = null;
   let sttOk = false;
+  let spokenLang = lang;      // Chrome listens in the knob language
+
   const blob = await recordAudio();
   if (blob && blob.size > 0) {
     setState("thinking");
     lcd1("Thinking...");
     const result = await transcribe(blob);
-    if (result.ok) { sttOk = true; text = result.text; }
+    if (result.ok) {
+      sttOk = true;
+      text = result.text;
+      if (LANGS[result.language]) spokenLang = result.language;   // answer in the language they spoke
+    }
   }
 
   if (sttOk) {
@@ -778,7 +785,7 @@ async function askQuestion() {
     await didNotCatch();
     return;
   }
-  await sendToServer(text);
+  await sendToServer(text, spokenLang);
 }
 
 // No speech / error: ERR tone, go back to where we were, say sorry.
@@ -798,8 +805,9 @@ function backToPrevState() {
   }
 }
 
-// POST /ask and show + speak the answer.
-async function sendToServer(text) {
+// POST /ask and show + speak the answer. replyLang null lets the server
+// pick the language from the text (used for typed questions).
+async function sendToServer(text, replyLang) {
   lastTranscript = text;
   setState("thinking");
   lcd1("Thinking...");
@@ -810,7 +818,7 @@ async function sendToServer(text) {
     const res = await fetchWithTimeout("/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ channel: "kiosk", session_id: sessionId, text: text, lang: lang, lat: null, lng: null }),
+      body: JSON.stringify({ channel: "kiosk", session_id: sessionId, text: text, lang: replyLang === undefined ? lang : replyLang, lat: null, lng: null }),
     }, ASK_TIMEOUT_MS);
     if (!res.ok) throw new Error("HTTP " + res.status);
     data = await res.json();
@@ -829,6 +837,7 @@ function showAnswer(data) {
   touch();
   lastReply = data.reply || "";
   lastReplyLang = LANGS[data.language] ? data.language : lang;
+  lang = lastReplyLang;       // the station now speaks the language of the last answer
   options = Array.isArray(data.options) ? data.options : [];
   selected = options.length ? Math.min(Math.max(data.selected || 1, 1), options.length) : 0;
   // Remember where the knob is now, so only a real turn changes the option.
@@ -947,6 +956,7 @@ function setup() {
 
   document.getElementById("shortBtn").addEventListener("click", () => { log("info", "debug: BTN"); onShortPress(); });
   document.getElementById("longBtn").addEventListener("click", () => { log("info", "debug: HOLD"); onLongPress(); });
+  document.getElementById("resetBtn").addEventListener("click", () => { log("info", "debug: new person"); resetKiosk(); });
   knobSlider.addEventListener("input", () => onKnob(Number(knobSlider.value)));
 
   // Typed question: skips the microphone, handy when testing /ask.
@@ -958,7 +968,7 @@ function setup() {
     touch();
     prevState = state;
     stopSpeaking();
-    sendToServer(text);
+    sendToServer(text, null);   // reply in the language the question was typed in
   };
   document.getElementById("typedBtn").addEventListener("click", sendTyped);
   typed.addEventListener("keydown", (ev) => { if (ev.key === "Enter") sendTyped(); });

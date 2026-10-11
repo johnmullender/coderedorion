@@ -71,3 +71,4 @@ Times are Houston time, Sat Oct 10. Entries before 6:52 PM were backfilled from 
 | 7:24 PM | kiosk.html | Sonnet R9 | Re-review | Started |
 | 7:27 PM | kiosk.html | Sonnet R9 | **APPROVED** | Headless Chrome with a fake mic: press, speak once, ElevenLabs down, Chrome fallback, answer and LCD all correct |
 | 7:28 PM | — | Opus | Done | All 10 pieces approved and pushed to PR #1. Totals: 9 Haiku coders, 9 Sonnet reviewers, 5 tasks sent back for fixes (1 round each) |
+| Oct 11 | kiosk.html, brain.py, main.py | Opus | Fix | John: kiosk always answered in English. Causes: knob only sets language before the first answer; spoken language was ignored; no-Gemini replies were English-only for vi/zh/ar. Now follows the language spoken or typed, adds a "New person" button, and fixed replies in all 5 languages. 140 tests pass; headless Chrome check in en/es/vi/zh |
