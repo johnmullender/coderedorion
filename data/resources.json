@@ -75,12 +75,12 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Insurance not required, no co-pay",
+    "text": "Insurance is not required and there is no co-pay.",
     "source_quote": "Insurance is not required, and you will never be charged a co-pay for services."
    },
    {
     "type": "note",
-    "text": "No ID or proof of homelessness required",
+    "text": "No ID or proof of homelessness is required.",
     "source_quote": "We do not require you to have verification of homelessness or identification."
    }
   ],
@@ -125,7 +125,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Appointments: schedule through MyHealth or call; bring proper identification",
+    "text": "Schedule an appointment through MyHealth or by phone, and bring proper ID.",
     "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
    }
   ],
@@ -170,7 +170,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Appointments: schedule through MyHealth or call 713-526-4243",
+    "text": "Schedule an appointment through MyHealth or call 713-526-4243.",
     "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
    }
   ],
@@ -215,7 +215,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Appointments: schedule through MyHealth or call 713-526-4243",
+    "text": "Schedule an appointment through MyHealth or call 713-526-4243.",
     "source_quote": "The easiest way to schedule an appointment is to request one through MyHealth."
    }
   ],
@@ -644,7 +644,7 @@
    },
    {
     "type": "note",
-    "text": "Appointment required",
+    "text": "An appointment is required.",
     "source_quote": "You must make an appointment."
    }
   ],
@@ -727,20 +727,15 @@
   "hours_quote": "8:00 a.m. – 5:00 p.m.",
   "eligibility": [
    {
-    "type": "residency",
-    "area": "Harris County",
-    "source_quote": "Harris"
-   },
-   {
     "type": "note",
-    "text": "Accepts walk-in, online, and phone applications; phone intake Mon-Thu 8:30am-2:30pm",
+    "text": "Accepts walk-in, online, and phone applications.",
     "source_quote": "Lone Star Legal Aid accepts walk-in, online, and phone applications."
    }
   ],
   "services": "Free civil legal aid",
   "languages": [],
   "phone": "713-652-0077",
-  "notes": "Page states no income limit. Residency quote 'Harris' is the 'Counties Served' value - weak, verify.",
+  "notes": "Page lists only \"Harris\" under Counties Served; no residency sentence, so no residency rule. Page states no income limit.",
   "source_url": "https://www.lonestarlegal.org/office/houston-office/",
   "last_verified": null,
   "needs_review": true
@@ -768,7 +763,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Cases screened for client financial eligibility",
+    "text": "Cases are screened for financial eligibility.",
     "source_quote": "HVL screens all cases for merit and client financial eligibility."
    }
   ],
@@ -813,7 +808,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Legal representation for people who cannot afford a lawyer",
+    "text": "Legal help for people who cannot afford a lawyer.",
     "source_quote": "The legal service component focuses on providing legal representation to people who cannot afford to hire a lawyer."
    }
   ],
@@ -916,7 +911,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Low-cost or free immigration representation",
+    "text": "Low-cost or free immigration legal help.",
     "source_quote": "low-cost or free representation in immigration cases for families"
    }
   ],
@@ -958,7 +953,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Legal consultations by appointment only",
+    "text": "Legal consultations are by appointment only.",
     "source_quote": "Legal consultations are available by appointment only."
    }
   ],
@@ -1149,10 +1144,8 @@
   "hours_quote": "Hours of operation: Thursday and Friday 9 am to 1 pm",
   "eligibility": [
    {
-    "type": "zip_in",
-    "zips": [
-     "77004"
-    ],
+    "type": "note",
+    "text": "Outside 77004? Call first to check eligibility.",
     "source_quote": "If outside the 77004 zip code Wheeler Church first to learn if you are eligible."
    }
   ],
@@ -1198,8 +1191,14 @@
   "hours_quote": "M – F 10a – 2 pm Sat 9 a  – 12 p (food and clothing only",
   "eligibility": [
    {
-    "type": "note",
-    "text": "Serves listed zip codes (77002, 77003, 77004, 77005, 77006 and others); see page",
+    "type": "zip_in",
+    "zips": [
+     "77002",
+     "77003",
+     "77004",
+     "77005",
+     "77006"
+    ],
     "source_quote": "County or Zip Codes Served: W-SW: 77002, 77003, 77004, 77005, 77006"
    }
   ],
@@ -1244,7 +1243,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Does not provide groceries to clients who are homeless",
+    "text": "Does not provide groceries to clients who are homeless.",
     "source_quote": "Does not provide groceries to clients who are homeless."
    }
   ],
@@ -1287,7 +1286,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Registration required; not a walk-in pantry",
+    "text": "Registration is required; this is not a walk-in pantry.",
     "source_quote": "You must register to request food; we are NOT a walk-in food pantry."
    }
   ],
@@ -1337,7 +1336,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Assistance offered one time per year",
+    "text": "Assistance is offered one time per year.",
     "source_quote": "Assistance is offered one time per year."
    }
   ],
@@ -1411,7 +1410,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Open to individuals experiencing homelessness or anyone in immediate need",
+    "text": "Open to people experiencing homelessness or anyone in immediate need.",
     "source_quote": "They are open to individuals experiencing homelessness or anyone in immediate need."
    }
   ],
@@ -1846,7 +1845,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Can come once per month",
+    "text": "You can come once per month.",
     "source_quote": "You can come once per month."
    }
   ],
@@ -1916,7 +1915,7 @@
   "eligibility": [
    {
     "type": "note",
-    "text": "Must call to make an appointment",
+    "text": "Call to make an appointment.",
     "source_quote": "Must call to make an appointment Monday through Friday from 8 am to 12 pm."
    }
   ],
@@ -3223,24 +3222,34 @@
   "hours_quote": "8:00am–2:00pm (M–F)",
   "eligibility": [
    {
-    "type": "note",
-    "source_quote": "Walk in with required documents.",
-    "text": "Walk in with required documents."
+    "type": "serves",
+    "group": "men",
+    "source_quote": "a refuge for men facing homelessness in Houston"
    },
    {
     "type": "note",
-    "source_quote": "Valid ID and Social Security card (if available)",
-    "text": "Valid ID and Social Security card (if available)"
+    "text": "Walk in with your required documents.",
+    "source_quote": "Walk in with required documents."
    },
    {
     "type": "note",
-    "source_quote": "Aren’t sex offenders",
-    "text": "Aren’t sex offenders"
+    "text": "Bring a valid ID and Social Security card if you have them.",
+    "source_quote": "Valid ID and Social Security card (if available)"
    },
    {
     "type": "note",
-    "source_quote": "Don’t have ankle monitors",
-    "text": "Don’t have ankle monitors"
+    "text": "Not open to registered sex offenders.",
+    "source_quote": "Aren’t sex offenders"
+   },
+   {
+    "type": "note",
+    "text": "Not open to people with ankle monitors.",
+    "source_quote": "Don’t have ankle monitors"
+   },
+   {
+    "type": "note",
+    "text": "Space is first come, first served.",
+    "source_quote": "first come, first served"
    }
   ],
   "services": "Emergency shelter: A clean bed, hot meals, clothing, and safety when you need it most.",
@@ -3283,15 +3292,35 @@
   "hours_quote": "8:00am–3:30pm (M–F)",
   "eligibility": [
    {
+    "type": "serves",
+    "group": "women",
+    "source_quote": "single women"
+   },
+   {
     "type": "note",
-    "source_quote": "Must be able to care for yourself and not be a harm to yourself or others.",
-    "text": "Must be able to care for yourself and not be a harm to yourself or others."
+    "text": "Walk in with your required documents.",
+    "source_quote": "Walk in with required documents."
+   },
+   {
+    "type": "note",
+    "text": "Bring a valid ID and Social Security card if you have them.",
+    "source_quote": "Valid ID and Social Security card (if available)"
+   },
+   {
+    "type": "note",
+    "text": "You must be able to care for yourself and not harm yourself or others.",
+    "source_quote": "Must be able to care for yourself and not be a harm to yourself or others"
+   },
+   {
+    "type": "note",
+    "text": "Space is first come, first served.",
+    "source_quote": "first come, first served"
    }
   ],
   "services": "Emergency shelter for women and their children with meals, hygiene supplies, showers and support",
   "languages": [],
   "phone": "713-222-2220",
-  "notes": "Hours are intake hours (Mon-Fri). Exact wording of the care-for-yourself sentence is unverified; needs a script check.",
+  "notes": "Hours are intake hours (Mon-Fri).",
   "source_url": "https://www.sohmission.org/how-we-help/for-women-and-single-families/",
   "last_verified": null,
   "needs_review": true
@@ -3336,6 +3365,11 @@
     "source_quote": "Young people ages 18-24",
     "min": 18,
     "max": 24
+   },
+   {
+    "type": "serves",
+    "group": "youth",
+    "source_quote": "shelter for young people aged 18-24"
    }
   ],
   "services": "Shelter and services for young people experiencing homelessness",
@@ -3454,7 +3488,7 @@
    {
     "type": "note",
     "source_quote": "first come, first served",
-    "text": "first come, first served"
+    "text": "Services are first come, first served."
    }
   ],
   "services": "Five private showers and full-service laundry (intake starts 7 a.m.), breakfast and lunch",
@@ -3673,7 +3707,7 @@
   "services": "Emergency shelter (Help Card lists women and children; Salvation Army page southernusa.salvationarmy.org/houston/sns calls it a shelter for single men and veterans - conflict, verify)",
   "languages": [],
   "phone": "800-725-2769",
-  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead.",
+  "notes": "Listed on Coalition for the Homeless Help Card; page gives no hours or eligibility (says CFTH does not oversee admission policies) - call ahead. Sources disagree on who this shelter serves (Help Card: women and children; Salvation Army page: single men and veterans). Check before the demo.",
   "source_url": "https://www.cfthhouston.org/gethelp",
   "last_verified": null,
   "needs_review": true
