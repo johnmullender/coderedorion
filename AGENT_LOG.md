@@ -70,4 +70,4 @@ Times are Houston time, Sat Oct 10. Entries before 6:52 PM were backfilled from 
 | 7:24 PM | kiosk.html | Haiku #5 | Fix round 1 done | All 4 applied; `node --check` passes |
 | 7:24 PM | kiosk.html | Sonnet R9 | Re-review | Started |
 | 7:27 PM | kiosk.html | Sonnet R9 | **APPROVED** | Headless Chrome with a fake mic: press, speak once, ElevenLabs down, Chrome fallback, answer and LCD all correct |
-| 7:28 PM | — | Opus | Done | All 10 pieces approved and pushed to PR #1. Totals: 10 Haiku coders, 9 Sonnet reviewers, 6 tasks sent back for fixes (1 round each) |
+| 7:28 PM | — | Opus | Done | All 10 pieces approved and pushed to PR #1. Totals: 9 Haiku coders, 9 Sonnet reviewers, 5 tasks sent back for fixes (1 round each) |
