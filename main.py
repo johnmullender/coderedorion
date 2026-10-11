@@ -26,6 +26,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 import brain
 import db
 import eligibility
+import google_transit
 import location
 import matching
 import transit
@@ -73,7 +74,6 @@ MESSAGES = {
         "none_fit": "None of the open places fit your answers.",
         "nothing_open": "Nothing nearby is open right now.",
         "no_bus": "No direct bus or transfer found to {name} ({dist}).",
-        "no_bus_stops": "No direct bus or transfer found to {name} ({dist}). Nearest stop to you: {start}. Nearest stop to {name}: {end}.",
         "bus_unavailable": "Bus times aren't available right now. {name} is {dist}.",
         "to_place": "To {name}: {text}",
         "map_link": "Google Maps transit route: {link}",
@@ -89,7 +89,6 @@ MESSAGES = {
         "none_fit": "Ninguno de los lugares abiertos le corresponde según sus respuestas.",
         "nothing_open": "Nada cercano está abierto ahora.",
         "no_bus": "No encontré autobús directo ni con transbordo a {name} ({dist}).",
-        "no_bus_stops": "No encontré autobús directo ni con transbordo a {name} ({dist}). Parada más cercana a usted: {start}. Parada más cercana a {name}: {end}.",
         "bus_unavailable": "Los horarios del autobús no están disponibles ahora. {name} está {dist}.",
         "to_place": "Para {name}: {text}",
         "map_link": "Ruta en Google Maps: {link}",
@@ -105,7 +104,6 @@ MESSAGES = {
         "none_fit": "Không có địa điểm nào đang mở phù hợp với câu trả lời của bạn.",
         "nothing_open": "Hiện không có nơi nào gần đây đang mở cửa.",
         "no_bus": "Không tìm thấy xe buýt trực tiếp hoặc có đổi tuyến đến {name} ({dist}).",
-        "no_bus_stops": "Không tìm thấy xe buýt trực tiếp hoặc có đổi tuyến đến {name} ({dist}). Trạm gần bạn nhất: {start}. Trạm gần {name} nhất: {end}.",
         "bus_unavailable": "Hiện chưa có giờ xe buýt. {name} {dist}.",
         "to_place": "Đến {name}: {text}",
         "map_link": "Đường đi trên Google Maps: {link}",
@@ -121,7 +119,6 @@ MESSAGES = {
         "none_fit": "开放的地点都不符合您的情况。",
         "nothing_open": "附近现在没有开放的地点。",
         "no_bus": "找不到到{name}的直达或换乘公交（{dist}）。",
-        "no_bus_stops": "找不到到{name}的直达或换乘公交（{dist}）。离您最近的站：{start}。离{name}最近的站：{end}。",
         "bus_unavailable": "现在无法获取公交时间。{name}{dist}。",
         "to_place": "前往{name}：{text}",
         "map_link": "谷歌地图公交路线：{link}",
@@ -137,7 +134,6 @@ MESSAGES = {
         "none_fit": "لا يوجد مكان مفتوح يناسب إجاباتك.",
         "nothing_open": "لا يوجد شيء قريب مفتوح الآن.",
         "no_bus": "لم أجد حافلة مباشرة أو مع تبديل إلى {name} ({dist}).",
-        "no_bus_stops": "لم أجد حافلة مباشرة أو مع تبديل إلى {name} ({dist}). أقرب موقف إليك: {start}. أقرب موقف إلى {name}: {end}.",
         "bus_unavailable": "أوقات الحافلات غير متوفرة الآن. {name} {dist}.",
         "to_place": "إلى {name}: {text}",
         "map_link": "مسار غوغل ماب للحافلات: {link}",
@@ -307,28 +303,25 @@ def log_request(channel, need, language, lat, lng, options, text):
 
 
 def bus_for(session, place):
-    """The METRO route from where the person is to `place`, or None (no coordinates, no ride, or an error)."""
+    """The bus route from where the person is to `place`, or None (no coordinates, no ride, or an error).
+
+    Google Maps goes first when a key is set. When it gives no bus route, the METRO schedule is the backup.
+    """
     origin_lat, origin_lng = session["lat"], session["lng"]
     to_lat, to_lng = place.get("lat"), place.get("lng")
     if None in (origin_lat, origin_lng, to_lat, to_lng):
         return None
     try:
+        if google_transit.enabled():
+            found = google_transit.directions(origin_lat, origin_lng, to_lat, to_lng,
+                                              language=session["language"])
+            if found is not None:
+                return found
         return transit.directions(origin_lat, origin_lng, to_lat, to_lng)
     except Exception:
         log.exception("bus directions failed")
         return None
 
-
-def closest_stops(session, place, language, channel):
-    """(stop nearest the person, stop nearest the place) as names, or None. Never raises."""
-    if session["lat"] is None or place.get("lat") is None:
-        return None
-    try:
-        return transit.closest_stops(session["lat"], session["lng"], place["lat"], place["lng"],
-                                     language, channel)
-    except Exception:
-        log.exception("nearest bus stops failed")
-        return None
 
 
 def maps_link(session, place):
@@ -407,8 +400,8 @@ distance_phrase = brain.distance_phrase
 
 
 def bus_data_available():
-    """False when there is no bus data at all: no database and no local transit file."""
-    return db.enabled() or transit.LOCAL_PATH.exists()
+    """False when there is no bus data at all: no Google key, no database and no local transit file."""
+    return google_transit.enabled() or db.enabled() or transit.LOCAL_PATH.exists()
 
 
 # ---------------------------------------------------------------------------
@@ -438,8 +431,8 @@ def handle_next_option(session, understood, text, channel):
 def handle_directions(session, channel):
     """How to get to the selected place by bus.
 
-    The reply names the place. With no bus route, it says where the nearest stops are, and on SMS
-    it ends with a Google Maps transit link. With no bus data at all, it says bus times aren't there.
+    The reply names the place. With no bus route, it says so, and on SMS it ends with a Google Maps
+    transit link that plans a real route. With no bus data at all, it says bus times aren't there.
     """
     language = session["language"]
     options = session["options"]
@@ -459,11 +452,8 @@ def handle_directions(session, channel):
     if not bus_data_available():
         reply = message(language, "bus_unavailable", name=name, dist=dist)
     else:
-        stops = closest_stops(session, place, language, channel)
-        if stops:
-            reply = message(language, "no_bus_stops", name=name, dist=dist, start=stops[0], end=stops[1])
-        else:
-            reply = message(language, "no_bus", name=name, dist=dist)
+        # No route found: don't name stops that may not connect; the SMS map link plans a real route.
+        reply = message(language, "no_bus", name=name, dist=dist)
     link = maps_link(session, place) if channel == "sms" else None
     if link:
         reply = with_link(reply, message(language, "map_link", link=link))

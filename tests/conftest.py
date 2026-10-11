@@ -14,6 +14,12 @@ SAMPLE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures
 
 
 @pytest.fixture(autouse=True)
+def no_google_key(monkeypatch):
+    """No test reaches Google: the key is removed, even when a real .env has one. Tests that need it set a fake one."""
+    monkeypatch.delenv("GOOGLE_MAPS_API_KEY", raising=False)
+
+
+@pytest.fixture(autouse=True)
 def sample_resources(monkeypatch):
     with open(SAMPLE_PATH, encoding="utf-8") as f:
         monkeypatch.setattr(matching, "_cache", json.load(f))

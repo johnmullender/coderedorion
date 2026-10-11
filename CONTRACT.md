@@ -303,7 +303,7 @@ def directions(from_lat, from_lng, to_lat, to_lng, when: datetime | None = None,
     {"legs": [{"route": "54", "headsign": "Downtown", "board_stop": "Scott @ Holman",
                "alight_stop": "Main @ Gray", "departs": "16:12", "arrives": "16:31", "stops": 6}],
      "walk_to_min": 3, "walk_from_min": 2, "arrive_by": "16:33"}
-    # None when no ride is found (caller then names the nearest stops and, on SMS, sends a Google Maps transit link)
+    # None when no ride is found (caller then says no route was found and, on SMS, sends a Google Maps transit link)
 
 def closest_stops(from_lat, from_lng, to_lat, to_lng, language, channel, source=None) -> tuple[str, str] | None
     # (stop nearest the start, stop nearest the destination), named for the channel ("Scott@Holman" on SMS,

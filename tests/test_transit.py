@@ -758,3 +758,85 @@ def test_wording_next_bus_when_buses_run_but_none_goes_there():
     for language in ["es", "vi", "zh", "ar"]:
         assert transit.summary(d, language, "kiosk").startswith(transit._NEXT_BUS[language])
         assert transit._NEXT_BUS[language] != transit._LATER[language]
+
+
+def test_search_gives_up_when_over_its_time_budget(monkeypatch):
+    # A slow database must not make the kiosk time out: past the budget, no ride is returned.
+    monkeypatch.setattr(transit, "TIME_BUDGET_SEC", -1)
+    source = FakeSource([make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE")],
+                        services=lambda day: {"TUE"} if day == date(2026, 10, 13) else set())
+    assert ask(at(2026, 10, 12, 16, 0), source) is None
+
+
+def test_service_days_are_looked_up_once_per_search():
+    calls = []
+    source = FakeSource([make_trip("54-tue", "54", [("A", "08:00", "08:00"), ("B", "08:12", "08:12")], service="TUE")],
+                        services=lambda day: calls.append(day) or ({"TUE"} if day == date(2026, 10, 13) else set()))
+    assert ask(at(2026, 10, 12, 16, 0), source) is not None
+    assert len(calls) == len(set(calls))
+
+
+def three_leg_result():
+    """Two transfers: bus 54, then 40, then 25 (what Google can return for a hard trip)."""
+    return {
+        "legs": [
+            {"route": "54", "headsign": "Downtown", "board_stop": "Scott @ Holman", "alight_stop": "Elgin @ Main",
+             "departs": "16:12", "arrives": "16:24", "stops": 2},
+            {"route": "40", "headsign": "Uptown", "board_stop": "Elgin @ Main", "alight_stop": "Walker @ Main",
+             "departs": "16:30", "arrives": "16:45", "stops": 4},
+            {"route": "25", "headsign": "Downtown", "board_stop": "Walker @ Main", "alight_stop": "Main @ Gray",
+             "departs": "16:50", "arrives": "17:05", "stops": 3},
+        ],
+        "walk_to_min": 2, "walk_from_min": 3, "arrive_by": "17:08",
+    }
+
+
+def test_summary_three_legs_joins_every_leg():
+    d = three_leg_result()
+    kiosk = transit.summary(d, "en", "kiosk")
+    assert kiosk == (
+        "Walk 2 minutes to Scott at Holman and take bus 54 toward Downtown at 4:12 PM, getting off at Elgin at Main "
+        "after 2 stops. Transfer to bus 40 toward Uptown at 4:30 PM from Elgin at Main, getting off at Walker at Main "
+        "after 4 stops. Transfer to bus 25 toward Downtown at 4:50 PM from Walker at Main, getting off at Main at Gray "
+        "after 3 stops, then walk 3 minutes to your destination."
+    )
+    sms = transit.summary(d, "en", "sms")
+    assert sms == (
+        "Bus 54 from Scott@Holman 4:12PM, 2 stops to Elgin@Main, bus 40 from Elgin@Main 4:30PM, 4 stops to "
+        "Walker@Main, bus 25 from Walker@Main 4:50PM, 3 stops to Main@Gray, walk 3 min."
+    )
+
+
+@pytest.mark.parametrize("language", ["en", "es", "vi", "zh", "ar"])
+def test_summary_three_legs_all_languages(language):
+    kiosk = transit.summary(three_leg_result(), language, "kiosk")
+    for route in ["54", "40", "25"]:
+        assert route in kiosk
+    assert "@" not in kiosk
+    assert transit.summary(three_leg_result(), language, "sms").count("25") == 1
+
+
+def test_two_legs_kiosk_output_is_unchanged():
+    d = {
+        "legs": [
+            {"route": "12", "headsign": "Uptown", "board_stop": "Scott @ Holman", "alight_stop": "Elgin @ Main",
+             "departs": "16:05", "arrives": "16:25", "stops": 1},
+            {"route": "50", "headsign": "Downtown", "board_stop": "Elgin @ Main", "alight_stop": "Main @ Gray",
+             "departs": "16:30", "arrives": "16:40", "stops": 1},
+        ],
+        "walk_to_min": 1, "walk_from_min": 1, "arrive_by": "16:41",
+    }
+    assert transit.summary(d, "en", "kiosk") == (
+        "Walk 1 minute to Scott at Holman and take bus 12 toward Uptown at 4:05 PM, getting off at Elgin at Main "
+        "after 1 stop. Transfer to bus 50 toward Downtown at 4:30 PM from Elgin at Main, getting off at Main at Gray "
+        "after 1 stop, then walk 1 minute to your destination."
+    )
+
+
+def test_later_with_unknown_buses_running_says_the_next_bus():
+    d = one_leg_result()
+    d.update(later=True, buses_running=None)
+    assert transit.summary(d, "en", "sms").startswith("The next bus that goes there: Bus 54")
+    assert transit.summary(d, "en", "kiosk").startswith(transit._NEXT_BUS["en"])
+    d["buses_running"] = False
+    assert transit.summary(d, "en", "sms").startswith("No buses are running now. The first one: Bus 54")
