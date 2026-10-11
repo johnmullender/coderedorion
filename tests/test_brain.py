@@ -268,3 +268,16 @@ def test_new_hygiene_words(text, language):
     result = brain.understand(text, [])
     assert result["need"] == "hygiene"
     assert result["language"] == language
+
+
+@pytest.mark.parametrize("language,word", [("vi", "đang mở cửa"), ("zh", "现在开放"), ("ar", "مفتوح الآن")])
+def test_templates_without_gemini_use_the_persons_language(language, word, monkeypatch):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr(brain, "_client", None)
+    matches = [make_match("Sample Pantry"), make_match("Sample Kitchen")]
+    kiosk = brain.answer("food", language, "food", matches, "kiosk")
+    sms = brain.answer("food", language, "food", matches, "sms")
+    assert word in kiosk and "Sample Pantry" in kiosk
+    assert word in sms and brain.REPLY_HINTS[language] in sms
+    nothing = brain.answer("food", language, "food", [], "kiosk")
+    assert "211" in nothing and "Please call" not in nothing

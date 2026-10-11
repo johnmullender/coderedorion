@@ -29,7 +29,7 @@ Open http://localhost:8000/dashboard and http://localhost:8000/kiosk (use Chrome
 Every key is optional. Without a key, that piece falls back:
 | Key in `.env` | Without it |
 |---|---|
-| `GEMINI_API_KEY` | Simple keyword rules and English/Spanish templates |
+| `GEMINI_API_KEY` | Simple keyword rules and fixed-sentence replies in all 5 languages |
 | `DATABASE_URL` (Tiger Cloud service URL) | `data/resources.json` + in-memory request log |
 | `ELEVENLABS_API_KEY` | Chrome's built-in voices and speech recognition |
 

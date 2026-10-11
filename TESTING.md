@@ -135,11 +135,13 @@ Open http://localhost:8000/kiosk in **Chrome**. You don't need to click "Connect
 > **Watch the screen, not the board.** In this step, "the LCD box" means the green **LCD preview** box on the web page, under "Station". The real LCD on the Arduino doesn't change yet. If the board is plugged in, it keeps showing whatever sketch is on it (for example "LONG press / 173 English" from `hardware-test.ino`). The real LCD only joins in at step 10, after you upload `station.ino` and click Connect station.
 
 1. **Language:** drag the **knob slider**. The language changes through English → Espanol → Tieng Viet → Zhongwen → Arabic. The "LCD" box shows the language on row 2.
+   - The knob only picks the language on the "Press for help" screen. After an answer, it browses the options instead. Click **New person** to go back to the start screen and pick a language again.
+   - The station answers in the language you **ask** in: type or say `necesito un refugio` and the reply is in Spanish, whatever the knob says. The knob language is used when the station can't tell (Chrome's own speech recognition).
 2. **Typed question:** type `I need a shelter` in the box and press Enter. The reply appears and is **spoken**: Chrome's voice for now, ElevenLabs after step 8. The LCD box shows something like `Option 1/2 0.7mi` (the count depends on how many places are open) and the place name and address.
 3. **Browse options:** drag the knob slider. Each new band picks option 1, 2 or 3, and each one is spoken and shown.
 4. **Long press:** click **Long press**. It reads out all the options.
 5. **Spoken question:** click **Short press**, allow the microphone, say "I need food", then click **Short press** again or wait 8 seconds. Without ElevenLabs, Chrome's own speech recognition is used.
-6. **Idle reset:** leave the page alone for 60 seconds. It returns to "Press for help" and starts a new session.
+6. **Idle reset:** leave the page alone for 60 seconds (or click **New person**). It returns to "Press for help" and starts a new session.
 7. **Serial log:** the log at the bottom lists every line that *would* go to the Arduino (`LCD1:`, `SCROLL2:`, `BEEP:2` …).
 
 Kiosk requests also show up on the dashboard, at the UH Student Center.
@@ -152,7 +154,7 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
 
 **Expect:**
 - Follow-ups get real answers.
-- Vietnamese, Chinese and Arabic get replies **in that language**.
+- Replies sound natural and answer follow-up questions. (Without Gemini, all 5 languages already get short fixed-sentence replies.)
 - Messy texts work, e.g. `im hungry n broke, near tsu`.
 
 **Check the "no made-up places" claim:** every place named in a reply should be a "Sample …" place from `resources.json`.
@@ -189,7 +191,7 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
    curl -s -X POST localhost:8000/stt -F file=@test.mp3 -F lang=es
    ```
    **Expect:** `{"text":"Hola, el refugio está abierto ahora.","language":"es"}` or very close.
-4. **In the kiosk:** repeat step 5. The spoken answers now use the ElevenLabs voice, in all 5 languages. Spoken questions go to ElevenLabs Scribe, so try Spanish or Vietnamese after turning the knob.
+4. **In the kiosk:** repeat step 5. The spoken answers now use the ElevenLabs voice, in all 5 languages. Spoken questions go to ElevenLabs Scribe, which hears which language you spoke: ask in Spanish or Vietnamese and the answer comes back in that language.
 5. **Fallback:** delete the key and restart. The kiosk goes back to Chrome's voice and recognition, and you only have to speak once.
 
 ## 9. Arduino station on its own

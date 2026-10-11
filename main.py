@@ -43,7 +43,7 @@ ERROR_REPLY = "Sorry, something went wrong. Call 211 for help."
 OPTION_KEYS = ["id", "name", "address", "distance_mi", "open_now", "closes_at", "opens_at", "phone"]
 
 # ---------------------------------------------------------------------------
-# Short fixed messages. English and Spanish; other languages use English.
+# Short fixed messages, one set per language.
 # ---------------------------------------------------------------------------
 
 MESSAGES = {
@@ -64,6 +64,33 @@ MESSAGES = {
         "bad_number": "Por favor responda con un número del 1 al {count}.",
         "no_options": "Todavía no tengo lugares para usted. ¿Qué necesita? Por ejemplo: comida, refugio o una clínica.",
         "intro": "Hola, esta es HelpLine Houston. Dígame qué necesita (comida, refugio, duchas, una clínica, una biblioteca, un centro de enfriamiento o ayuda legal) y dónde está, y le busco un lugar gratis abierto ahora.",
+    },
+    "vi": {
+        "ask_need": "Bạn cần gì? Tôi có thể giúp tìm thức ăn, chỗ ngủ, chỗ tắm, phòng khám, thư viện, nơi tránh nóng hoặc trợ giúp pháp lý.",
+        "ask_location": "Bạn đang ở gần mã bưu điện hoặc con đường nào?",
+        "help": "Gọi 211 (miễn phí, 24/7) để nói chuyện với một người.",
+        "help_place": "{name}: {phone}.",
+        "bad_number": "Vui lòng trả lời bằng một số từ 1 đến {count}.",
+        "no_options": "Tôi chưa có địa điểm nào cho bạn. Bạn cần gì? Ví dụ: thức ăn, chỗ ngủ hoặc phòng khám.",
+        "intro": "Xin chào, đây là HelpLine Houston. Hãy cho tôi biết bạn cần gì (thức ăn, chỗ ngủ, chỗ tắm, phòng khám, thư viện, nơi tránh nóng hoặc trợ giúp pháp lý) và bạn đang ở đâu, tôi sẽ tìm một nơi miễn phí đang mở cửa.",
+    },
+    "zh": {
+        "ask_need": "您需要什么？我可以帮您找食物、住宿、洗浴、诊所、图书馆、避暑中心或法律援助。",
+        "ask_location": "您在哪个邮编或哪条街附近？",
+        "help": "请拨打211（免费，全天24小时）与真人通话。",
+        "help_place": "{name}：{phone}。",
+        "bad_number": "请回复1到{count}之间的数字。",
+        "no_options": "我还没有为您找到地点。您需要什么？例如：食物、住宿或诊所。",
+        "intro": "您好，这里是HelpLine Houston。请告诉我您需要什么（食物、住宿、洗浴、诊所、图书馆、避暑中心或法律援助）以及您在哪里，我会为您找一个现在开放的免费地点。",
+    },
+    "ar": {
+        "ask_need": "ماذا تحتاج؟ يمكنني المساعدة في إيجاد الطعام أو المأوى أو الاستحمام أو عيادة أو مكتبة أو مركز تبريد أو مساعدة قانونية.",
+        "ask_location": "بالقرب من أي رمز بريدي أو شارع أنت؟",
+        "help": "اتصل بالرقم 211 (مجاني، على مدار الساعة) للتحدث مع شخص.",
+        "help_place": "{name}: {phone}.",
+        "bad_number": "يرجى الرد برقم من 1 إلى {count}.",
+        "no_options": "ليس لدي أماكن لك بعد. ماذا تحتاج؟ مثلا: طعام أو مأوى أو عيادة.",
+        "intro": "مرحبا، هذا HelpLine Houston. أخبرني ماذا تحتاج (طعام أو مأوى أو استحمام أو عيادة أو مكتبة أو مركز تبريد أو مساعدة قانونية) وأين أنت، وسأجد لك مكانا مجانيا مفتوحا الآن.",
     },
 }
 
