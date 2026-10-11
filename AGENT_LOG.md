@@ -61,3 +61,7 @@ Times are Houston time, Sat Oct 10. Entries before 6:52 PM were backfilled from 
 | 7:08 PM | main.py | Haiku #7 | Finished | /ask, /sms, /tts, /stt, /api/requests with Tiger Data + ElevenLabs; full suite 124 passed |
 | 7:08 PM | main.py | Sonnet R8 | Review started | |
 | 7:09 PM | brain.py | Sonnet R5 | **APPROVED** | All 6 fixes verified against the original failing examples; 65 tests pass |
+| 7:12 PM | main.py | Sonnet R8 | **APPROVED** | Scripted SMS/kiosk conversations all correct; 800 concurrent requests clean; all 5 deviations sound; 137 tests pass |
+| 7:15 PM | kiosk.html | Haiku #5 | Finished | Web Serial + ElevenLabs voice/listening with Chrome fallbacks; `node --check` passes. Work: 90k tokens, 235 s |
+| 7:15 PM | kiosk.html | Sonnet R9 | Review started | Includes a headless Chrome run against the live server |
+| 7:15 PM | — | Opus | End-to-end check | Server started; SMS in Spanish, kiosk in Vietnamese, /api/requests and /dashboard all respond |
