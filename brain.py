@@ -52,9 +52,9 @@ NEED_KEYWORDS = {
     "shelter": [
         "shelter", "sleep", "bed", "homeless", "housing",
         "albergue", "refugio", "dormir", "cama",
-        "chỗ ở", "ngủ", "nhà ở",
-        "住", "睡", "收容所",
-        "مأوى", "نوم", "سرير", "ملجأ",
+        "chỗ ở", "ngủ", "nhà ở", "trú ẩn", "tạm trú", "vô gia cư", "giường",
+        "住", "睡", "收容所", "避难所", "庇护所", "无家可归",
+        "مأوى", "نوم", "سرير", "ملجأ", "مشرد",
     ],
     "hygiene": [
         "shower", "bath", "bathroom", "restroom", "hygiene", "laundry", "toilet", "wash",

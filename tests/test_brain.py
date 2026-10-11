@@ -281,3 +281,10 @@ def test_templates_without_gemini_use_the_persons_language(language, word, monke
     assert word in sms and brain.REPLY_HINTS[language] in sms
     nothing = brain.answer("food", language, "food", [], "kiosk")
     assert "211" in nothing and "Please call" not in nothing
+
+
+def test_vietnamese_shelter_words_without_gemini(monkeypatch):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setattr(brain, "_client", None)
+    result = brain.understand("Tôi cần nơi trú ẩn.", [], "vi")
+    assert result["need"] == "shelter" and result["intent"] == "find"
