@@ -132,6 +132,8 @@ Send another curl from step 3 while the page is open. A new pin should **pulse i
 
 Open http://localhost:8000/kiosk in **Chrome**. You don't need to click "Connect station". The debug panel stands in for the hardware.
 
+> **Watch the screen, not the board.** In this step, "the LCD box" means the green **LCD preview** box on the web page, under "Station". The real LCD on the Arduino doesn't change yet. If the board is plugged in, it keeps showing whatever sketch is on it (for example "LONG press / 173 English" from `hardware-test.ino`). The real LCD only joins in at step 10, after you upload `station.ino` and click Connect station.
+
 1. **Language:** drag the **knob slider**. The language changes through English → Espanol → Tieng Viet → Zhongwen → Arabic. The "LCD" box shows the language on row 2.
 2. **Typed question:** type `I need a shelter` in the box and press Enter. The reply appears and is **spoken**: Chrome's voice for now, ElevenLabs after step 8. The LCD box shows something like `Option 1/2 0.7mi` (the count depends on how many places are open) and the place name and address.
 3. **Browse options:** drag the knob slider. Each new band picks option 1, 2 or 3, and each one is spoken and shown.
