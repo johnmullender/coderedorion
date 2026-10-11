@@ -79,6 +79,7 @@
     /* Big number tiles: total requests and total unmet */
     .stats {
       display: flex;
+      flex-wrap: wrap;
       gap: 14px;
       margin: 18px 0 8px;
     }
@@ -98,6 +99,8 @@
       color: var(--ink-soft);
     }
     .stat.unmet .num { color: var(--alert); }
+    .stat.places { flex-basis: 100%; }   /* its own row under the two totals */
+    .stat .num .of { font-size: 26px; font-weight: 700; color: var(--ink-soft); }
 
     h2 {
       font-size: 22px;
@@ -258,7 +261,7 @@
         <span id="offline" class="badge-offline">reconnecting...</span>
       </div>
 
-      <!-- Two big number tiles -->
+      <!-- Three big number tiles -->
       <div class="stats">
         <div class="stat">
           <div class="num" id="total">0</div>
@@ -267,6 +270,10 @@
         <div class="stat unmet">
           <div class="num" id="total-unmet">0</div>
           <div class="lbl">unmet</div>
+        </div>
+        <div class="stat places">
+          <div class="num"><span id="places-open">0</span><span class="of"> / <span id="places-total">0</span></span></div>
+          <div class="lbl">places open now</div>
         </div>
       </div>
 
@@ -550,7 +557,7 @@
       });
     }
 
-    // Update the two big totals
+    // Update the big totals
     function renderTotals(counts, unmetCounts) {
       var total = 0;
       var totalUnmet = 0;
@@ -583,6 +590,8 @@
       firstLoadDone = true;
 
       // 2. Update the side panel
+      document.getElementById("places-open").textContent = data.places_open || 0;
+      document.getElementById("places-total").textContent = data.places_total || 0;
       renderTotals(counts, unmetCounts);
       renderNeeds(counts, unmetCounts);
       renderRecent(requests);
