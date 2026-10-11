@@ -255,7 +255,9 @@ You'll have three terminal windows open: the server, ngrok, and one spare.
 ### 11.2 Twilio account and number (one time)
 
 1. Sign up at https://www.twilio.com/try-twilio and verify your email and your own phone number.
-2. In the Twilio Console (https://console.twilio.com), go to **Phone Numbers → Manage → Active numbers**. A US trial account comes with one number already there, usually toll-free (8xx). Note it down.
+2. Find (or get) your Twilio number. Open https://console.twilio.com/us1/develop/phone-numbers/manage/incoming (that's **Phone Numbers → Manage → Active numbers**). If **Phone Numbers** isn't in the left sidebar, click **Explore Products**, find **Phone Numbers**, and pin it.
+   - If the list is empty, go back to the Console home page and click **Get a phone number** (trial accounts get one free number). Or go to **Phone Numbers → Manage → Buy a number**; on a trial it uses your trial credit.
+   - Note the number down. It's usually toll-free (8xx).
 
 ### 11.3 Point the number at your laptop
 
