@@ -59,4 +59,4 @@ Step-by-step manual checks for every feature are in `TESTING.md`.
 python -m pytest -q
 ```
 
-**Data:** `data/resources.json` holds 99 real Houston places gathered from official pages. Each is marked `needs_review` until the team checks it (TESTING.md step 12). The tests use the 12 sample places in `tests/fixtures/`.
+**Data:** `data/resources.json` holds 96 real Houston places gathered from official pages. Each is marked `needs_review` until the team checks it (TESTING.md step 12). The tests use the 12 sample places in `tests/fixtures/`.
