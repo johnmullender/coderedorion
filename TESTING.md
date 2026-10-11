@@ -226,12 +226,89 @@ Kiosk requests also show up on the dashboard, at the UH Student Center.
 
 ## 11. Real texting (Twilio)
 
-1. In a third terminal, run `ngrok http 8000` and copy the `https://….ngrok-free.app` URL.
-2. Twilio console → Phone Numbers → your number → "A message comes in": `https://<ngrok-url>/sms`, **HTTP POST**. Save.
-3. Make sure the phone you're texting from is under **Verified Caller IDs** (trial accounts only reply to verified numbers).
-4. Text the Twilio number: `necesito comida cerca de UH`.
-5. **Expect:** a Spanish reply within a few seconds, starting with "Sent from your Twilio trial account". A pin also drops on the dashboard.
-6. Repeat the conversations from step 3 from a real phone (`2`, a follow-up, `AYUDA`).
+**How it works:** someone texts your Twilio number. Twilio forwards the text to your laptop's `/sms` page, and whatever the app answers, Twilio texts back. Your laptop isn't reachable from the internet, so **ngrok** gives it a temporary public web address that Twilio can call. The app needs **no Twilio keys**. The only setup is telling Twilio where to forward texts.
+
+You'll have three terminal windows open: the server, ngrok, and one spare.
+
+### 11.1 Install and start ngrok (one time)
+
+1. Make a free account at https://dashboard.ngrok.com/signup.
+2. Install it on your Mac: `brew install ngrok`. If you don't have Homebrew, download ngrok from https://ngrok.com/download instead.
+3. In the ngrok dashboard, open **Your Authtoken**, copy the command it shows, and run it once:
+   ```bash
+   ngrok config add-authtoken <your-token>
+   ```
+4. Make sure the server is running in its own terminal (`python -m uvicorn main:app --reload`).
+5. In a **new** terminal window, run:
+   ```bash
+   ngrok http 8000
+   ```
+6. ngrok fills the window with a status screen. Find the **Forwarding** line, for example:
+   ```
+   Forwarding   https://a1b2-c3d4.ngrok-free.app -> http://localhost:8000
+   ```
+   Copy the `https://….ngrok-free.app` part. That's your public address. Leave this window open: closing it turns the address off.
+7. **Check it:** open `https://<your-ngrok-address>/dashboard` in your browser. If ngrok shows a "You are about to visit" page, click **Visit Site**. You should see the dashboard. Twilio skips that page by itself.
+
+> The free address **changes every time you restart ngrok**. When it changes, repeat step 11.3 with the new address.
+
+### 11.2 Twilio account and number (one time)
+
+1. Sign up at https://www.twilio.com/try-twilio and verify your email and your own phone number.
+2. In the Twilio Console (https://console.twilio.com), go to **Phone Numbers → Manage → Active numbers**. A US trial account comes with one number already there, usually toll-free (8xx). Note it down.
+
+### 11.3 Point the number at your laptop
+
+1. **Phone Numbers → Manage → Active numbers** → click your number.
+2. Open the **Configure** tab and scroll to **Messaging Configuration**.
+3. Set **A message comes in** to **Webhook**. Paste `https://<your-ngrok-address>/sms` into the URL box (don't forget `/sms` at the end) and set the method to **HTTP POST**.
+4. Click **Save configuration** at the bottom of the page.
+
+### 11.4 Test it with Twilio's Virtual Phone (works tonight, no approval needed)
+
+US trial numbers can't text real phones until Twilio approves the number (see 11.5). The **Virtual Phone** is a fake phone inside the Console that skips that approval, so use it for testing.
+
+1. In the Console, open **Messaging → Virtual Phone** (or https://console.twilio.com/us1/develop/sms/virtual-phone).
+2. Choose your Twilio number as the sender and send: `necesito comida cerca de UH`.
+3. **Expect:** within a few seconds, a Spanish reply with a food place appears in the Virtual Phone chat. A pin also drops on the dashboard.
+4. Look at the ngrok window. A line `POST /sms 200 OK` means Twilio reached your laptop.
+5. Try the conversations from step 3: `2`, a follow-up like `is it open tomorrow?`, and `AYUDA`.
+
+### 11.5 Texting from a real phone (optional, needs Twilio approval)
+
+- A trial **toll-free** number must pass **Toll-Free Verification** before it can text US phones: Console → **Phone Numbers → Regulatory Compliance → Toll-Free Verifications**. It's free, but approval can take days, so start it early if you want this for the demo.
+- After approval, a trial account can only text **verified** numbers. Add each phone under **Phone Numbers → Manage → Verified Caller IDs** (yours is already there). Replies start with "Sent from your Twilio trial account".
+- Upgrading to a paid account removes the "trial" text and the verified-numbers limit, but US numbers still need registration (toll-free verification or A2P 10DLC).
+- When it's approved: text the Twilio number from your phone with `necesito comida cerca de UH` and expect the same reply as in 11.4.
+
+### 11.5b Real phones tonight: WhatsApp Sandbox (no approval needed)
+
+Twilio's WhatsApp Sandbox lets real phones reach the app right away. The app answers WhatsApp exactly like SMS, so no code changes are needed.
+
+1. In the Twilio Console, open **Messaging → Try it out → Send a WhatsApp message**. Accept the terms if asked.
+2. The page shows the sandbox number (**+1 415 523 8886**) and a code like `join purple-tiger`.
+3. On each phone that will test, open WhatsApp and send that exact `join …` message to +1 415 523 8886. Twilio replies that you've joined. A QR code on the same page does the same thing.
+4. On the same Console page, open **Sandbox settings**. In **When a message comes in**, paste `https://<your-ngrok-address>/sms`, set the method to **POST**, and click **Save**.
+5. From a joined phone, send `necesito comida cerca de UH` on WhatsApp.
+6. **Expect:** a Spanish reply within a few seconds, and a pin on the dashboard. `2`, follow-ups and `AYUDA` work the same as SMS.
+
+Notes:
+- Each phone stays joined for **3 days**. After that, send the `join …` message again.
+- Trial accounts include a limited number of free WhatsApp messages (about 100).
+- **Demo tip:** put the join message and the sandbox number on a slide or a QR code so judges can try it from their own phones.
+
+### 11.6 If texting doesn't work
+
+| What you see | Fix |
+|---|---|
+| No reply, and nothing new in the ngrok window | Twilio isn't reaching your laptop. Recheck the webhook URL in 11.3: the current ngrok address plus `/sms`, set to HTTP POST, and saved |
+| ngrok shows `POST /sms 404` | The URL is missing `/sms` or has a typo |
+| ngrok shows `POST /sms 502` | The server isn't running. Start it again in its own terminal |
+| `ERR_NGROK_...` in the ngrok window | Run the `ngrok config add-authtoken` step again |
+| Twilio Console → **Monitor → Logs → Messaging** shows error 11200 | Twilio couldn't load your URL: ngrok or the server is down, or the address changed |
+| Error 30032 / 30034 or "unverified" in the logs (real phone only) | The number isn't approved for US texting yet (11.5). Use the Virtual Phone or WhatsApp (11.5b) |
+| WhatsApp: no reply | Check that the phone sent the `join …` message in the last 3 days, and that the sandbox webhook (11.5b step 4) has the current ngrok address |
+| You can see every request and reply in detail | Open http://127.0.0.1:4040 while ngrok is running |
 
 ---
 

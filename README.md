@@ -40,7 +40,9 @@ Every key is optional. Without a key, that piece falls back:
 ## Texting (Twilio)
 1. `ngrok http 8000` gives you a public `https://...ngrok-free.app` URL.
 2. In the Twilio console, set your number's "A message comes in" webhook to `https://<that-url>/sms` (HTTP POST).
-3. Text the number from a verified phone.
+3. Test from **Messaging → Virtual Phone** in the Twilio console, or from real phones through the **WhatsApp Sandbox** (same `/sms` URL). Real phones over SMS need Toll-Free Verification on a US trial number.
+
+Full step-by-step instructions are in `TESTING.md` step 11.
 
 ## Help station
 1. Upload `arduino/station/station.ino` with the Arduino IDE. Close the Serial Monitor afterwards, because only one program can use the port.
